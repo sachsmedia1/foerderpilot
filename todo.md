@@ -113,4 +113,45 @@
 - [x] Kurs-Anzeige in Übersicht reparieren (WHERE-Bedingungen mit and() kombiniert)
 - [x] Seed-Daten geprüft (1 Kurs vorhanden)
 - [x] Testing (8 Tests bestanden)
+- [x] Checkpoint erstellen (Version: aabeda2d)
+
+
+## Bug-Fixes
+
+### Abmelden-Buttons
+- [x] Abmelden-Button in Home.tsx reparieren
+- [x] Abmelden-Button in AdminLayout.tsx reparieren
+- [x] Logout-Mutation mit Redirect zur Login-Seite implementiert
+
+
+## Sprint 1.3: Document Validation (Woche 5-6)
+
+### Phase 1: Document Router & Database
+- [x] Document Router (tRPC) mit CRUD-Operationen
+- [x] Database Queries für Dokumente
+- [x] Validierungs-Status-Enum erweitern
+- [x] SQL-Migration für documents Tabelle durchgeführt
+
+### Phase 2: File Upload System
+- [x] S3-Upload-Integration
+- [x] Upload-Endpoint (tRPC)
+- [x] File-Type-Validierung (PDF, JPG, PNG, HEIC)
+- [x] Progress-Tracking
+
+### Phase 3: AI Document Validator
+- [x] GPT-4o-mini Vision Integration
+- [x] Dokumenttyp-spezifische Validierung
+- [x] Validierungs-Regeln definieren
+- [x] Error-Feedback-System
+
+### Phase 4: Document Management UI
+- [x] Document-Upload-Component (mit Drag & Drop)
+- [x] Document-Liste (Admin)
+- [x] Status Dashboard mit Statistiken
+- [x] Validierungs-Actions (Validieren, Löschen, Ansehen)
+
+### Phase 5: Testing & Checkpoint
+- [x] Vitest Tests für Document CRUD (6 Tests)
+- [x] Vitest Tests für AI Validator
+- [x] Integration Tests (14 Tests bestanden)
 - [ ] Checkpoint erstellen

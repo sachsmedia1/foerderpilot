@@ -5,6 +5,7 @@ import { publicProcedure, router } from "./_core/trpc";
 import { superadminRouter } from "./routers/superadmin";
 import { coursesRouter } from "./routers/courses";
 import { sammelterminsRouter } from "./routers/sammeltermins";
+import { documentsRouter } from "./routers/documents";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -12,6 +13,7 @@ export const appRouter = router({
   superadmin: superadminRouter,
   courses: coursesRouter,
   sammeltermins: sammelterminsRouter,
+  documents: documentsRouter,
   // TODO: Add more feature routers here
   
   auth: router({

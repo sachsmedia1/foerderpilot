@@ -212,23 +212,24 @@ export type InsertParticipant = typeof participants.$inferInsert;
 // ============================================================================
 export const documents = mysqlTable("documents", {
   id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenantId").notNull(),
   participantId: int("participantId").notNull(),
   
   // Dokument-Informationen
   documentType: varchar("documentType", { length: 100 }).notNull(),
-  // Typen: 'personalausweis_front', 'personalausweis_back', 'lebenslauf',
-  // 'bildungsgutschein', 'bewerbungsschreiben', 'beratungsprotokoll', 'vorvertrag'
-  fileName: varchar("fileName", { length: 255 }).notNull(),
+  // Typen: 'personalausweis', 'lebenslauf', 'zeugnisse', 'arbeitsvertrag', 'kuendigungsbestaetigung', 'other'
+  filename: varchar("filename", { length: 255 }).notNull(),
   fileUrl: varchar("fileUrl", { length: 500 }).notNull(),
   fileKey: varchar("fileKey", { length: 500 }).notNull(),
   mimeType: varchar("mimeType", { length: 100 }),
   fileSize: int("fileSize"), // in Bytes
   
   // AI-Validierung
-  isValidated: boolean("isValidated").default(false).notNull(),
+  validationStatus: varchar("validationStatus", { length: 50 }).default("pending").notNull(),
+  // Stati: 'pending', 'validating', 'valid', 'invalid', 'manual_review'
   validationResult: text("validationResult"), // JSON als String
-  validationErrors: text("validationErrors"), // JSON als String
   
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
   uploadedAt: timestamp("uploadedAt").defaultNow().notNull(),
   validatedAt: timestamp("validatedAt"),
 });
