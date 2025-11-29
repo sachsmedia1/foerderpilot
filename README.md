@@ -54,7 +54,7 @@ FörderPilot ist eine moderne Multi-Tenant SaaS-Plattform, die Bildungsträgern 
 - ✅ **Courses-Tabelle** - Kursverwaltung mit Förderdetails
 - ✅ **Participants-Tabelle** - Teilnehmerverwaltung mit Status-Pipeline
 - ✅ **Documents-Tabelle** - Dokumenten-Upload mit AI-Validierung (Vorbereitung)
-- ✅ **Sammeltermins-Tabelle** - KOMPASS-Termine
+- ✅ **Sammeltermine-Tabelle** - KOMPASS-Termine
 - ✅ **Seed-Daten** - Test-Tenant + Super Admin
 
 #### 2. Multi-Tenancy Middleware
@@ -142,7 +142,7 @@ foerderpilot/
 - AI-Validierung (Status, Ergebnis) - Vorbereitung für Phase 1.3
 - Zuordnung (Participant)
 
-#### sammeltermins (KOMPASS-Termine)
+#### sammeltermine (KOMPASS-Termine)
 - Termin-Informationen (Datum, Zoom-Link)
 - KOMPASS-Reviewer-Zuordnung
 - Submission-Deadline (1 Tag vorher)

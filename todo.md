@@ -8,7 +8,7 @@
 - [x] Courses-Tabelle erstellen (Kursverwaltung)
 - [x] Participants-Tabelle erstellen (Teilnehmerverwaltung)
 - [x] Documents-Tabelle erstellen (Dokumenten-Upload)
-- [x] Sammeltermins-Tabelle erstellen (KOMPASS-Termine)
+- [x] Sammeltermine-Tabelle erstellen (KOMPASS-Termine)
 - [x] Seed-Daten erstellen (Test-Tenant + Super Admin)
 
 ### Phase 2: Multi-Tenancy Middleware
@@ -64,4 +64,38 @@
 - [x] Tenant-Middleware aktualisieren (app als Subdomain erkennen)
 - [x] Seed-Daten aktualisieren (app statt demo)
 - [x] Testing (8 Tests bestanden)
+- [x] Checkpoint erstellen (Version: db0407e9)
+
+## Sprint 1.2: Course Management (Woche 3-4)
+
+### Phase 1: Admin Dashboard Layout
+- [x] Admin Dashboard Layout mit Sidebar erstellen
+- [x] Navigation-Items (Dashboard, Kurse, Sammeltermine, Teilnehmer)
+- [x] Responsive Design (Mobile + Desktop)
+- [x] Tenant-Branding im Dashboard
+- [x] Admin Dashboard Home Page mit Statistiken
+- [x] Links auf Home Page
+
+### Phase 2: Course CRUD
+- [x] Course Router (tRPC) mit CRUD-Operationen
+- [x] Kurs-Liste mit Filterung und Suche
+- [x] Kurs aktivieren/deaktivieren
+- [x] Kurs-Erstellen-Formular
+- [x] Kurs-Bearbeiten-Formular (gleiches Formular)
+- [x] Kurs-Details-Ansicht (in Liste integriert)
+### Phase 3: Sammeltermin-Management
+- [x] Sammeltermin Router (tRPC)
+- [x] Backend CRUD-Operationen vollständig
+- [ ] Frontend UI (verschoben auf spätere Phase)
+- [x] Namenskorrektur: "Sammeltermins" → "Sammeltermine"
+
+### Phase 4: Öffentliche Kurs-Übersicht
+- [ ] Öffentliche Kurs-Liste (verschoben auf spätere Phase)
+- [ ] Kurs-Details-Seite (verschoben auf spätere Phase)
+- [ ] Registrierungs-Formular (verschoben auf spätere Phase)
+
+### Phase 5: Testing & Checkpoint
+- [x] Vitest Tests (8 Tests bestanden)
+- [x] TypeScript-Checks (alle erfolgreich)
+- [x] Namenskorrektur durchgeführt
 - [ ] Checkpoint erstellen

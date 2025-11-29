@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, Users, FileCheck, Shield } from "lucide-react";
+import { Building2, Users, FileCheck, Shield, LayoutDashboard, LogOut } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
 
@@ -130,6 +130,15 @@ export default function Home() {
                   </Link>
                 </Button>
               )}
+
+              {(user?.role === 'admin' || user?.role === 'super_admin') && (
+                <Button asChild className="w-full" size="lg" variant={user?.role === 'super_admin' ? 'outline' : 'default'}>
+                  <Link href="/admin">
+                    <LayoutDashboard className="h-5 w-5 mr-2" />
+                    Admin Dashboard
+                  </Link>
+                </Button>
+              )}
               
               {tenant && (
                 <div className="p-4 bg-muted rounded-lg">
@@ -146,6 +155,11 @@ export default function Home() {
                   <p>Weitere Funktionen werden in den nächsten Phasen freigeschaltet.</p>
                 </div>
               ) : null}
+
+              <Button onClick={logout} variant="outline" className="w-full" size="lg">
+                <LogOut className="h-4 w-4 mr-2" />
+                Abmelden
+              </Button>
             </CardContent>
           </Card>
         ) : (

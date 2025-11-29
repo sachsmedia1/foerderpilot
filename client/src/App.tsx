@@ -8,6 +8,9 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import SuperAdmin from "./pages/SuperAdmin";
 import Maintenance from "./pages/Maintenance";
+import AdminDashboard from "./pages/admin/Dashboard";
+import Courses from "./pages/admin/Courses";
+import CourseForm from "./pages/admin/CourseForm";
 import { useAuth } from "./_core/hooks/useAuth";
 
 function Router() {
@@ -33,6 +36,10 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/admin/courses"} component={Courses} />
+      <Route path={"/admin/courses/new"} component={CourseForm} />
+      <Route path={"/admin/courses/:id/edit"} component={CourseForm} />
       <Route path={"/superadmin"} component={SuperAdmin} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
