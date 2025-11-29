@@ -12,6 +12,9 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import Courses from "./pages/admin/Courses";
 import CourseForm from "@/pages/admin/CourseForm";
 import Documents from "@/pages/admin/Documents";
+import Participants from "@/pages/admin/Participants";
+import ParticipantForm from "@/pages/admin/ParticipantForm";
+import ParticipantDetail from "@/pages/admin/ParticipantDetail";
 import { useAuth } from "./_core/hooks/useAuth";
 
 function Router() {
@@ -42,6 +45,10 @@ function Router() {
            <Route path={"/admin/courses/new"} component={CourseForm} />
       <Route path={"/admin/courses/:id"} component={CourseForm} />
       <Route path={"/admin/documents"} component={Documents} />
+      <Route path={"/admin/participants"} component={Participants} />
+      <Route path={"/admin/participants/new"} component={ParticipantForm} />
+      <Route path={"/admin/participants/:id/view"} component={ParticipantDetail} />
+      <Route path={"/admin/participants/:id/edit"} component={ParticipantForm} />
       <Route path={"/superadmin"} component={SuperAdmin} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

@@ -6,6 +6,7 @@ import { superadminRouter } from "./routers/superadmin";
 import { coursesRouter } from "./routers/courses";
 import { sammelterminsRouter } from "./routers/sammeltermins";
 import { documentsRouter } from "./routers/documents";
+import { participantsRouter } from "./routers/participants";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -14,6 +15,7 @@ export const appRouter = router({
   courses: coursesRouter,
   sammeltermins: sammelterminsRouter,
   documents: documentsRouter,
+  participants: participantsRouter,
   // TODO: Add more feature routers here
   
   auth: router({

@@ -154,4 +154,37 @@
 - [x] Vitest Tests für Document CRUD (6 Tests)
 - [x] Vitest Tests für AI Validator
 - [x] Integration Tests (14 Tests bestanden)
+- [x] Checkpoint erstellen (Version: bcfed73d)
+
+
+## Phase 2: Participant Management (Woche 7-10)
+
+### Phase 2.1: Participant Router & Database
+- [x] Participant Router (tRPC) mit CRUD-Operationen
+- [x] Database Queries für Teilnehmer
+- [x] Status-Pipeline-Logik im Backend (updateStatus)
+- [x] Validierungs-Regeln für Teilnehmer-Daten (Zod-Schemas)
+
+### Phase 2.2: Status-Pipeline-System
+- [ ] Status-Enum erweitern (registered, documents_pending, documents_submitted, etc.)
+- [ ] Automatische Status-Übergänge implementieren
+- [ ] Status-Historie-Tracking
+- [ ] Benachrichtigungs-Trigger definieren
+
+### Phase 2.3: Participant Management UI
+- [x] Participant-Liste mit Filterung und Suche
+- [x] Participant-Formular (Erstellen/Bearbeiten)
+- [x] Status-Pipeline-Visualisierung
+- [x] Status-ändern-Funktion (in Detail-View)
+
+### Phase 2.4: Document-Integration
+- [x] Document-Upload für Teilnehmer (in Detail-View)
+- [x] Participant-Detail-View mit Dokumenten-Liste
+- [x] Dokumenten-Status-Übersicht pro Teilnehmer
+- [x] Status-Pipeline-Visualisierung mit Fortschrittsanzeige
+
+### Phase 2.5: Testing & Checkpoint
+- [x] Vitest Tests für Participant CRUD (7 Tests)
+- [x] Vitest Tests für Status-Pipeline
+- [x] Integration Tests (21 Tests bestanden)
 - [ ] Checkpoint erstellen
