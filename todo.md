@@ -33,7 +33,7 @@
 - [x] Vitest Tests für Auth-System
 - [x] Vitest Tests für Tenant-Management
 - [x] Vitest Tests für Multi-Tenancy Middleware
-- [ ] Checkpoint erstellen
+- [x] Checkpoint erstellen (Version: edeef683)
 - [x] Dokumentation aktualisieren (README.md)
 
 ---
@@ -55,3 +55,13 @@
 - [ ] Zeus-Integration (Woche 9-10)
 - [ ] KOMPASS-Workflow (Woche 11-16)
 - [ ] Billing & Certificates (Woche 19-20)
+
+## Sprint 1.1.1: Routing-Anpassung (Hotfix)
+
+### Routing-Logik
+- [x] Wartungsseite für foerderpilot.io erstellen
+- [x] Routing-Middleware anpassen (app.foerderpilot.io = App, foerderpilot.io = Wartung)
+- [x] Tenant-Middleware aktualisieren (app als Subdomain erkennen)
+- [x] Seed-Daten aktualisieren (app statt demo)
+- [x] Testing (8 Tests bestanden)
+- [ ] Checkpoint erstellen

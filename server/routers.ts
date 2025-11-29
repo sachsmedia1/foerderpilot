@@ -13,6 +13,7 @@ export const appRouter = router({
       user: opts.ctx.user,
       tenant: opts.ctx.tenant,
       isSuperAdminRoute: opts.ctx.isSuperAdminRoute,
+      isMaintenanceMode: opts.ctx.isMaintenanceMode,
     })),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);

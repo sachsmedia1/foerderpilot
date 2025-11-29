@@ -50,6 +50,7 @@ export function useAuth(options?: UseAuthOptions) {
       user: meQuery.data?.user ?? null,
       tenant: meQuery.data?.tenant ?? null,
       isSuperAdminRoute: meQuery.data?.isSuperAdminRoute ?? false,
+      isMaintenanceMode: meQuery.data?.isMaintenanceMode ?? false,
       loading: meQuery.isLoading || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
       isAuthenticated: Boolean(meQuery.data?.user),

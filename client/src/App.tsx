@@ -7,9 +7,29 @@ import { BrandingProvider } from "./components/BrandingProvider";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import SuperAdmin from "./pages/SuperAdmin";
+import Maintenance from "./pages/Maintenance";
+import { useAuth } from "./_core/hooks/useAuth";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
+  const { isMaintenanceMode, loading } = useAuth();
+
+  // Zeige Wartungsseite wenn auf Root-Domain (foerderpilot.io)
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Lade...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isMaintenanceMode) {
+    return <Maintenance />;
+  }
+
+  // Normale Routing-Logik für app.foerderpilot.io und Tenant-Subdomains
   return (
     <Switch>
       <Route path={"/"} component={Home} />

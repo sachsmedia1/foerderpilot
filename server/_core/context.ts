@@ -9,6 +9,7 @@ export type TrpcContext = {
   user: User | null;
   tenant: Tenant | null;
   isSuperAdminRoute: boolean;
+  isMaintenanceMode: boolean;
 };
 
 export async function createContext(
@@ -17,6 +18,7 @@ export async function createContext(
   let user: User | null = null;
   let tenant: Tenant | null = null;
   let isSuperAdminRoute = false;
+  let isMaintenanceMode = false;
 
   // 1. Authenticate user
   try {
@@ -31,6 +33,7 @@ export async function createContext(
     const tenantInfo = await getTenantFromRequest(opts.req);
     tenant = tenantInfo.tenant;
     isSuperAdminRoute = tenantInfo.isSuperAdminRoute;
+    isMaintenanceMode = tenantInfo.isMaintenanceMode;
   } catch (error) {
     // Tenant resolution failed - will be handled by procedures
     tenant = null;
@@ -42,5 +45,6 @@ export async function createContext(
     user,
     tenant,
     isSuperAdminRoute,
+    isMaintenanceMode,
   };
 }

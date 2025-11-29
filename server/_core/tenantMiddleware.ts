@@ -16,6 +16,21 @@ import type { Tenant } from '../../drizzle/schema';
 export interface TenantInfo {
   tenant: Tenant | null;
   isSuperAdminRoute: boolean;
+  isMaintenanceMode: boolean;
+}
+
+/**
+ * Prüft ob die Domain die Root-Domain ist (foerderpilot.io)
+ * 
+ * Beispiele:
+ * - foerderpilot.io → true
+ * - app.foerderpilot.io → false
+ * - demo.foerderpilot.io → false
+ * - localhost:3000 → false
+ */
+function isRootDomain(host: string): boolean {
+  const hostWithoutPort = host.split(':')[0] || host;
+  return hostWithoutPort === 'foerderpilot.io';
 }
 
 /**
@@ -23,10 +38,11 @@ export interface TenantInfo {
  * 
  * Beispiele:
  * - demo.foerderpilot.io → demo
+ * - app.foerderpilot.io → app
  * - localhost:3000 → localhost
- * - foerderpilot.io → foerderpilot
+ * - foerderpilot.io → null (Root-Domain hat keine Subdomain)
  */
-function extractSubdomain(host: string): string {
+function extractSubdomain(host: string): string | null {
   // Entferne Port falls vorhanden
   const hostWithoutPort = host.split(':')[0] || host;
   
@@ -35,16 +51,16 @@ function extractSubdomain(host: string): string {
   
   // Wenn nur ein Teil (z.B. localhost), gib diesen zurück
   if (parts.length === 1) {
-    return parts[0] || '';
+    return parts[0] || null;
   }
   
-  // Wenn zwei Teile (z.B. foerderpilot.io), gib ersten Teil zurück
+  // Wenn zwei Teile (z.B. foerderpilot.io), keine Subdomain
   if (parts.length === 2) {
-    return parts[0] || '';
+    return null;
   }
   
   // Wenn drei oder mehr Teile (z.B. demo.foerderpilot.io), gib ersten Teil zurück
-  return parts[0] || '';
+  return parts[0] || null;
 }
 
 /**
@@ -62,41 +78,55 @@ function isSuperAdminRoute(path: string): boolean {
  * Erkennt den Tenant basierend auf dem Request
  * 
  * Reihenfolge:
- * 1. Prüfe ob Super Admin Route → kein Tenant nötig
- * 2. Prüfe Custom Domain
- * 3. Prüfe Subdomain
- * 4. Fehler wenn kein Tenant gefunden
+ * 1. Prüfe ob Root-Domain (foerderpilot.io) → Wartungsmodus
+ * 2. Prüfe ob Super Admin Route → kein Tenant nötig
+ * 3. Prüfe Custom Domain
+ * 4. Prüfe Subdomain
+ * 5. Fehler wenn kein Tenant gefunden
  */
 export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
   const host = req.headers.host || '';
   const path = req.path || '';
   
-  // Super Admin Routen benötigen keinen Tenant
+  // 1. Root-Domain zeigt Wartungsseite
+  if (isRootDomain(host)) {
+    return {
+      tenant: null,
+      isSuperAdminRoute: false,
+      isMaintenanceMode: true,
+    };
+  }
+  
+  // 2. Super Admin Routen benötigen keinen Tenant
   if (isSuperAdminRoute(path)) {
     return {
       tenant: null,
       isSuperAdminRoute: true,
+      isMaintenanceMode: false,
     };
   }
   
-  // 1. Versuche Custom Domain
+  // 3. Versuche Custom Domain
   let tenant = await getTenantByCustomDomain(host);
   
-  // 2. Versuche Subdomain
+  // 4. Versuche Subdomain
   if (!tenant) {
     const subdomain = extractSubdomain(host);
-    tenant = await getTenantBySubdomain(subdomain);
+    if (subdomain) {
+      tenant = await getTenantBySubdomain(subdomain);
+    }
   }
   
-  // 3. Kein Tenant gefunden
+  // 5. Kein Tenant gefunden
   if (!tenant) {
     return {
       tenant: null,
       isSuperAdminRoute: false,
+      isMaintenanceMode: false,
     };
   }
   
-  // 4. Prüfe ob Tenant aktiv ist
+  // 6. Prüfe ob Tenant aktiv ist
   if (!tenant.isActive) {
     throw new Error('Tenant is inactive');
   }
@@ -104,6 +134,7 @@ export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
   return {
     tenant,
     isSuperAdminRoute: false,
+    isMaintenanceMode: false,
   };
 }
 
