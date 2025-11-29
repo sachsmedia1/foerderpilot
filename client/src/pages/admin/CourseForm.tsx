@@ -30,12 +30,24 @@ export default function CourseForm() {
   const [detailedDescription, setDetailedDescription] = useState("");
   const [topics, setTopics] = useState("");
   const [duration, setDuration] = useState("");
-  const [scheduleType, setScheduleType] = useState<"weeks" | "months" | "custom">("weeks");
+  const [scheduleType, setScheduleType] = useState<"weeks" | "days" | "custom">("weeks");
   const [weeks, setWeeks] = useState("");
   const [sessionsPerWeek, setSessionsPerWeek] = useState("");
   const [hoursPerSession, setHoursPerSession] = useState("");
   const [priceNet, setPriceNet] = useState("");
   const [priceGross, setPriceGross] = useState("");
+
+  // Auto-calculate gross price from net (19% VAT)
+  const handlePriceNetChange = (value: string) => {
+    setPriceNet(value);
+    if (value) {
+      const net = parseFloat(value);
+      const gross = net * 1.19;
+      setPriceGross(gross.toFixed(2));
+    } else {
+      setPriceGross("");
+    }
+  };
   const [subsidyPercentage, setSubsidyPercentage] = useState("");
   const [trainerNames, setTrainerNames] = useState("");
   const [trainerQualifications, setTrainerQualifications] = useState("");
@@ -56,7 +68,7 @@ export default function CourseForm() {
       setDetailedDescription(course.detailedDescription || "");
       setTopics(course.topics ? JSON.parse(course.topics as string).join(", ") : "");
       setDuration(course.duration?.toString() || "");
-      setScheduleType(course.scheduleType as "weeks" | "months" | "custom");
+      setScheduleType(course.scheduleType as "weeks" | "days" | "custom");
       
       const scheduleDetails = course.scheduleDetails ? JSON.parse(course.scheduleDetails as string) : {};
       setWeeks(scheduleDetails.weeks?.toString() || "");
@@ -168,7 +180,7 @@ export default function CourseForm() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  placeholder="z.B. Digitales Marketing & Social Media"
+
                 />
               </div>
 
@@ -179,7 +191,7 @@ export default function CourseForm() {
                   value={shortDescription}
                   onChange={(e) => setShortDescription(e.target.value)}
                   required
-                  placeholder="Eine kurze Beschreibung des Kurses"
+
                   rows={2}
                 />
               </div>
@@ -190,7 +202,7 @@ export default function CourseForm() {
                   id="detailedDescription"
                   value={detailedDescription}
                   onChange={(e) => setDetailedDescription(e.target.value)}
-                  placeholder="Ausführliche Beschreibung des Kursinhalts"
+
                   rows={4}
                 />
               </div>
@@ -201,7 +213,7 @@ export default function CourseForm() {
                   id="topics"
                   value={topics}
                   onChange={(e) => setTopics(e.target.value)}
-                  placeholder="z.B. Social Media, Content Marketing, SEO"
+
                 />
               </div>
             </CardContent>
@@ -237,7 +249,7 @@ export default function CourseForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="weeks">Wochen</SelectItem>
-                      <SelectItem value="months">Monate</SelectItem>
+                      <SelectItem value="days">Tage</SelectItem>
                       <SelectItem value="custom">Individuell</SelectItem>
                     </SelectContent>
                   </Select>
@@ -278,6 +290,31 @@ export default function CourseForm() {
                   </div>
                 </div>
               )}
+
+              {scheduleType === "days" && (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <Label htmlFor="days">Anzahl Tage</Label>
+                    <Input
+                      id="days"
+                      type="number"
+                      value={weeks}
+                      onChange={(e) => setWeeks(e.target.value)}
+                      min="1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="hoursPerDay">Stunden/Tag</Label>
+                    <Input
+                      id="hoursPerDay"
+                      type="number"
+                      value={hoursPerSession}
+                      onChange={(e) => setHoursPerSession(e.target.value)}
+                      min="1"
+                    />
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -298,7 +335,7 @@ export default function CourseForm() {
                     type="number"
                     step="0.01"
                     value={priceNet}
-                    onChange={(e) => setPriceNet(e.target.value)}
+                    onChange={(e) => handlePriceNetChange(e.target.value)}
                     required
                     min="0"
                   />
@@ -334,29 +371,27 @@ export default function CourseForm() {
           {/* Trainer & Teilnehmer */}
           <Card>
             <CardHeader>
-              <CardTitle>Trainer & Teilnehmer</CardTitle>
+              <CardTitle>Dozent & Teilnehmer</CardTitle>
               <CardDescription>
-                Informationen zu Trainern und Teilnehmerzahl
+                Informationen zum Dozenten und Teilnehmerzahl
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="trainerNames">Trainer-Namen</Label>
+                <Label htmlFor="trainerNames">Dozent</Label>
                 <Input
                   id="trainerNames"
                   value={trainerNames}
                   onChange={(e) => setTrainerNames(e.target.value)}
-                  placeholder="z.B. Sarah Schmidt, Michael Weber"
                 />
               </div>
 
               <div>
-                <Label htmlFor="trainerQualifications">Trainer-Qualifikationen</Label>
+                <Label htmlFor="trainerQualifications">Dozenten-Qualifikationen</Label>
                 <Textarea
                   id="trainerQualifications"
                   value={trainerQualifications}
                   onChange={(e) => setTrainerQualifications(e.target.value)}
-                  placeholder="Qualifikationen und Erfahrung der Trainer"
                   rows={3}
                 />
               </div>
@@ -369,7 +404,6 @@ export default function CourseForm() {
                   value={maxParticipants}
                   onChange={(e) => setMaxParticipants(e.target.value)}
                   min="1"
-                  placeholder="z.B. 15"
                 />
               </div>
             </CardContent>

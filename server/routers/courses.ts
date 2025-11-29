@@ -23,12 +23,13 @@ const courseCreateSchema = z.object({
   detailedDescription: z.string().optional(),
   topics: z.array(z.string()).optional(),
   duration: z.number().int().positive('Dauer muss positiv sein'),
-  scheduleType: z.enum(['weeks', 'months', 'custom']),
+  scheduleType: z.enum(['weeks', 'days', 'custom']),
   scheduleDetails: z.object({
     weeks: z.number().optional(),
-    months: z.number().optional(),
+    days: z.number().optional(),
     sessionsPerWeek: z.number().optional(),
     hoursPerSession: z.number().optional(),
+    hoursPerDay: z.number().optional(),
     customSchedule: z.string().optional(),
   }).optional(),
   priceNet: z.number().int().nonnegative('Preis muss >= 0 sein'),
@@ -61,21 +62,21 @@ export const coursesRouter = router({
       if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
-      let query = db
-        .select()
-        .from(courses)
-        .where(eq(courses.tenantId, ctx.tenant.id))
-        .$dynamic();
-
-      // Apply filters
+      // Build WHERE conditions
+      const conditions = [eq(courses.tenantId, ctx.tenant.id)];
+      
       if (input?.isActive !== undefined) {
-        query = query.where(eq(courses.isActive, input.isActive));
+        conditions.push(eq(courses.isActive, input.isActive));
       }
       if (input?.isPublished !== undefined) {
-        query = query.where(eq(courses.isPublished, input.isPublished));
+        conditions.push(eq(courses.isPublished, input.isPublished));
       }
 
-      const result = await query.orderBy(desc(courses.createdAt));
+      const result = await db
+        .select()
+        .from(courses)
+        .where(and(...conditions))
+        .orderBy(desc(courses.createdAt));
 
       // Client-side search filtering (simple implementation)
       if (input?.search) {

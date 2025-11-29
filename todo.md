@@ -98,4 +98,19 @@
 - [x] Vitest Tests (8 Tests bestanden)
 - [x] TypeScript-Checks (alle erfolgreich)
 - [x] Namenskorrektur durchgeführt
+- [x] Checkpoint erstellen (Version: 507b70b6)
+
+## Sprint 1.2.1: Course-Formular Anpassungen & Bug-Fixes
+
+### Anpassungen Course-Formular
+- [x] Zeitplan-Typ: "Monate" entfernen, "Tage" ergänzen
+- [x] Zeitplan-Felder für "Tage": "Anzahl Tage" + "Stunden/Tag"
+- [x] Automatische Brutto-Berechnung aus Netto (19% MwSt)
+- [x] "Trainer-Namen" → "Dozent" umbenennen
+- [x] Alle Platzhalter aus Formular-Feldern entfernen
+
+### Bug-Fixes
+- [x] Kurs-Anzeige in Übersicht reparieren (WHERE-Bedingungen mit and() kombiniert)
+- [x] Seed-Daten geprüft (1 Kurs vorhanden)
+- [x] Testing (8 Tests bestanden)
 - [ ] Checkpoint erstellen
