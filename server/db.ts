@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, tenants, courses, participants, documents, sammeltermins } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -32,10 +32,11 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   try {
     const values: InsertUser = {
       openId: user.openId,
+      email: user.email || '',
     };
     const updateSet: Record<string, unknown> = {};
 
-    const textFields = ["name", "email", "loginMethod"] as const;
+    const textFields = ["name", "loginMethod", "firstName", "lastName", "phone"] as const;
     type TextField = (typeof textFields)[number];
 
     const assignNullable = (field: TextField) => {
@@ -45,6 +46,12 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values[field] = normalized;
       updateSet[field] = normalized;
     };
+
+    // Email separat behandeln (required field)
+    if (user.email !== undefined) {
+      values.email = user.email || '';
+      updateSet.email = user.email || '';
+    }
 
     textFields.forEach(assignNullable);
 
@@ -89,4 +96,92 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ============================================================================
+// TENANT QUERIES
+// ============================================================================
+
+export async function getTenantBySubdomain(subdomain: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(tenants).where(eq(tenants.subdomain, subdomain)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getTenantByCustomDomain(customDomain: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(tenants).where(eq(tenants.customDomain, customDomain)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getTenantById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(tenants).where(eq(tenants.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getAllTenants() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(tenants);
+}
+
+// ============================================================================
+// USER QUERIES
+// ============================================================================
+
+export async function getUsersByTenantId(tenantId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(users).where(eq(users.tenantId, tenantId));
+}
+
+// ============================================================================
+// COURSE QUERIES
+// ============================================================================
+
+export async function getCoursesByTenantId(tenantId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(courses).where(eq(courses.tenantId, tenantId));
+}
+
+// ============================================================================
+// PARTICIPANT QUERIES
+// ============================================================================
+
+export async function getParticipantsByTenantId(tenantId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(participants).where(eq(participants.tenantId, tenantId));
+}
+
+// ============================================================================
+// DOCUMENT QUERIES
+// ============================================================================
+
+export async function getDocumentsByParticipantId(participantId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(documents).where(eq(documents.participantId, participantId));
+}
+
+// ============================================================================
+// SAMMELTERMIN QUERIES
+// ============================================================================
+
+export async function getSammelterminsByTenantId(tenantId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(sammeltermins).where(eq(sammeltermins.tenantId, tenantId));
+}
