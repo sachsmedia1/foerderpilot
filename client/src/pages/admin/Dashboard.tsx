@@ -15,11 +15,15 @@ import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 
 export default function AdminDashboard() {
-  // TODO: Implement statistics queries
+  // Queries für Statistiken
+  const { data: courses } = trpc.courses.list.useQuery({});
+  const { data: participants } = trpc.participants.list.useQuery({});
+  const { data: sammeltermine } = trpc.sammeltermins.list.useQuery({ upcoming: true });
+
   const stats = {
-    courses: 1,
-    participants: 0,
-    sammeltermins: 1,
+    courses: courses?.filter(c => c.isActive).length || 0,
+    participants: participants?.length || 0,
+    sammeltermine: sammeltermine?.length || 0,
   };
 
   return (
@@ -67,7 +71,7 @@ export default function AdminDashboard() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.sammeltermins}</div>
+              <div className="text-2xl font-bold">{stats.sammeltermine}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 Geplante Termine
               </p>
@@ -91,7 +95,7 @@ export default function AdminDashboard() {
                   Neuer Kurs
                 </Button>
               </Link>
-              <Link href="/admin/sammeltermins/new">
+              <Link href="/admin/sammeltermine/new">
                 <Button variant="outline" className="w-full justify-start">
                   <Plus className="h-4 w-4 mr-2" />
                   Neuer Sammeltermin
@@ -123,7 +127,7 @@ export default function AdminDashboard() {
                   Nächste KOMPASS-Termine
                 </CardDescription>
               </div>
-              <Link href="/admin/sammeltermins">
+              <Link href="/admin/sammeltermine">
                 <Button variant="ghost" size="sm">
                   Alle anzeigen
                   <ArrowRight className="h-4 w-4 ml-2" />
@@ -132,9 +136,49 @@ export default function AdminDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-sm text-muted-foreground">
-Sammeltermine werden hier angezeigt, sobald sie erstellt wurden.
-            </div>
+            {sammeltermine && sammeltermine.length > 0 ? (
+              <div className="space-y-4">
+                {sammeltermine.slice(0, 3).map((termin) => (
+                  <div key={termin.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg p-2 min-w-[60px]">
+                        <div className="text-2xl font-bold text-primary">
+                          {new Date(termin.date).getDate()}
+                        </div>
+                        <div className="text-xs text-muted-foreground uppercase">
+                          {new Date(termin.date).toLocaleDateString('de-DE', { month: 'short' })}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-medium">{termin.course?.name || 'Kein Kurs'}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {new Date(termin.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          Einreichungsfrist: {new Date(termin.submissionDeadline).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' })}
+                        </div>
+                      </div>
+                    </div>
+                    <Link href={`/admin/sammeltermine/${termin.id}/edit`}>
+                      <Button variant="ghost" size="sm">
+                        Details
+                      </Button>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground text-center py-8">
+                <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>Keine anstehenden Sammeltermine</p>
+                <Link href="/admin/sammeltermine/new">
+                  <Button variant="link" size="sm" className="mt-2">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Ersten Termin erstellen
+                  </Button>
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

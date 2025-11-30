@@ -212,3 +212,11 @@
 - [x] URLs von "sammeltermins" zu "sammeltermine" umbenannt
 - [x] Dateinamen und Imports angepasst
 - [x] Testen und Checkpoint erstellen
+
+
+## Dashboard-Verbesserungen & Navigation
+- [x] Alle "sammeltermins" Links in AdminLayout zu "sammeltermine" geändert
+- [x] Sammeltermine-Link zur Sidebar-Navigation hinzugefügt
+- [x] Dashboard-Widget für anstehende Sammeltermine erstellt
+- [x] Statistiken auf Dashboard aktualisiert (echte Daten aus tRPC)
+- [x] Testen und Checkpoint erstellen

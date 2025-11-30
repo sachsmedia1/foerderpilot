@@ -51,7 +51,7 @@ const navItems: NavItem[] = [
   },
   {
     title: "Sammeltermine",
-    href: "/admin/sammeltermins",
+    href: "/admin/sammeltermine",
     icon: Calendar,
   },
   {
