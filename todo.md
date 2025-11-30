@@ -370,3 +370,11 @@
 - [x] Integration Tests (alle 52 Tests bestehen)
 - [x] TypeScript-Check erfolgreich
 - [x] Checkpoint erstellen
+
+
+## User-Verwaltung in Einstellungen verschieben
+- [x] User-Liste in Settings.tsx als neuen Tab integriert
+- [x] User-Formular als Inline-Formular in Settings
+- [x] Navigation "Team" aus Sidebar entfernt
+- [x] Routes /admin/users/* entfernt
+- [x] Testen und Checkpoint erstellen

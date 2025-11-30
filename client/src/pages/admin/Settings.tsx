@@ -13,8 +13,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Building2, Palette, Globe, Loader2, Award } from "lucide-react";
+import { Building2, Palette, Globe, Loader2, Award, Users, Plus, Search, UserCheck, UserX, Pencil, Trash2 } from "lucide-react";
 
 export default function SettingsPage() {
   const { data: tenant, isLoading, refetch } = trpc.tenantSettings.get.useQuery();
@@ -170,6 +173,10 @@ export default function SettingsPage() {
             <TabsTrigger value="domain">
               <Globe className="h-4 w-4 mr-2" />
               Custom Domain
+            </TabsTrigger>
+            <TabsTrigger value="users">
+              <Users className="h-4 w-4 mr-2" />
+              Team-Verwaltung
             </TabsTrigger>
           </TabsList>
 
@@ -618,8 +625,451 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Team-Verwaltung Tab */}
+          <TabsContent value="users">
+            <UsersTabContent />
+          </TabsContent>
         </Tabs>
       </div>
     </AdminLayout>
+  );
+}
+
+// Users Tab Component
+function UsersTabContent() {
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<"all" | "admin" | "kompass_reviewer" | "user">("all");
+  const [statusFilter, setStatusFilter] = useState<boolean | undefined>(undefined);
+  const [showUserForm, setShowUserForm] = useState(false);
+  const [editUserId, setEditUserId] = useState<number | null>(null);
+
+  const { data: users, isLoading, refetch } = trpc.userManagement.list.useQuery({
+    search: search || undefined,
+    role: roleFilter,
+    isActive: statusFilter,
+  });
+
+  const toggleStatusMutation = trpc.userManagement.toggleStatus.useMutation({
+    onSuccess: (data) => {
+      toast.success(data.newStatus ? "User aktiviert" : "User deaktiviert");
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const deleteMutation = trpc.userManagement.delete.useMutation({
+    onSuccess: () => {
+      toast.success("User gelöscht");
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const handleToggleStatus = (id: number) => {
+    toggleStatusMutation.mutate({ id });
+  };
+
+  const handleDelete = (id: number, name: string) => {
+    if (confirm(`Möchten Sie den User "${name}" wirklich löschen?`)) {
+      deleteMutation.mutate({ id });
+    }
+  };
+
+  const handleEdit = (id: number) => {
+    setEditUserId(id);
+    setShowUserForm(true);
+  };
+
+  const handleNewUser = () => {
+    setEditUserId(null);
+    setShowUserForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowUserForm(false);
+    setEditUserId(null);
+    refetch();
+  };
+
+  const getRoleBadge = (role: string) => {
+    const variants: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+      admin: { label: "Admin", variant: "default" },
+      kompass_reviewer: { label: "KOMPASS Reviewer", variant: "secondary" },
+      user: { label: "User", variant: "outline" },
+    };
+    const config = variants[role] || { label: role, variant: "outline" as const };
+    return <Badge variant={config.variant}>{config.label}</Badge>;
+  };
+
+  if (showUserForm) {
+    return <UserFormInline userId={editUserId} onClose={handleCloseForm} />;
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Team-Mitglieder</CardTitle>
+            <CardDescription>
+              Verwalten Sie Ihre Team-Mitglieder und deren Rollen
+            </CardDescription>
+          </div>
+          <Button onClick={handleNewUser}>
+            <Plus className="mr-2 h-4 w-4" />
+            Neuer User
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Filter */}
+        <div className="flex gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Suche nach Name oder E-Mail..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={roleFilter} onValueChange={(v) => setRoleFilter(v as any)}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Alle Rollen" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle Rollen</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="kompass_reviewer">KOMPASS Reviewer</SelectItem>
+              <SelectItem value="user">User</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={statusFilter === undefined ? "all" : statusFilter ? "active" : "inactive"}
+            onValueChange={(v) => setStatusFilter(v === "all" ? undefined : v === "active")}
+          >
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle</SelectItem>
+              <SelectItem value="active">Aktiv</SelectItem>
+              <SelectItem value="inactive">Inaktiv</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Table */}
+        <div className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>E-Mail</TableHead>
+                <TableHead>Rolle</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Letzter Login</TableHead>
+                <TableHead className="text-right">Aktionen</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    Lade User...
+                  </TableCell>
+                </TableRow>
+              ) : !users || users.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    Keine User gefunden
+                  </TableCell>
+                </TableRow>
+              ) : (
+                users.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">
+                      {user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "—"}
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{getRoleBadge(user.role)}</TableCell>
+                    <TableCell>
+                      {user.isActive ? (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          Aktiv
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
+                          Inaktiv
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {user.lastSignedIn
+                        ? new Date(user.lastSignedIn).toLocaleDateString("de-DE", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })
+                        : "Noch nie"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          onClick={() => handleEdit(user.id)}
+                          title="Bearbeiten"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          onClick={() => handleToggleStatus(user.id)}
+                          title={user.isActive ? "Deaktivieren" : "Aktivieren"}
+                        >
+                          {user.isActive ? (
+                            <UserX className="h-4 w-4 text-orange-600" />
+                          ) : (
+                            <UserCheck className="h-4 w-4 text-green-600" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          onClick={() => handleDelete(user.id, user.name || user.email)}
+                          title="Löschen"
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Inline User Form Component
+function UserFormInline({ userId, onClose }: { userId: number | null; onClose: () => void }) {
+  const isEdit = userId !== null;
+  const [formData, setFormData] = useState({
+    email: "",
+    name: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    role: "user" as "admin" | "kompass_reviewer" | "user",
+    password: "",
+  });
+
+  const { data: user, isLoading } = trpc.userManagement.getById.useQuery(
+    { id: userId! },
+    { enabled: isEdit }
+  );
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        email: user.email,
+        name: user.name || "",
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        phone: user.phone || "",
+        role: user.role as any,
+        password: "",
+      });
+    }
+  }, [user]);
+
+  const createMutation = trpc.userManagement.create.useMutation({
+    onSuccess: () => {
+      toast.success("User erfolgreich erstellt");
+      onClose();
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const updateMutation = trpc.userManagement.update.useMutation({
+    onSuccess: () => {
+      toast.success("User erfolgreich aktualisiert");
+      onClose();
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (isEdit) {
+      updateMutation.mutate({
+        id: userId!,
+        email: formData.email || undefined,
+        name: formData.name || undefined,
+        firstName: formData.firstName || undefined,
+        lastName: formData.lastName || undefined,
+        phone: formData.phone || undefined,
+        role: formData.role,
+      });
+    } else {
+      if (!formData.password || formData.password.length < 8) {
+        toast.error("Passwort muss mindestens 8 Zeichen lang sein");
+        return;
+      }
+      createMutation.mutate(formData);
+    }
+  };
+
+  if (isEdit && isLoading) {
+    return (
+      <Card>
+        <CardContent className="py-12">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>{isEdit ? "User bearbeiten" : "Neuer User"}</CardTitle>
+            <CardDescription>
+              {isEdit
+                ? "Bearbeiten Sie die User-Daten"
+                : "Erstellen Sie einen neuen Team-Mitarbeiter"}
+            </CardDescription>
+          </div>
+          <Button variant="ghost" onClick={onClose}>
+            Zurück
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="user-email">E-Mail *</Label>
+            <Input
+              id="user-email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="user-name">Vollständiger Name *</Label>
+            <Input
+              id="user-name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="user-firstName">Vorname</Label>
+              <Input
+                id="user-firstName"
+                value={formData.firstName}
+                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="user-lastName">Nachname</Label>
+              <Input
+                id="user-lastName"
+                value={formData.lastName}
+                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="user-phone">Telefon</Label>
+            <Input
+              id="user-phone"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="user-role">Rolle *</Label>
+            <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v as any })}>
+              <SelectTrigger id="user-role">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="kompass_reviewer">KOMPASS Reviewer</SelectItem>
+                <SelectItem value="user">User</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-muted-foreground">
+              {formData.role === "admin" && "Voller Zugriff auf alle Funktionen"}
+              {formData.role === "kompass_reviewer" && "Kann Dokumente validieren"}
+              {formData.role === "user" && "Basis-Zugriff"}
+            </p>
+          </div>
+
+          {!isEdit && (
+            <div className="space-y-2">
+              <Label htmlFor="user-password">Passwort *</Label>
+              <Input
+                id="user-password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                minLength={8}
+              />
+              <p className="text-sm text-muted-foreground">Mindestens 8 Zeichen</p>
+            </div>
+          )}
+
+          {isEdit && (
+            <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+              💡 Das Passwort kann aus Sicherheitsgründen nicht bearbeitet werden. Der User kann
+              über "Passwort vergessen" ein neues Passwort setzen.
+            </p>
+          )}
+
+          <div className="flex gap-4">
+            <Button type="submit" variant="default" disabled={createMutation.isPending || updateMutation.isPending}>
+              {createMutation.isPending || updateMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              {isEdit ? "Speichern" : "User erstellen"}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Abbrechen
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
