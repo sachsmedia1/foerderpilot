@@ -161,4 +161,51 @@ describe("Tenant Settings Router", () => {
 
     expect(result.success).toBe(true);
   });
+
+  it("should update certification", async () => {
+    const ctx = createAdminContext();
+    const caller = appRouter.createCaller(ctx);
+    const result = await caller.tenantSettings.updateCertification({
+      certificationType: "AZAV",
+      certificationFileUrl: "https://example.com/cert.pdf",
+      certificationValidUntil: "2025-12-31",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toContain("erfolgreich");
+  });
+
+  it("should allow clearing certification", async () => {
+    const ctx = createAdminContext();
+    const caller = appRouter.createCaller(ctx);
+    const result = await caller.tenantSettings.updateCertification({
+      certificationType: "",
+      certificationFileUrl: "",
+      certificationValidUntil: "",
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject invalid certification URL", async () => {
+    const ctx = createAdminContext();
+    const caller = appRouter.createCaller(ctx);
+    await expect(
+      caller.tenantSettings.updateCertification({
+        certificationType: "AZAV",
+        certificationFileUrl: "not-a-url",
+      })
+    ).rejects.toThrow();
+  });
+
+  it("should reject invalid certification date", async () => {
+    const ctx = createAdminContext();
+    const caller = appRouter.createCaller(ctx);
+    await expect(
+      caller.tenantSettings.updateCertification({
+        certificationType: "AZAV",
+        certificationValidUntil: "invalid-date",
+      })
+    ).rejects.toThrow();
+  });
 });

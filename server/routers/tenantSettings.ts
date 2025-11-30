@@ -106,6 +106,49 @@ export const tenantSettingsRouter = router({
     }),
 
   /**
+   * PUT /tenantSettings.updateCertification - Zertifizierung aktualisieren
+   */
+  updateCertification: adminProcedure
+    .input(
+      z.object({
+        certificationType: z.enum(["AZAV", "ISO9001", "custom"]).optional().or(z.literal("")),
+        certificationFileUrl: z.string().url("Ungültige URL").optional().or(z.literal("")),
+        certificationValidUntil: z.string().optional().or(z.literal("")), // ISO date string
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.tenant) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Tenant not found" });
+      }
+
+      const db = await getDb();
+      if (!db) {
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      }
+
+      // Parse date if provided
+      let validUntil: Date | null = null;
+      if (input.certificationValidUntil && input.certificationValidUntil.trim() !== "") {
+        validUntil = new Date(input.certificationValidUntil);
+        if (isNaN(validUntil.getTime())) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Ungültiges Datum" });
+        }
+      }
+
+      await db
+        .update(tenants)
+        .set({
+          certificationType: input.certificationType || null,
+          certificationFileUrl: input.certificationFileUrl || null,
+          certificationValidUntil: validUntil,
+          updatedAt: new Date(),
+        })
+        .where(eq(tenants.id, ctx.tenant.id));
+
+      return { success: true, message: "Zertifizierung erfolgreich aktualisiert" };
+    }),
+
+  /**
    * PUT /tenantSettings.updateCustomDomain - Custom Domain aktualisieren
    */
   updateCustomDomain: adminProcedure

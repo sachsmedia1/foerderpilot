@@ -14,12 +14,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Building2, Palette, Globe, Loader2 } from "lucide-react";
+import { Building2, Palette, Globe, Loader2, Award } from "lucide-react";
 
 export default function SettingsPage() {
   const { data: tenant, isLoading, refetch } = trpc.tenantSettings.get.useQuery();
   const updateCompanyData = trpc.tenantSettings.updateCompanyData.useMutation();
   const updateBranding = trpc.tenantSettings.updateBranding.useMutation();
+  const updateCertification = trpc.tenantSettings.updateCertification.useMutation();
   const updateCustomDomain = trpc.tenantSettings.updateCustomDomain.useMutation();
 
   const [companyForm, setCompanyForm] = useState({
@@ -39,6 +40,12 @@ export default function SettingsPage() {
     faviconUrl: "",
     primaryColor: "#1E40AF",
     secondaryColor: "#3B82F6",
+  });
+
+  const [certificationForm, setCertificationForm] = useState({
+    certificationType: "",
+    certificationFileUrl: "",
+    certificationValidUntil: "",
   });
 
   const [customDomain, setCustomDomain] = useState("");
@@ -62,6 +69,13 @@ export default function SettingsPage() {
         faviconUrl: tenant.faviconUrl || "",
         primaryColor: tenant.primaryColor || "#1E40AF",
         secondaryColor: tenant.secondaryColor || "#3B82F6",
+      });
+      setCertificationForm({
+        certificationType: tenant.certificationType || "",
+        certificationFileUrl: tenant.certificationFileUrl || "",
+        certificationValidUntil: tenant.certificationValidUntil
+          ? new Date(tenant.certificationValidUntil).toISOString().split("T")[0]
+          : "",
       });
       setCustomDomain(tenant.customDomain || "");
     }
@@ -88,6 +102,21 @@ export default function SettingsPage() {
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       toast.error("Fehler beim Speichern des Brandings");
+    }
+  };
+
+  const handleCertificationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateCertification.mutateAsync({
+        certificationType: certificationForm.certificationType as "" | "AZAV" | "ISO9001" | "custom" | undefined,
+        certificationFileUrl: certificationForm.certificationFileUrl,
+        certificationValidUntil: certificationForm.certificationValidUntil,
+      });
+      toast.success("Zertifizierung erfolgreich aktualisiert");
+      refetch();
+    } catch (error) {
+      toast.error("Fehler beim Speichern der Zertifizierung");
     }
   };
 
@@ -131,6 +160,10 @@ export default function SettingsPage() {
             <TabsTrigger value="branding">
               <Palette className="h-4 w-4 mr-2" />
               Branding
+            </TabsTrigger>
+            <TabsTrigger value="certification">
+              <Award className="h-4 w-4 mr-2" />
+              Zertifizierung
             </TabsTrigger>
             <TabsTrigger value="domain">
               <Globe className="h-4 w-4 mr-2" />
@@ -406,6 +439,94 @@ export default function SettingsPage() {
                   <div className="flex justify-end">
                     <Button type="submit" variant="default" disabled={updateBranding.isPending}>
                       {updateBranding.isPending && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Speichern
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Zertifizierungs Tab */}
+          <TabsContent value="certification">
+            <Card>
+              <CardHeader>
+                <CardTitle>Zertifizierung</CardTitle>
+                <CardDescription>
+                  Verwalten Sie Ihre AZAV- oder ISO9001-Zertifizierung
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleCertificationSubmit} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="certificationType">Zertifizierungstyp</Label>
+                      <select
+                        id="certificationType"
+                        value={certificationForm.certificationType}
+                        onChange={(e) =>
+                          setCertificationForm({ ...certificationForm, certificationType: e.target.value })
+                        }
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <option value="">Keine Zertifizierung</option>
+                        <option value="AZAV">AZAV</option>
+                        <option value="ISO9001">ISO 9001</option>
+                        <option value="custom">Sonstige</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="certificationFileUrl">Zertifikat-URL</Label>
+                      <Input
+                        id="certificationFileUrl"
+                        type="url"
+                        value={certificationForm.certificationFileUrl}
+                        onChange={(e) =>
+                          setCertificationForm({ ...certificationForm, certificationFileUrl: e.target.value })
+                        }
+                        placeholder="https://example.com/zertifikat.pdf"
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        Laden Sie Ihr Zertifikat auf einen öffentlichen Server hoch und geben Sie die URL ein
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="certificationValidUntil">Gültig bis</Label>
+                      <Input
+                        id="certificationValidUntil"
+                        type="date"
+                        value={certificationForm.certificationValidUntil}
+                        onChange={(e) =>
+                          setCertificationForm({ ...certificationForm, certificationValidUntil: e.target.value })
+                        }
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        Datum, bis zu dem die Zertifizierung gültig ist
+                      </p>
+                    </div>
+
+                    {certificationForm.certificationFileUrl && (
+                      <div className="p-4 border rounded-lg bg-muted">
+                        <p className="text-sm font-medium mb-2">Zertifikat-Link:</p>
+                        <a
+                          href={certificationForm.certificationFileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-primary hover:underline"
+                        >
+                          {certificationForm.certificationFileUrl}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button type="submit" variant="default" disabled={updateCertification.isPending}>
+                      {updateCertification.isPending && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
                       Speichern

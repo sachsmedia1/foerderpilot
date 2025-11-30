@@ -292,3 +292,21 @@
 - [x] Vitest Tests für Settings-Endpoints (8 Tests)
 - [x] Alle 38 Tests bestehen
 - [x] Checkpoint erstellen
+
+
+## Zertifizierungs-Management (Simpel)
+
+### Phase 1: Backend
+- [x] updateCertification Procedure (tRPC)
+- [x] Validierung für Zertifizierungstyp und Datum
+
+### Phase 2: Frontend
+- [x] Zertifizierungs-Tab in Einstellungen
+- [x] Typ-Auswahl (AZAV, ISO9001, Sonstige, Keine)
+- [x] Zertifikat-URL Eingabe mit Preview
+- [x] Gültigkeitsdatum Picker (HTML5 date input)
+
+### Phase 3: Testing
+- [x] 4 neue Vitest Tests für Certification-Endpoint
+- [x] Alle 42 Tests bestehen
+- [x] Checkpoint erstellen
