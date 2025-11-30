@@ -198,7 +198,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="street">Straße</Label>
+                      <Label htmlFor="street">Straße Nr.</Label>
                       <Input
                         id="street"
                         value={companyForm.street}
@@ -261,7 +261,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button type="submit" disabled={updateCompanyData.isPending}>
+                    <Button type="submit" variant="default" disabled={updateCompanyData.isPending}>
                       {updateCompanyData.isPending && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
@@ -404,7 +404,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button type="submit" disabled={updateBranding.isPending}>
+                    <Button type="submit" variant="default" disabled={updateBranding.isPending}>
                       {updateBranding.isPending && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
@@ -472,7 +472,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button type="submit" disabled={updateCustomDomain.isPending}>
+                    <Button type="submit" variant="default" disabled={updateCustomDomain.isPending}>
                       {updateCustomDomain.isPending && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
