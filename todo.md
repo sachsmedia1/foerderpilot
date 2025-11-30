@@ -327,10 +327,46 @@
 ### GitHub Repository
 - [x] .gitignore bereits vorhanden
 - [x] README.md erstellt (vollständige Dokumentation)
-- [ ] GitHub Repository erstellen (wartet auf gh auth login)
-- [ ] Initial Commit & Push (wartet auf gh auth login)
+- [x] GitHub Repository verbunden (sachsmedia1/foerderpilot)
+- [x] Code gepusht (420 Objekte, main branch)
+- [x] Repository-Beschreibung gesetzt
 
 ### Testing & Checkpoint
 - [x] TypeScript-Check erfolgreich
 - [x] Alle 42 Tests bestehen
+- [x] Checkpoint erstellen
+
+
+## User-Verwaltung für Mandanten (Team-Management)
+
+### Phase 1: Backend Endpoints
+- [x] User Management Router (tRPC)
+- [x] listUsers Procedure (nur Tenant-User, keine Teilnehmer)
+- [x] createUser Procedure (E-Mail/Passwort, Rolle zuweisen)
+- [x] updateUser Procedure (Name, E-Mail, Rolle)
+- [x] toggleUserStatus Procedure (aktivieren/deaktivieren)
+- [x] deleteUser Procedure (soft delete)
+- [x] getById Procedure (User-Details abrufen)
+
+### Phase 2: User-Liste UI
+- [x] User-Liste-Seite erstellt (/admin/users)
+- [x] Filterung nach Rolle (admin, kompass_reviewer, user, all)
+- [x] Filterung nach Status (aktiv/inaktiv/alle)
+- [x] Suche nach Name/E-Mail
+- [x] Rollen-Badge anzeigen (farbcodiert)
+- [x] Status-Toggle-Button (aktivieren/deaktivieren)
+- [x] Bearbeiten/Löschen-Buttons
+
+### Phase 3: User-Formular
+- [x] User-Formular-Seite erstellt (/admin/users/new, /admin/users/:id/edit)
+- [x] Felder: Name, E-Mail, Rolle, Passwort (nur bei Erstellung)
+- [x] Validierung (E-Mail-Format, Passwort min. 8 Zeichen)
+- [x] Rollen-Auswahl (Dropdown mit Beschreibungen)
+- [x] Navigation zur User-Liste hinzugefügt (Team-Link in Sidebar)
+- [x] Passwort-Hinweis beim Bearbeiten
+
+### Phase 4: Testing & Checkpoint
+- [x] Vitest Tests für User-Management-Endpoints (10 Tests)
+- [x] Integration Tests (alle 52 Tests bestehen)
+- [x] TypeScript-Check erfolgreich
 - [x] Checkpoint erstellen

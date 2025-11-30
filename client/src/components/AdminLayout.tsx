@@ -63,7 +63,12 @@ const navItems: NavItem[] = [
   {
     title: "Dokumente",
     href: "/admin/documents",
-    icon: FileText,
+    icon: FileCheck,
+  },
+  {
+    title: "Team",
+    href: "/admin/users",
+    icon: Building2,
   },
   {
     title: "Einstellungen",

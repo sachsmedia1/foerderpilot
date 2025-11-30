@@ -8,6 +8,7 @@ import { sammelterminsRouter } from "./routers/sammeltermins";
 import { documentsRouter } from "./routers/documents";
 import { participantsRouter } from "./routers/participants";
 import { tenantSettingsRouter } from "./routers/tenantSettings";
+import { userManagementRouter } from "./routers/userManagement";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -18,6 +19,7 @@ export const appRouter = router({
   documents: documentsRouter,
   participants: participantsRouter,
   tenantSettings: tenantSettingsRouter,
+  userManagement: userManagementRouter,
   // TODO: Add more feature routers here
   
   auth: router({
