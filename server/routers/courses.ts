@@ -52,6 +52,103 @@ const courseFilterSchema = z.object({
 });
 
 export const coursesRouter = router({
+  // Get course detail with related data (sammeltermins, participants)
+  getDetail: adminProcedure
+    .input(z.object({ id: z.number().int().positive() }))
+    .query(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+      // Get course
+      const [course] = await db
+        .select()
+        .from(courses)
+        .where(and(
+          eq(courses.id, input.id),
+          eq(courses.tenantId, ctx.tenant.id)
+        ));
+
+      if (!course) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Kurs nicht gefunden' });
+      }
+
+      // Get sammeltermins for this course
+      const { sammeltermins } = await import('../../drizzle/schema');
+      const courseSammeltermine = await db
+        .select()
+        .from(sammeltermins)
+        .where(and(
+          eq(sammeltermins.courseId, input.id),
+          eq(sammeltermins.tenantId, ctx.tenant.id)
+        ))
+        .orderBy(desc(sammeltermins.date));
+
+      // Get course schedules for this course
+      const { courseSchedules } = await import('../../drizzle/schema');
+      const schedules = await db
+        .select()
+        .from(courseSchedules)
+        .where(and(
+          eq(courseSchedules.courseId, input.id),
+          eq(courseSchedules.tenantId, ctx.tenant.id)
+        ))
+        .orderBy(desc(courseSchedules.startDate));
+
+      // Get participants for this course
+      const { participants } = await import('../../drizzle/schema');
+      const courseParticipants = await db
+        .select()
+        .from(participants)
+        .where(and(
+          eq(participants.courseId, input.id),
+          eq(participants.tenantId, ctx.tenant.id)
+        ))
+        .orderBy(desc(participants.createdAt));
+
+      // Group participants by schedule
+      const participantsBySchedule = new Map<number | null, typeof courseParticipants>();
+      for (const p of courseParticipants) {
+        const scheduleId = p.courseScheduleId;
+        if (!participantsBySchedule.has(scheduleId)) {
+          participantsBySchedule.set(scheduleId, []);
+        }
+        participantsBySchedule.get(scheduleId)!.push(p);
+      }
+
+      // Calculate statistics per schedule
+      const schedulesWithStats = schedules.map(schedule => {
+        const scheduleParticipants = participantsBySchedule.get(schedule.id) || [];
+        return {
+          ...schedule,
+          participantCount: scheduleParticipants.length,
+          availableSlots: schedule.maxParticipants ? schedule.maxParticipants - scheduleParticipants.length : null,
+          participants: scheduleParticipants,
+        };
+      });
+
+      // Calculate overall statistics
+      const stats = {
+        totalParticipants: courseParticipants.length,
+        registeredCount: courseParticipants.filter(p => p.status === 'registered').length,
+        documentsPendingCount: courseParticipants.filter(p => p.status === 'documents_pending').length,
+        documentsSubmittedCount: courseParticipants.filter(p => p.status === 'documents_submitted').length,
+        totalSammeltermine: courseSammeltermine.length,
+        upcomingSammeltermine: courseSammeltermine.filter(s => new Date(s.date) > new Date()).length,
+        totalSchedules: schedules.length,
+        unassignedParticipants: participantsBySchedule.get(null)?.length || 0,
+      };
+
+      return {
+        course,
+        sammeltermine: courseSammeltermine,
+        schedules: schedulesWithStats,
+        participants: courseParticipants,
+        unassignedParticipants: participantsBySchedule.get(null) || [],
+        stats,
+      };
+    }),
+
   /**
    * Liste aller Kurse (mit Filterung)
    */

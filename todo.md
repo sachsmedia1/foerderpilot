@@ -378,3 +378,45 @@
 - [x] Navigation "Team" aus Sidebar entfernt
 - [x] Routes /admin/users/* entfernt
 - [x] Testen und Checkpoint erstellen
+
+
+## Kurstermine-System & Kurs-Detail-Seite
+
+### Phase 1: Database Schema
+- [x] courseSchedules Tabelle erstellt (courseId, startDate, endDate, maxParticipants, status)
+- [x] participants Tabelle erweitert (courseScheduleId hinzugefügt)
+- [x] Migration durchgeführt (manuell via SQL)
+
+### Phase 2: Backend Endpoints
+- [x] courseSchedules Router (tRPC) erstellt
+- [x] CRUD-Operationen für Kurstermine (create, update, delete, list, getById)
+- [x] getCourseDetail erweitert (Kurstermine + zugeordnete Teilnehmer laden)
+- [x] Statistiken pro Kurstermin (Auslastung, freie Plätze)
+
+### Phase 3: Participants Schema Update
+- [x] courseScheduleId zu participants hinzugefügt
+- [ ] Participant-Router erweitern (Kurstermin-Zuweisung)
+- [ ] Validierung (Teilnehmer nur zu Kurs-eigenen Terminen zuweisen)
+
+### Phase 4: Kurs-Detail-Seite UI
+- [x] CourseDetail.tsx erstellt (/admin/courses/:id)
+- [x] Kurs-Informationen übersichtlich dargestellt (Cards mit allen Feldern)
+- [x] Kurstermine-Liste mit Teilnehmer-Übersicht pro Termin
+- [x] Statistik-Cards (Gesamt-Teilnehmer, Auslastung pro Termin, Sammeltermine)
+- [x] Quick Actions (Bearbeiten, Zurück)
+- [x] Nicht zugeordnete Teilnehmer-Warnung
+- [x] Sammeltermine-Übersicht
+- [x] Routes aktualisiert (/admin/courses/:id für Detail, /admin/courses/:id/edit für Bearbeiten)
+
+### Phase 5: Kurstermin-Management UI
+- [ ] Kurstermin-Formular (Modal oder Inline)
+- [ ] Kurstermin erstellen/bearbeiten/löschen
+- [ ] Teilnehmer-Zuweisung zu Kurstermin
+- [ ] Auslastungs-Anzeige (z.B. "8/12 Plätze belegt")
+
+### Phase 6: Testing & Checkpoint
+- [ ] Vitest Tests für courseSchedules CRUD
+- [ ] Vitest Tests für getCourseDetail
+- [ ] TypeScript-Check
+- [ ] Alle Tests ausführen
+- [ ] Checkpoint erstellen

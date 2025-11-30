@@ -3,7 +3,8 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { superadminRouter } from "./routers/superadmin";
-import { coursesRouter } from "./routers/courses";
+import { coursesRouter } from './routers/courses';
+import { courseSchedulesRouter } from './routers/courseSchedules';
 import { sammelterminsRouter } from "./routers/sammeltermins";
 import { documentsRouter } from "./routers/documents";
 import { participantsRouter } from "./routers/participants";
@@ -15,6 +16,7 @@ export const appRouter = router({
   system: systemRouter,
   superadmin: superadminRouter,
   courses: coursesRouter,
+  courseSchedules: courseSchedulesRouter,
   sammeltermins: sammelterminsRouter,
   documents: documentsRouter,
   participants: participantsRouter,

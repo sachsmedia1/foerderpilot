@@ -10,6 +10,7 @@ import SuperAdmin from "./pages/SuperAdmin";
 import Maintenance from "./pages/Maintenance";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Courses from "./pages/admin/Courses";
+import CourseDetail from "./pages/admin/CourseDetail";
 import CourseForm from "@/pages/admin/CourseForm";
 import Documents from "@/pages/admin/Documents";
 import Participants from "@/pages/admin/Participants";
@@ -49,9 +50,10 @@ function Router() {
     <Switch>
       <Route path={"/"} component={RootRedirect} />
       <Route path={"/admin"} component={AdminDashboard} />
-      <Route path={"/admin/courses"} component={Courses} />
-           <Route path={"/admin/courses/new"} component={CourseForm} />
-      <Route path={"/admin/courses/:id"} component={CourseForm} />
+          <Route path="/admin/courses" component={Courses} />
+          <Route path="/admin/courses/new" component={CourseForm} />
+          <Route path="/admin/courses/:id/edit" component={CourseForm} />
+          <Route path="/admin/courses/:id" component={CourseDetail} />
       <Route path={"/admin/documents"} component={Documents} />
       <Route path={"/admin/participants"} component={Participants} />
       <Route path={"/admin/participants/new"} component={ParticipantForm} />

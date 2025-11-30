@@ -147,6 +147,34 @@ export type Course = typeof courses.$inferSelect;
 export type InsertCourse = typeof courses.$inferInsert;
 
 // ============================================================================
+// COURSE SCHEDULES (Kurstermine - Starttermine für Kurs-Durchgänge)
+// ============================================================================
+export const courseSchedules = mysqlTable("courseSchedules", {
+  id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenantId").notNull(),
+  courseId: int("courseId").notNull(),
+  
+  // Termin-Informationen
+  startDate: timestamp("startDate").notNull(),
+  endDate: timestamp("endDate"),
+  
+  // Kapazität
+  maxParticipants: int("maxParticipants"),
+  
+  // Status
+  status: varchar("status", { length: 50 }).default("scheduled").notNull(), // 'scheduled', 'in_progress', 'completed', 'cancelled'
+  
+  // Notizen
+  notes: text("notes"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CourseSchedule = typeof courseSchedules.$inferSelect;
+export type InsertCourseSchedule = typeof courseSchedules.$inferInsert;
+
+// ============================================================================
 // SAMMELTERMINS (Kollektiv-Termine mit KOMPASS)
 // ============================================================================
 export const sammeltermins = mysqlTable("sammeltermins", {
@@ -181,6 +209,7 @@ export const participants = mysqlTable("participants", {
   tenantId: int("tenantId").notNull(),
   userId: int("userId").notNull(),
   courseId: int("courseId").notNull(),
+  courseScheduleId: int("courseScheduleId"), // Zuordnung zu spezifischem Kurstermin
   sammelterminId: int("sammelterminId"),
   
   // Status-Pipeline (13 Schritte)
