@@ -268,7 +268,14 @@ class SDKServer {
 
     const sessionUserId = session.openId;
     const signedInAt = new Date();
+    
+    // Try to find user by openId first (OAuth)
     let user = await db.getUserByOpenId(sessionUserId);
+    
+    // If not found, try by email (E-Mail/Password auth)
+    if (!user) {
+      user = await db.getUserByEmail(sessionUserId);
+    }
 
     // If user not in DB, sync from OAuth server automatically
     if (!user) {

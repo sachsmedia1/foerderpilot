@@ -220,3 +220,34 @@
 - [x] Dashboard-Widget für anstehende Sammeltermine erstellt
 - [x] Statistiken auf Dashboard aktualisiert (echte Daten aus tRPC)
 - [x] Testen und Checkpoint erstellen
+
+
+## E-Mail/Passwort Authentifizierung (Sprint 2.1)
+
+### Phase 1: Database Schema
+- [x] Users-Tabelle erweitern (email, passwordHash, resetToken, resetTokenExpiry)
+- [x] Migration durchgeführt (pnpm db:push)
+
+### Phase 2: Backend Auth-Endpoints
+- [x] bcrypt installiert für Passwort-Hashing
+- [x] Auth-Router erstellt (login, register, requestPasswordReset, resetPassword)
+- [x] Session-Management mit Cookie-Sessions (wie OAuth)
+- [ ] E-Mail-Service für Passwort-Reset (TODO: Echte E-Mails senden)
+
+### Phase 3: Frontend Login & Registration
+- [x] Login-Seite erstellt (/login)
+- [x] Registrierungs-Seite erstellt (/register)
+- [x] Auth-Context aktualisiert (E-Mail/Passwort Support)
+- [x] Routes hinzugefügt
+
+### Phase 4: Passwort-Reset Flow
+- [x] Passwort-vergessen-Seite (/forgot-password)
+- [x] Passwort-zurücksetzen-Seite (/reset-password/:token)
+- [ ] E-Mail-Template für Reset-Link (TODO: Echte E-Mails senden)
+
+### Phase 5: Testing & Integration
+- [x] Vitest Tests für Auth-Endpoints (9 Tests, alle bestehen)
+- [x] Integration mit bestehendem System
+- [x] Manus OAuth parallel beibehalten
+- [x] Alle 30 Tests bestehen
+- [x] Checkpoint erstellen

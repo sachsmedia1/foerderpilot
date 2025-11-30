@@ -71,8 +71,8 @@ export const users = mysqlTable("users", {
   // Tenant-Zuordnung (NULL = Super Admin)
   tenantId: int("tenantId"),
   
-  // Manus OAuth
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  // Manus OAuth (optional für Super Admins)
+  openId: varchar("openId", { length: 64 }).unique(),
   
   // Basis-Informationen
   email: varchar("email", { length: 320 }).notNull(),
@@ -82,8 +82,13 @@ export const users = mysqlTable("users", {
   phone: varchar("phone", { length: 50 }),
   
   // Auth & Rolle
-  loginMethod: varchar("loginMethod", { length: 64 }),
+  loginMethod: varchar("loginMethod", { length: 64 }), // 'oauth', 'email'
+  passwordHash: varchar("passwordHash", { length: 255 }), // bcrypt hash
   role: mysqlEnum("role", ["super_admin", "admin", "kompass_reviewer", "user"]).default("user").notNull(),
+  
+  // Passwort-Reset
+  resetToken: varchar("resetToken", { length: 255 }),
+  resetTokenExpiry: timestamp("resetTokenExpiry"),
   
   // Meta
   isActive: boolean("isActive").default(true).notNull(),

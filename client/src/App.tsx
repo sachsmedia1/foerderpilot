@@ -17,6 +17,10 @@ import ParticipantForm from "@/pages/admin/ParticipantForm";
 import ParticipantDetail from "@/pages/admin/ParticipantDetail";
 import Sammeltermine from "@/pages/admin/sammeltermine/index";
 import SammeltermineForm from "@/pages/admin/sammeltermine/SammeltermineForm";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
 import { useAuth } from "./_core/hooks/useAuth";
 
 function Router() {
@@ -55,6 +59,10 @@ function Router() {
       <Route path={"/admin/sammeltermine/new"} component={SammeltermineForm} />
       <Route path={"/admin/sammeltermine/:id/edit"} component={SammeltermineForm} />
       <Route path={"/superadmin"} component={SuperAdmin} />
+      <Route path={"/login"} component={Login} />
+      <Route path={"/register"} component={Register} />
+      <Route path={"/forgot-password"} component={ForgotPassword} />
+      <Route path={"/reset-password/:token"} component={ResetPassword} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
