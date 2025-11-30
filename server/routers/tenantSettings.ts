@@ -29,13 +29,14 @@ export const tenantSettingsRouter = router({
   updateCompanyData: adminProcedure
     .input(
       z.object({
-        companyName: z.string().min(1, "Firmenname erforderlich"),
+        companyName: z.string().optional(),
         taxId: z.string().optional(),
         street: z.string().optional(),
         zipCode: z.string().optional(),
         city: z.string().optional(),
-        email: z.string().email("Ungültige E-Mail-Adresse"),
+        email: z.string().email("Ungültige E-Mail").optional(),
         phone: z.string().optional(),
+        directorName: z.string().optional(),
         impressumHtml: z.string().optional(),
         privacyPolicyUrl: z.string().url("Ungültige URL").optional().or(z.literal("")),
       })
@@ -54,13 +55,14 @@ export const tenantSettingsRouter = router({
         .update(tenants)
         .set({
           companyName: input.companyName,
-          taxId: input.taxId || null,
-          street: input.street || null,
-          zipCode: input.zipCode || null,
-          city: input.city || null,
+          taxId: input.taxId,
+          street: input.street,
+          zipCode: input.zipCode,
+          city: input.city,
           email: input.email,
-          phone: input.phone || null,
-          impressumHtml: input.impressumHtml || null,
+          phone: input.phone,
+          directorName: input.directorName,
+          impressumHtml: input.impressumHtml,
           privacyPolicyUrl: input.privacyPolicyUrl || null,
           updatedAt: new Date(),
         })

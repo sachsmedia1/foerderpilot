@@ -310,3 +310,27 @@
 - [x] 4 neue Vitest Tests für Certification-Endpoint
 - [x] Alle 42 Tests bestehen
 - [x] Checkpoint erstellen
+
+
+## UI-Verbesserungen & GitHub Setup
+
+### Geschäftsführer-Name
+- [x] Geschäftsführer-Name Feld zu Stammdaten-Tab hinzugefügt
+- [x] Backend updateCompanyData erweitert (directorName)
+- [x] Frontend Settings.tsx aktualisiert
+
+### Button-Visibility
+- [x] Primary-Color von blue-700 zu blue-800 geändert (dunkler)
+- [x] Alle Buttons im System jetzt besser sichtbar
+- [x] Konsistenz geprüft (Primary, Secondary, Outline)
+
+### GitHub Repository
+- [x] .gitignore bereits vorhanden
+- [x] README.md erstellt (vollständige Dokumentation)
+- [ ] GitHub Repository erstellen (wartet auf gh auth login)
+- [ ] Initial Commit & Push (wartet auf gh auth login)
+
+### Testing & Checkpoint
+- [x] TypeScript-Check erfolgreich
+- [x] Alle 42 Tests bestehen
+- [x] Checkpoint erstellen

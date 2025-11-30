@@ -31,6 +31,7 @@ export default function SettingsPage() {
     city: "",
     email: "",
     phone: "",
+    directorName: "",
     impressumHtml: "",
     privacyPolicyUrl: "",
   });
@@ -61,6 +62,7 @@ export default function SettingsPage() {
         city: tenant.city || "",
         email: tenant.email || "",
         phone: tenant.phone || "",
+        directorName: tenant.directorName || "",
         impressumHtml: tenant.impressumHtml || "",
         privacyPolicyUrl: tenant.privacyPolicyUrl || "",
       });
@@ -227,6 +229,18 @@ export default function SettingsPage() {
                         onChange={(e) =>
                           setCompanyForm({ ...companyForm, phone: e.target.value })
                         }
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="directorName">Geschäftsführer</Label>
+                      <Input
+                        id="directorName"
+                        value={companyForm.directorName}
+                        onChange={(e) =>
+                          setCompanyForm({ ...companyForm, directorName: e.target.value })
+                        }
+                        placeholder="Max Mustermann"
                       />
                     </div>
 
