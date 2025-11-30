@@ -86,7 +86,7 @@
 ### Phase 3: Sammeltermin-Management
 - [x] Sammeltermin Router (tRPC)
 - [x] Backend CRUD-Operationen vollständig
-- [ ] Frontend UI (verschoben auf spätere Phase)
+- [x] Frontend UI (Liste, Formular, Filterung)
 - [x] Namenskorrektur: "Sammeltermins" → "Sammeltermine"
 
 ### Phase 4: Öffentliche Kurs-Übersicht
@@ -197,3 +197,11 @@
 - [ ] Testen auf foerderpilot.manus.space
 - [ ] Testen auf app.foerderpilot.io
 - [ ] Checkpoint erstellen
+
+
+## Bug-Fix: Tenant Context auf app.foerderpilot.io (Kritisch)
+- [ ] Diagnose: Warum wird Tenant nicht auf app.foerderpilot.io geladen?
+- [ ] Fix: Tenant-Loading für Produktions-Domain app.foerderpilot.io
+- [ ] Sicherstellen: Super Admin kann auf alle Tenant-Daten zugreifen
+- [ ] Testen: Kurse-Seite auf app.foerderpilot.io
+- [ ] Checkpoint erstellen nach erfolgreichem Fix

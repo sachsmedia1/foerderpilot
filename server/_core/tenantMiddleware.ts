@@ -88,8 +88,11 @@ export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
   const host = req.headers.host || '';
   const path = req.path || '';
   
+  console.log('[TenantMiddleware] Request:', { host, path });
+  
   // 1. Root-Domain zeigt Wartungsseite
   if (isRootDomain(host)) {
+    console.log('[TenantMiddleware] Root domain detected, returning maintenance mode');
     return {
       tenant: null,
       isSuperAdminRoute: false,
@@ -99,6 +102,7 @@ export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
   
   // 2. Super Admin Routen benötigen keinen Tenant
   if (isSuperAdminRoute(path)) {
+    console.log('[TenantMiddleware] Super admin route detected');
     return {
       tenant: null,
       isSuperAdminRoute: true,
@@ -107,13 +111,23 @@ export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
   }
   
   // 3. Versuche Custom Domain
+  console.log('[TenantMiddleware] Trying custom domain lookup for:', host);
   let tenant = await getTenantByCustomDomain(host);
+  if (tenant) {
+    console.log('[TenantMiddleware] Tenant found via custom domain:', tenant.id, tenant.name);
+  }
   
   // 4. Versuche Subdomain
   if (!tenant) {
     const subdomain = extractSubdomain(host);
+    console.log('[TenantMiddleware] Extracted subdomain:', subdomain);
     if (subdomain) {
       tenant = await getTenantBySubdomain(subdomain);
+      if (tenant) {
+        console.log('[TenantMiddleware] Tenant found via subdomain:', tenant.id, tenant.name);
+      } else {
+        console.log('[TenantMiddleware] No tenant found for subdomain:', subdomain);
+      }
     }
   }
   
