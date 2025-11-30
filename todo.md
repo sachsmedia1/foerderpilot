@@ -205,3 +205,10 @@
 - [ ] Sicherstellen: Super Admin kann auf alle Tenant-Daten zugreifen
 - [ ] Testen: Kurse-Seite auf app.foerderpilot.io
 - [ ] Checkpoint erstellen nach erfolgreichem Fix
+
+
+## Bug-Fix: Sammeltermine UI & URLs
+- [x] AdminLayout zu Sammeltermine-Seiten hinzugefügt
+- [x] URLs von "sammeltermins" zu "sammeltermine" umbenannt
+- [x] Dateinamen und Imports angepasst
+- [x] Testen und Checkpoint erstellen

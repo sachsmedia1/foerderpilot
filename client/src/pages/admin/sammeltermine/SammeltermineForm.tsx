@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar, ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
+import { AdminLayout } from "@/components/AdminLayout";
 
 export default function SammelterminForm() {
   const [, navigate] = useLocation();
@@ -85,7 +86,7 @@ export default function SammelterminForm() {
   const createMutation = trpc.sammeltermins.create.useMutation({
     onSuccess: () => {
       toast.success("Sammeltermin erstellt");
-      navigate("/admin/sammeltermins");
+      navigate("/admin/sammeltermine");
     },
     onError: (error) => {
       toast.error(`Fehler beim Erstellen: ${error.message}`);
@@ -95,7 +96,7 @@ export default function SammelterminForm() {
   const updateMutation = trpc.sammeltermins.update.useMutation({
     onSuccess: () => {
       toast.success("Sammeltermin aktualisiert");
-      navigate("/admin/sammeltermins");
+      navigate("/admin/sammeltermine");
     },
     onError: (error) => {
       toast.error(`Fehler beim Aktualisieren: ${error.message}`);
@@ -148,13 +149,14 @@ export default function SammelterminForm() {
   }
 
   return (
-    <div className="space-y-6">
+    <AdminLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button
           variant="outline"
           size="icon"
-          onClick={() => navigate("/admin/sammeltermins")}
+          onClick={() => navigate("/admin/sammeltermine")}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
@@ -314,7 +316,7 @@ export default function SammelterminForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/admin/sammeltermins")}
+              onClick={() => navigate("/admin/sammeltermine")}
             >
               Abbrechen
             </Button>
@@ -328,6 +330,7 @@ export default function SammelterminForm() {
           </div>
         </div>
       </form>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

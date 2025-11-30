@@ -46,6 +46,7 @@ import { Calendar, Plus, Trash2, Edit, Video, Mail, Clock, CheckCircle2, XCircle
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { AdminLayout } from "@/components/AdminLayout";
 
 export default function SammelterminsPage() {
   const [, navigate] = useLocation();
@@ -126,7 +127,8 @@ export default function SammelterminsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <AdminLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -135,7 +137,7 @@ export default function SammelterminsPage() {
             KOMPASS-Einreichungstermine verwalten
           </p>
         </div>
-        <Button onClick={() => navigate("/admin/sammeltermins/new")}>
+        <Button onClick={() => navigate("/admin/sammeltermine/new")}>
           <Plus className="h-4 w-4 mr-2" />
           Neuer Termin
         </Button>
@@ -276,7 +278,7 @@ export default function SammelterminsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => navigate(`/admin/sammeltermins/${termin.id}/edit`)}
+                          onClick={() => navigate(`/admin/sammeltermine/${termin.id}/edit`)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -300,7 +302,7 @@ export default function SammelterminsPage() {
               <p className="text-muted-foreground mb-4">
                 Erstellen Sie einen neuen Sammeltermin für KOMPASS-Einreichungen.
               </p>
-              <Button onClick={() => navigate("/admin/sammeltermins/new")}>
+              <Button onClick={() => navigate("/admin/sammeltermine/new")}>
                 <Plus className="h-4 w-4 mr-2" />
                 Ersten Termin erstellen
               </Button>
@@ -325,6 +327,7 @@ export default function SammelterminsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

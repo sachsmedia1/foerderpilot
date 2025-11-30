@@ -15,8 +15,8 @@ import Documents from "@/pages/admin/Documents";
 import Participants from "@/pages/admin/Participants";
 import ParticipantForm from "@/pages/admin/ParticipantForm";
 import ParticipantDetail from "@/pages/admin/ParticipantDetail";
-import Sammeltermins from "@/pages/admin/sammeltermins/index";
-import SammelterminForm from "@/pages/admin/sammeltermins/SammelterminForm";
+import Sammeltermine from "@/pages/admin/sammeltermine/index";
+import SammeltermineForm from "@/pages/admin/sammeltermine/SammeltermineForm";
 import { useAuth } from "./_core/hooks/useAuth";
 
 function Router() {
@@ -51,9 +51,9 @@ function Router() {
       <Route path={"/admin/participants/new"} component={ParticipantForm} />
       <Route path={"/admin/participants/:id/view"} component={ParticipantDetail} />
       <Route path={"/admin/participants/:id/edit"} component={ParticipantForm} />
-      <Route path={"/admin/sammeltermins"} component={Sammeltermins} />
-      <Route path={"/admin/sammeltermins/new"} component={SammelterminForm} />
-      <Route path={"/admin/sammeltermins/:id/edit"} component={SammelterminForm} />
+      <Route path={"/admin/sammeltermine"} component={Sammeltermine} />
+      <Route path={"/admin/sammeltermine/new"} component={SammeltermineForm} />
+      <Route path={"/admin/sammeltermine/:id/edit"} component={SammeltermineForm} />
       <Route path={"/superadmin"} component={SuperAdmin} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
