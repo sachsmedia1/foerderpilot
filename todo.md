@@ -251,3 +251,10 @@
 - [x] Manus OAuth parallel beibehalten
 - [x] Alle 30 Tests bestehen
 - [x] Checkpoint erstellen
+
+
+## Routing-Änderung: Direct Login auf app.foerderpilot.io
+- [x] Root-Route (/) auf /login umleiten für nicht-authentifizierte User
+- [x] Root-Route (/) auf /admin umleiten für authentifizierte User
+- [x] Landing Page durch RootRedirect ersetzt
+- [x] Testen und Checkpoint erstellen

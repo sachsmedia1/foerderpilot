@@ -5,7 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { BrandingProvider } from "./components/BrandingProvider";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
+import RootRedirect from "./pages/RootRedirect";
 import SuperAdmin from "./pages/SuperAdmin";
 import Maintenance from "./pages/Maintenance";
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -45,7 +45,7 @@ function Router() {
   // Normale Routing-Logik für app.foerderpilot.io und Tenant-Subdomains
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={RootRedirect} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/admin/courses"} component={Courses} />
            <Route path={"/admin/courses/new"} component={CourseForm} />
