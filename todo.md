@@ -188,3 +188,12 @@
 - [x] Vitest Tests für Status-Pipeline
 - [x] Integration Tests (21 Tests bestanden)
 - [ ] Checkpoint erstellen
+
+
+## Tenant-Middleware Fix (Phase 2.7)
+- [x] Tenant-Middleware für Manus Cloud Development URL anpassen (foerderpilot.manus.space)
+- [x] Fallback auf "app" Tenant für Development-URLs (localhost, manus.space, manusvm.computer)
+- [x] Tenant Subdomain von "demo" zu "app" geändert
+- [ ] Testen auf foerderpilot.manus.space
+- [ ] Testen auf app.foerderpilot.io
+- [ ] Checkpoint erstellen

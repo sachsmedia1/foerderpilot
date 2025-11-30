@@ -153,7 +153,7 @@ describe("superadmin.getTenant", () => {
 
     expect(tenant).toBeDefined();
     expect(tenant.id).toBe(1);
-    expect(tenant.subdomain).toBe("demo");
+    expect(tenant.subdomain).toBe("app");
   });
 
   it("should throw error for non-existent tenant", async () => {

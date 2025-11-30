@@ -63,8 +63,15 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
+      // Owner bekommt super_admin Rolle
+      values.role = 'super_admin';
+      updateSet.role = 'super_admin';
+    }
+
+    // TenantId setzen falls vorhanden
+    if (user.tenantId !== undefined) {
+      values.tenantId = user.tenantId;
+      updateSet.tenantId = user.tenantId;
     }
 
     if (!values.lastSignedIn) {

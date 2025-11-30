@@ -1,0 +1,58 @@
+{
+  "query": "SELECT * FROM users LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT * FROM users LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "openId": "super-admin-demo",
+      "name": "Super Admin",
+      "email": "admin@foerderpilot.io",
+      "loginMethod": "NULL",
+      "role": "super_admin",
+      "createdAt": "2025-11-29 20:59:08",
+      "updatedAt": "2025-11-29 20:59:08",
+      "lastSignedIn": "2025-11-29 20:59:08",
+      "tenantId": "NULL",
+      "firstName": "Super",
+      "lastName": "Admin",
+      "phone": "NULL",
+      "isActive": "1"
+    },
+    {
+      "id": "2",
+      "openId": "tenant-admin-demo",
+      "name": "Demo Admin",
+      "email": "admin@demo-bildungstraeger.de",
+      "loginMethod": "NULL",
+      "role": "admin",
+      "createdAt": "2025-11-29 20:59:08",
+      "updatedAt": "2025-11-29 20:59:08",
+      "lastSignedIn": "2025-11-29 20:59:08",
+      "tenantId": "1",
+      "firstName": "Demo",
+      "lastName": "Admin",
+      "phone": "NULL",
+      "isActive": "1"
+    },
+    {
+      "id": "30001",
+      "openId": "oVtgubq7RdCsMsF2u8wZw8",
+      "name": "Stefan",
+      "email": "info@stefan-sachs.de",
+      "loginMethod": "email",
+      "role": "admin",
+      "createdAt": "2025-11-29 21:03:15",
+      "updatedAt": "2025-11-30 09:07:15",
+      "lastSignedIn": "2025-11-30 09:07:16",
+      "tenantId": "1",
+      "firstName": "NULL",
+      "lastName": "NULL",
+      "phone": "NULL",
+      "isActive": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\tloginMethod\trole\tcreatedAt\tupdatedAt\tlastSignedIn\ttenantId\tfirstName\tlastName\tphone\tisActive\n1\tsuper-admin-demo\tSuper Admin\tadmin@foerderpilot.io\tNULL\tsuper_admin\t2025-11-29 20:59:08\t2025-11-29 20:59:08\t2025-11-29 20:59:08\tNULL\tSuper\tAdmin\tNULL\t1\n2\ttenant-admin-demo\tDemo Admin\tadmin@demo-bildungstraeger.de\tNULL\tadmin\t2025-11-29 20:59:08\t2025-11-29 20:59:08\t2025-11-29 20:59:08\t1\tDemo\tAdmin\tNULL\t1\n30001\toVtgubq7RdCsMsF2u8wZw8\tStefan\tinfo@stefan-sachs.de\temail\tadmin\t2025-11-29 21:03:15\t2025-11-30 09:07:15\t2025-11-30 09:07:16\t1\tNULL\tNULL\tNULL\t1\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

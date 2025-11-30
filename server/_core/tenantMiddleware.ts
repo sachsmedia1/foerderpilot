@@ -117,8 +117,16 @@ export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
     }
   }
   
-  // 5. Kein Tenant gefunden
+  // 5. Fallback für Entwicklung (localhost + Manus Cloud) → "app" Tenant
+  if (!tenant && (host.includes('localhost') || host.includes('127.0.0.1') || host.includes('manus.space') || host.includes('manusvm.computer'))) {
+    console.log('[TenantMiddleware] Development fallback: using "app" tenant for host:', host);
+    tenant = await getTenantBySubdomain('app');
+    console.log('[TenantMiddleware] Tenant after fallback:', tenant ? `ID=${tenant.id}, name=${tenant.name}` : 'null');
+  }
+  
+  // 6. Kein Tenant gefunden
   if (!tenant) {
+    console.log('[TenantMiddleware] No tenant found for host:', host);
     return {
       tenant: null,
       isSuperAdminRoute: false,

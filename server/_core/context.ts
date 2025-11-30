@@ -39,6 +39,15 @@ export async function createContext(
     tenant = null;
   }
 
+  console.log('[Context] Final context:', {
+    hasUser: !!user,
+    hasTenant: !!tenant,
+    tenantId: tenant?.id,
+    tenantName: tenant?.name,
+    isSuperAdminRoute,
+    isMaintenanceMode
+  });
+  
   return {
     req: opts.req,
     res: opts.res,

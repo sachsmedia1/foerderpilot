@@ -136,19 +136,19 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   const isActive = location === item.href || location.startsWith(item.href + "/");
                   
                   return (
-                    <Link key={item.href} href={item.href}>
-                      <a
-                        className={cn(
-                          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                          isActive
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        )}
-                        onClick={() => setSidebarOpen(false)}
-                      >
-                        <Icon className="h-5 w-5" />
-                        {item.title}
-                      </a>
+                    <Link 
+                      key={item.href} 
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <Icon className="h-5 w-5" />
+                      {item.title}
                     </Link>
                   );
                 })}

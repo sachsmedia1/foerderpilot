@@ -27,11 +27,23 @@ const requireUser = t.middleware(async opts => {
 
 export const protectedProcedure = t.procedure.use(requireUser);
 
-// Admin Procedure: Nur für Tenant-Admins (nicht Super Admin)
+// Admin Procedure: Für Tenant-Admins und Super Admins
 export const adminProcedure = t.procedure.use(
   t.middleware(async opts => {
     const { ctx, next } = opts;
 
+    // Super Admin hat immer Zugriff
+    if (ctx.user?.role === 'super_admin') {
+      return next({
+        ctx: {
+          ...ctx,
+          user: ctx.user,
+          tenant: ctx.tenant,
+        },
+      });
+    }
+
+    // Für normale Admins: Prüfe Rolle und Tenant-Zugehörigkeit
     if (!ctx.user || ctx.user.role !== 'admin') {
       throw new TRPCError({ code: "FORBIDDEN", message: NOT_ADMIN_ERR_MSG });
     }
