@@ -22,7 +22,8 @@ import {
   Menu,
   X,
   LogOut,
-  FileCheck
+  FileCheck,
+  FileText
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, type ReactNode } from "react";
@@ -62,7 +63,7 @@ const navItems: NavItem[] = [
   {
     title: "Dokumente",
     href: "/admin/documents",
-    icon: FileCheck,
+    icon: FileText,
   },
   {
     title: "Einstellungen",

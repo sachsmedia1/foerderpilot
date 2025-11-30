@@ -17,6 +17,7 @@ import ParticipantForm from "@/pages/admin/ParticipantForm";
 import ParticipantDetail from "@/pages/admin/ParticipantDetail";
 import Sammeltermine from "@/pages/admin/sammeltermine/index";
 import SammeltermineForm from "@/pages/admin/sammeltermine/SammeltermineForm";
+import Settings from "@/pages/admin/Settings";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import ForgotPassword from "@/pages/ForgotPassword";
@@ -58,6 +59,7 @@ function Router() {
       <Route path={"/admin/sammeltermine"} component={Sammeltermine} />
       <Route path={"/admin/sammeltermine/new"} component={SammeltermineForm} />
       <Route path={"/admin/sammeltermine/:id/edit"} component={SammeltermineForm} />
+      <Route path={"/admin/settings"} component={Settings} />
       <Route path={"/superadmin"} component={SuperAdmin} />
       <Route path={"/login"} component={Login} />
       <Route path={"/register"} component={Register} />

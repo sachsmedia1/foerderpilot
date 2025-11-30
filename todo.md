@@ -258,3 +258,37 @@
 - [x] Root-Route (/) auf /admin umleiten für authentifizierte User
 - [x] Landing Page durch RootRedirect ersetzt
 - [x] Testen und Checkpoint erstellen
+
+
+## Tenant-Einstellungen (Admin-Bereich)
+
+### Phase 1: Backend Endpoints
+- [x] Tenant Settings Router (tRPC)
+- [x] getTenantSettings Procedure (aktueller Tenant)
+- [x] updateCompanyData Procedure (Stammdaten)
+- [x] updateBranding Procedure (Logo, Favicon, Farben)
+- [x] updateCustomDomain Procedure
+
+### Phase 2: Stammdaten-Formular
+- [x] Einstellungen-Seite erstellt (/admin/settings)
+- [x] Firmenname, Steuernummer, Adresse-Felder
+- [x] E-Mail, Telefon
+- [x] Impressum (Textarea mit HTML-Support)
+- [x] Datenschutz-URL
+
+### Phase 3: Branding-Editor
+- [x] Logo-URL mit Preview
+- [x] Favicon-URL mit Preview
+- [x] Farbwähler für Primär-/Sekundärfarbe
+- [x] Live-Preview der Branding-Änderungen
+- [ ] S3-Upload für Logo/Favicon (TODO: Aktuell URL-basiert)
+
+### Phase 4: Custom Domain
+- [x] Custom Domain Eingabefeld
+- [x] DNS-Anleitung für Custom Domain
+- [x] Validierung der Custom Domain (Backend)
+
+### Phase 5: Testing & Checkpoint
+- [x] Vitest Tests für Settings-Endpoints (8 Tests)
+- [x] Alle 38 Tests bestehen
+- [x] Checkpoint erstellen
