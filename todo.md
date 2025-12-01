@@ -420,3 +420,41 @@
 - [ ] TypeScript-Check
 - [ ] Alle Tests ausführen
 - [ ] Checkpoint erstellen
+
+
+## Bildungsträger-Verwaltung (Super Admin)
+
+### Phase 1: Bildungsträger-Formular
+- [x] TenantForm.tsx erstellt (/superadmin/tenants/new, /superadmin/tenants/:id/edit)
+- [x] Felder: Name, Subdomain, Firmenname, E-Mail, Telefon, Adresse
+- [x] Branding-Felder: Logo-URL, Primär-/Sekundärfarbe mit Color-Picker
+- [x] Custom Domain Feld
+- [x] Status-Toggle (Aktiv/Inaktiv) nur beim Bearbeiten
+- [x] Validierung (Subdomain-Format, E-Mail, Pflichtfelder)
+
+### Phase 2: Bildungsträger-Detail-Seite
+- [x] TenantDetail.tsx erstellt (/superadmin/tenants/:id)
+- [x] Alle Bildungsträger-Informationen anzeigen (Firmendaten, Branding)
+- [x] Statistiken (Kurse, Teilnehmer, Dokumente, User)
+- [x] Zugeordnete User-Liste mit Rollen und Status
+- [x] Quick Actions (Bearbeiten, Status-Toggle)
+- [x] System-Informationen (ID, Erstellt, Aktualisiert)
+
+### Phase 3: Funktionale Actions
+- [x] "Neuer Bildungsträger" Button funktional (navigiert zu /superadmin/tenants/new)
+- [x] Bearbeiten-Button pro Bildungsträger (navigiert zu /superadmin/tenants/:id/edit)
+- [x] Details-Button (navigiert zu /superadmin/tenants/:id)
+- [x] Status-Toggle in Detail-Seite
+
+### Phase 4: Deutsche Bezeichnungen
+- [x] "Tenant" → "Bildungsträger" in allen UI-Texten
+- [x] "Tenants" → "Bildungsträger" (Plural gleich)
+- [x] SuperAdmin.tsx aktualisiert (Tabs, Cards, Tabelle)
+- [x] Alle Labels und Beschreibungen übersetzt
+
+### Phase 5: Testing & Checkpoint
+- [x] TypeScript-Check (erfolgreich)
+- [x] Alle Tests ausführen (52 Tests bestanden)
+- [x] Routes registriert (App.tsx)
+- [x] Bildungsträger-Verwaltung vollständig implementiert
+- [ ] Checkpoint erstellen

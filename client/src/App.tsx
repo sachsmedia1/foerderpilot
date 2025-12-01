@@ -7,6 +7,8 @@ import { BrandingProvider } from "./components/BrandingProvider";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import RootRedirect from "./pages/RootRedirect";
 import SuperAdmin from "./pages/SuperAdmin";
+import TenantForm from "./pages/TenantForm";
+import TenantDetail from "./pages/TenantDetail";
 import Maintenance from "./pages/Maintenance";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Courses from "./pages/admin/Courses";
@@ -64,6 +66,9 @@ function Router() {
       <Route path={"/admin/sammeltermine/:id/edit"} component={SammeltermineForm} />
       <Route path={"/admin/settings"} component={Settings} />
       <Route path={"/superadmin"} component={SuperAdmin} />
+      <Route path={"/superadmin/tenants/new"} component={TenantForm} />
+      <Route path={"/superadmin/tenants/:id"} component={TenantDetail} />
+      <Route path={"/superadmin/tenants/:id/edit"} component={TenantForm} />
       <Route path={"/login"} component={Login} />
       <Route path={"/register"} component={Register} />
       <Route path={"/forgot-password"} component={ForgotPassword} />

@@ -11,7 +11,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Building2, Users, Activity, Plus, Settings } from "lucide-react";
+import { Building2, Users, Activity, Plus, Settings, Eye, Edit } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -82,7 +82,7 @@ export default function SuperAdmin() {
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-2">Super Admin Dashboard</h2>
           <p className="text-muted-foreground">
-            Verwalten Sie alle Tenants, User und System-Einstellungen
+            Verwalten Sie alle Bildungsträger, Benutzer und System-Einstellungen
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export default function SuperAdmin() {
         <div className="grid gap-4 md:grid-cols-3 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tenants</CardTitle>
+              <CardTitle className="text-sm font-medium">Bildungsträger</CardTitle>
               <Building2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -131,7 +131,7 @@ export default function SuperAdmin() {
         {/* Tabs */}
         <Tabs defaultValue="tenants" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="tenants">Tenants</TabsTrigger>
+            <TabsTrigger value="tenants">Bildungsträger</TabsTrigger>
             <TabsTrigger value="settings">Einstellungen</TabsTrigger>
           </TabsList>
 
@@ -140,14 +140,14 @@ export default function SuperAdmin() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Tenant-Verwaltung</CardTitle>
+                    <CardTitle>Bildungsträger-Verwaltung</CardTitle>
                     <CardDescription>
                       Alle Bildungsträger im System
                     </CardDescription>
                   </div>
-                  <Button>
+                  <Button onClick={() => navigate('/superadmin/tenants/new')}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Neuer Tenant
+                    Neuer Bildungsträger
                   </Button>
                 </div>
               </CardHeader>
@@ -189,9 +189,24 @@ export default function SuperAdmin() {
                             {new Date(tenant.createdAt).toLocaleDateString('de-DE')}
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button variant="ghost" size="sm">
-                              <Settings className="h-4 w-4" />
-                            </Button>
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => navigate(`/superadmin/tenants/${tenant.id}`)}
+                                title="Details anzeigen"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => navigate(`/superadmin/tenants/${tenant.id}/edit`)}
+                                title="Bearbeiten"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -199,7 +214,7 @@ export default function SuperAdmin() {
                   </Table>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
-                    Noch keine Tenants vorhanden
+                    Noch keine Bildungsträger vorhanden
                   </div>
                 )}
               </CardContent>
