@@ -16,7 +16,13 @@ export default function RootRedirect() {
     if (loading) return;
 
     if (user) {
-      // Authentifizierter User → Dashboard
+      // Super Admin → Super Admin Dashboard
+      if (user.role === 'super_admin') {
+        navigate("/superadmin");
+        return;
+      }
+      
+      // Normaler User → Dashboard
       navigate("/dashboard");
     } else {
       // Nicht authentifiziert → Login

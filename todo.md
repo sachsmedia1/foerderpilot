@@ -515,3 +515,16 @@
 - [x] Alle Tests ausführen (52 Tests bestanden)
 - [x] Checkpoint erstellt (Version: 5fec3442)
 - [ ] GitHub Push
+
+
+## Bugfix: Super Admin Dashboard Access
+
+**Problem:** Super Admin hat keinen Tenant (tenantId: null) → Dashboard wirft "No tenant context" Fehler
+
+### Lösung
+- [x] RootRedirect: Super Admin → /superadmin (statt /dashboard)
+- [x] Dashboard: Tenant-Context-Validierung + Fehlermeldung wenn kein Tenant
+- [x] Dashboard: enabled: !!tenant für alle Queries
+- [x] TypeScript-Check erfolgreich
+- [x] Alle Tests bestehen (52 passed)
+- [ ] Checkpoint erstellen

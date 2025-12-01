@@ -10,15 +10,51 @@
 import { AdminLayout } from "@/components/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Users, Calendar, Plus, ArrowRight } from "lucide-react";
-import { Link } from "wouter";
+import { BookOpen, Users, Calendar, Plus, ArrowRight, AlertCircle } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function AdminDashboard() {
-  // Queries für Statistiken
-  const { data: courses } = trpc.courses.list.useQuery({});
-  const { data: participants } = trpc.participants.list.useQuery({});
-  const { data: sammeltermine } = trpc.sammeltermins.list.useQuery({ upcoming: true });
+  const { user, tenant } = useAuth();
+  const [, navigate] = useLocation();
+
+  // Redirect Super Admin to /superadmin
+  if (user?.role === 'super_admin') {
+    navigate("/superadmin");
+    return null;
+  }
+
+  // Queries für Statistiken (nur wenn Tenant vorhanden)
+  const { data: courses } = trpc.courses.list.useQuery({}, { enabled: !!tenant });
+  const { data: participants } = trpc.participants.list.useQuery({}, { enabled: !!tenant });
+  const { data: sammeltermine } = trpc.sammeltermins.list.useQuery({ upcoming: true }, { enabled: !!tenant });
+
+  // Zeige Fehlermeldung wenn kein Tenant
+  if (!tenant) {
+    return (
+      <AdminLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive" />
+                <CardTitle>Kein Bildungsträger zugewiesen</CardTitle>
+              </div>
+              <CardDescription>
+                Ihr Account ist keinem Bildungsträger zugeordnet. Bitte kontaktieren Sie den Administrator.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => navigate("/login")} className="w-full">
+                Zurück zum Login
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   const stats = {
     courses: courses?.filter(c => c.isActive).length || 0,
