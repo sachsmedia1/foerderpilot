@@ -457,4 +457,26 @@
 - [x] Alle Tests ausführen (52 Tests bestanden)
 - [x] Routes registriert (App.tsx)
 - [x] Bildungsträger-Verwaltung vollständig implementiert
+- [x] Checkpoint erstellt (Version: 237eecc9)
+
+
+## TenantForm Verbesserungen (User Feedback)
+
+### Felder entfernen (doppelt/redundant)
+- [x] "Name" Feld entfernt - nur noch Firmenname vorhanden
+- [x] "Subdomain" Feld aus UI entfernt - bleibt im Backend für technische Zwecke
+- [x] Subdomain-Validierung aus handleSubmit entfernt
+
+### Felder hinzufügen (fehlen noch)
+- [x] Geschäftsführer-Name Feld hinzugefügt (directorName)
+- [x] Favicon-URL Feld hinzugefügt (faviconUrl)
+
+### Backend anpassen
+- [x] tenants.create Procedure erweitert (directorName, faviconUrl)
+- [x] tenants.update Procedure erweitert (directorName, faviconUrl)
+- [x] TenantDetail.tsx aktualisiert (Favicon-Anzeige hinzugefügt)
+
+### Testing & Checkpoint
+- [x] TypeScript-Check (erfolgreich)
+- [x] Alle Tests ausführen (52 Tests bestanden)
 - [ ] Checkpoint erstellen

@@ -201,30 +201,57 @@ export default function TenantDetail() {
               <CardTitle>Branding</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Logo</p>
-                {tenant.logoUrl ? (
-                  <div className="mt-2">
-                    <img
-                      src={tenant.logoUrl}
-                      alt="Logo"
-                      className="h-16 object-contain"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                    <a
-                      href={tenant.logoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-primary hover:underline"
-                    >
-                      {tenant.logoUrl}
-                    </a>
-                  </div>
-                ) : (
-                  <p className="text-base">-</p>
-                )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Logo</p>
+                  {tenant.logoUrl ? (
+                    <div className="mt-2">
+                      <img
+                        src={tenant.logoUrl}
+                        alt="Logo"
+                        className="h-16 object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                      <a
+                        href={tenant.logoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline"
+                      >
+                        {tenant.logoUrl}
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="text-base">-</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Favicon</p>
+                  {tenant.faviconUrl ? (
+                    <div className="mt-2">
+                      <img
+                        src={tenant.faviconUrl}
+                        alt="Favicon"
+                        className="h-8 object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                      <a
+                        href={tenant.faviconUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline"
+                      >
+                        {tenant.faviconUrl}
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="text-base">-</p>
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>

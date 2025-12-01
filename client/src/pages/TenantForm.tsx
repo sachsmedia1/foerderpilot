@@ -19,6 +19,7 @@ export default function TenantForm() {
     name: "",
     subdomain: "",
     companyName: "",
+    directorName: "",
     email: "",
     phone: "",
     street: "",
@@ -27,6 +28,7 @@ export default function TenantForm() {
     primaryColor: "#1E40AF",
     secondaryColor: "#3B82F6",
     logoUrl: "",
+    faviconUrl: "",
     customDomain: "",
     isActive: true,
   });
@@ -43,6 +45,7 @@ export default function TenantForm() {
         name: tenant.name,
         subdomain: tenant.subdomain,
         companyName: tenant.companyName || "",
+        directorName: tenant.directorName || "",
         email: tenant.email || "",
         phone: tenant.phone || "",
         street: tenant.street || "",
@@ -51,6 +54,7 @@ export default function TenantForm() {
         primaryColor: tenant.primaryColor || "#1E40AF",
         secondaryColor: tenant.secondaryColor || "#3B82F6",
         logoUrl: tenant.logoUrl || "",
+        faviconUrl: tenant.faviconUrl || "",
         customDomain: tenant.customDomain || "",
         isActive: tenant.isActive,
       });
@@ -79,12 +83,6 @@ export default function TenantForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate subdomain format
-    if (!/^[a-z0-9-]+$/.test(formData.subdomain)) {
-      toast.error("Subdomain darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten");
-      return;
-    }
 
     if (isEditing && tenantId) {
       updateMutation.mutate({
@@ -134,43 +132,10 @@ export default function TenantForm() {
             <CardHeader>
               <CardTitle>Grundinformationen</CardTitle>
               <CardDescription>
-                Name und Subdomain des Bildungsträgers
+                Firmenname und Geschäftsführer des Bildungsträgers
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleChange("name", e.target.value)}
-                    placeholder="z.B. Bildungsinstitut München"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="subdomain">Subdomain *</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="subdomain"
-                      value={formData.subdomain}
-                      onChange={(e) => handleChange("subdomain", e.target.value.toLowerCase())}
-                      placeholder="z.B. muenchen"
-                      pattern="[a-z0-9-]+"
-                      required
-                      disabled={isEditing} // Subdomain can't be changed after creation
-                    />
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">
-                      .foerderpilot.io
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Nur Kleinbuchstaben, Zahlen und Bindestriche
-                  </p>
-                </div>
-              </div>
-
               <div className="space-y-2">
                 <Label htmlFor="companyName">Firmenname *</Label>
                 <Input
@@ -179,6 +144,16 @@ export default function TenantForm() {
                   onChange={(e) => handleChange("companyName", e.target.value)}
                   placeholder="Offizieller Firmenname"
                   required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="directorName">Geschäftsführer</Label>
+                <Input
+                  id="directorName"
+                  value={formData.directorName}
+                  onChange={(e) => handleChange("directorName", e.target.value)}
+                  placeholder="Max Mustermann"
                 />
               </div>
             </CardContent>
@@ -270,6 +245,20 @@ export default function TenantForm() {
                 />
                 <p className="text-xs text-muted-foreground">
                   URL zum Logo-Bild (PNG, JPG oder SVG)
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="faviconUrl">Favicon-URL</Label>
+                <Input
+                  id="faviconUrl"
+                  type="url"
+                  value={formData.faviconUrl}
+                  onChange={(e) => handleChange("faviconUrl", e.target.value)}
+                  placeholder="https://beispiel.de/favicon.ico"
+                />
+                <p className="text-xs text-muted-foreground">
+                  URL zum Favicon (ICO, PNG oder SVG, empfohlen 32x32px)
                 </p>
               </div>
 

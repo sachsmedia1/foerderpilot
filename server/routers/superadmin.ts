@@ -48,6 +48,7 @@ export const superadminRouter = router({
         name: z.string().min(1),
         subdomain: z.string().min(1).regex(/^[a-z0-9-]+$/),
         companyName: z.string().min(1),
+        directorName: z.string().optional(),
         email: z.string().email(),
         phone: z.string().optional(),
         street: z.string().optional(),
@@ -56,6 +57,7 @@ export const superadminRouter = router({
         primaryColor: z.string().optional(),
         secondaryColor: z.string().optional(),
         logoUrl: z.string().optional(),
+        faviconUrl: z.string().optional(),
         customDomain: z.string().optional(),
       })
     )
@@ -69,6 +71,7 @@ export const superadminRouter = router({
           name: input.name,
           subdomain: input.subdomain,
           companyName: input.companyName,
+          directorName: input.directorName || null,
           email: input.email,
           phone: input.phone || null,
           street: input.street || null,
@@ -77,6 +80,7 @@ export const superadminRouter = router({
           primaryColor: input.primaryColor || "#1E40AF",
           secondaryColor: input.secondaryColor || "#3B82F6",
           logoUrl: input.logoUrl || null,
+          faviconUrl: input.faviconUrl || null,
           customDomain: input.customDomain || null,
           isActive: true,
         })
@@ -95,6 +99,7 @@ export const superadminRouter = router({
         name: z.string().min(1).optional(),
         subdomain: z.string().min(1).regex(/^[a-z0-9-]+$/).optional(),
         companyName: z.string().min(1).optional(),
+        directorName: z.string().optional(),
         email: z.string().email().optional(),
         phone: z.string().optional(),
         street: z.string().optional(),
@@ -103,6 +108,7 @@ export const superadminRouter = router({
         primaryColor: z.string().optional(),
         secondaryColor: z.string().optional(),
         logoUrl: z.string().optional(),
+        faviconUrl: z.string().optional(),
         customDomain: z.string().optional(),
         isActive: z.boolean().optional(),
       })
