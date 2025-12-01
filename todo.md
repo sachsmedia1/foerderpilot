@@ -527,4 +527,4 @@
 - [x] Dashboard: enabled: !!tenant für alle Queries
 - [x] TypeScript-Check erfolgreich
 - [x] Alle Tests bestehen (52 passed)
-- [ ] Checkpoint erstellen
+- [x] Checkpoint erstellt (Version: e27984da)
