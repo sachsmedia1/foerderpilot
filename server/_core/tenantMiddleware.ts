@@ -77,14 +77,14 @@ function isSuperAdminRoute(path: string): boolean {
 /**
  * Erkennt den Tenant basierend auf dem Request
  * 
- * Reihenfolge:
+ * Neue Architektur (Single Domain):
  * 1. Prüfe ob Root-Domain (foerderpilot.io) → Wartungsmodus
  * 2. Prüfe ob Super Admin Route → kein Tenant nötig
- * 3. Prüfe Custom Domain
- * 4. Prüfe Subdomain
- * 5. Fehler wenn kein Tenant gefunden
+ * 3. Prüfe Custom Domain (optional)
+ * 4. Lade Tenant aus User-Session (user.tenantId)
+ * 5. Kein Tenant = Login-Seite (kein Fehler)
  */
-export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
+export async function getTenantFromRequest(req: Request, user: any = null): Promise<TenantInfo> {
   const host = req.headers.host || '';
   const path = req.path || '';
   
@@ -110,37 +110,28 @@ export async function getTenantFromRequest(req: Request): Promise<TenantInfo> {
     };
   }
   
-  // 3. Versuche Custom Domain
+  // 3. Versuche Custom Domain (optional)
   console.log('[TenantMiddleware] Trying custom domain lookup for:', host);
   let tenant = await getTenantByCustomDomain(host);
   if (tenant) {
     console.log('[TenantMiddleware] Tenant found via custom domain:', tenant.id, tenant.name);
   }
   
-  // 4. Versuche Subdomain
-  if (!tenant) {
-    const subdomain = extractSubdomain(host);
-    console.log('[TenantMiddleware] Extracted subdomain:', subdomain);
-    if (subdomain) {
-      tenant = await getTenantBySubdomain(subdomain);
-      if (tenant) {
-        console.log('[TenantMiddleware] Tenant found via subdomain:', tenant.id, tenant.name);
-      } else {
-        console.log('[TenantMiddleware] No tenant found for subdomain:', subdomain);
-      }
+  // 4. Lade Tenant aus User-Session (neue Architektur)
+  if (!tenant && user && user.tenantId) {
+    console.log('[TenantMiddleware] Loading tenant from user session, tenantId:', user.tenantId);
+    const { getTenantById } = await import('../db');
+    tenant = await getTenantById(user.tenantId);
+    if (tenant) {
+      console.log('[TenantMiddleware] Tenant found via user session:', tenant.id, tenant.name);
+    } else {
+      console.log('[TenantMiddleware] No tenant found for user tenantId:', user.tenantId);
     }
   }
   
-  // 5. Fallback für Entwicklung (localhost + Manus Cloud) → "app" Tenant
-  if (!tenant && (host.includes('localhost') || host.includes('127.0.0.1') || host.includes('manus.space') || host.includes('manusvm.computer'))) {
-    console.log('[TenantMiddleware] Development fallback: using "app" tenant for host:', host);
-    tenant = await getTenantBySubdomain('app');
-    console.log('[TenantMiddleware] Tenant after fallback:', tenant ? `ID=${tenant.id}, name=${tenant.name}` : 'null');
-  }
-  
-  // 6. Kein Tenant gefunden
+  // 5. Kein Tenant gefunden (kein Fehler, User muss sich einloggen)
   if (!tenant) {
-    console.log('[TenantMiddleware] No tenant found for host:', host);
+    console.log('[TenantMiddleware] No tenant found, user needs to login');
     return {
       tenant: null,
       isSuperAdminRoute: false,

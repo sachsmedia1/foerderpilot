@@ -86,7 +86,7 @@ export default function SammelterminForm() {
   const createMutation = trpc.sammeltermins.create.useMutation({
     onSuccess: () => {
       toast.success("Sammeltermin erstellt");
-      navigate("/admin/sammeltermine");
+      navigate("/sammeltermine");
     },
     onError: (error) => {
       toast.error(`Fehler beim Erstellen: ${error.message}`);
@@ -96,7 +96,7 @@ export default function SammelterminForm() {
   const updateMutation = trpc.sammeltermins.update.useMutation({
     onSuccess: () => {
       toast.success("Sammeltermin aktualisiert");
-      navigate("/admin/sammeltermine");
+      navigate("/sammeltermine");
     },
     onError: (error) => {
       toast.error(`Fehler beim Aktualisieren: ${error.message}`);
@@ -156,7 +156,7 @@ export default function SammelterminForm() {
         <Button
           variant="outline"
           size="icon"
-          onClick={() => navigate("/admin/sammeltermine")}
+          onClick={() => navigate("/sammeltermine")}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
@@ -316,7 +316,7 @@ export default function SammelterminForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/admin/sammeltermine")}
+              onClick={() => navigate("/sammeltermine")}
             >
               Abbrechen
             </Button>

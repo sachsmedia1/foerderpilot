@@ -86,7 +86,7 @@ export default function Courses() {
               Verwalten Sie Ihre Kursangebote
             </p>
           </div>
-          <Link href="/admin/courses/new">
+          <Link href="/courses/new">
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               Neuer Kurs
@@ -167,7 +167,7 @@ export default function Courses() {
               <p className="text-sm text-muted-foreground mb-4">
                 Erstellen Sie Ihren ersten Kurs, um loszulegen.
               </p>
-              <Link href="/admin/courses/new">
+              <Link href="/courses/new">
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
                   Ersten Kurs erstellen

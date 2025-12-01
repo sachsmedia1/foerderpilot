@@ -137,7 +137,7 @@ export default function SammelterminsPage() {
             KOMPASS-Einreichungstermine verwalten
           </p>
         </div>
-        <Button onClick={() => navigate("/admin/sammeltermine/new")}>
+        <Button onClick={() => navigate("/sammeltermine/new")}>
           <Plus className="h-4 w-4 mr-2" />
           Neuer Termin
         </Button>
@@ -302,7 +302,7 @@ export default function SammelterminsPage() {
               <p className="text-muted-foreground mb-4">
                 Erstellen Sie einen neuen Sammeltermin für KOMPASS-Einreichungen.
               </p>
-              <Button onClick={() => navigate("/admin/sammeltermine/new")}>
+              <Button onClick={() => navigate("/sammeltermine/new")}>
                 <Plus className="h-4 w-4 mr-2" />
                 Ersten Termin erstellen
               </Button>

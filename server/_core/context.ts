@@ -28,9 +28,9 @@ export async function createContext(
     user = null;
   }
 
-  // 2. Resolve tenant from request
+  // 2. Resolve tenant from request (pass user for session-based tenant loading)
   try {
-    const tenantInfo = await getTenantFromRequest(opts.req);
+    const tenantInfo = await getTenantFromRequest(opts.req, user);
     tenant = tenantInfo.tenant;
     isSuperAdminRoute = tenantInfo.isSuperAdminRoute;
     isMaintenanceMode = tenantInfo.isMaintenanceMode;

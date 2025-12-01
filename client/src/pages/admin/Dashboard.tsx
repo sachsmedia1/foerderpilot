@@ -89,25 +89,25 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-              <Link href="/admin/courses/new">
+              <Link href="/courses/new">
                 <Button variant="outline" className="w-full justify-start">
                   <Plus className="h-4 w-4 mr-2" />
                   Neuer Kurs
                 </Button>
               </Link>
-              <Link href="/admin/sammeltermine/new">
+              <Link href="/sammeltermine/new">
                 <Button variant="outline" className="w-full justify-start">
                   <Plus className="h-4 w-4 mr-2" />
                   Neuer Sammeltermin
                 </Button>
               </Link>
-              <Link href="/admin/courses">
+              <Link href="/courses">
                 <Button variant="outline" className="w-full justify-start">
                   <BookOpen className="h-4 w-4 mr-2" />
                   Alle Kurse
                 </Button>
               </Link>
-              <Link href="/admin/participants">
+              <Link href="/participants">
                 <Button variant="outline" className="w-full justify-start">
                   <Users className="h-4 w-4 mr-2" />
                   Alle Teilnehmer
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
                   Nächste KOMPASS-Termine
                 </CardDescription>
               </div>
-              <Link href="/admin/sammeltermine">
+              <Link href="/sammeltermine">
                 <Button variant="ghost" size="sm">
                   Alle anzeigen
                   <ArrowRight className="h-4 w-4 ml-2" />
@@ -171,7 +171,7 @@ export default function AdminDashboard() {
               <div className="text-sm text-muted-foreground text-center py-8">
                 <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p>Keine anstehenden Sammeltermine</p>
-                <Link href="/admin/sammeltermine/new">
+                <Link href="/sammeltermine/new">
                   <Button variant="link" size="sm" className="mt-2">
                     <Plus className="h-4 w-4 mr-1" />
                     Ersten Termin erstellen

@@ -86,7 +86,7 @@ export default function Users() {
               Verwalten Sie Ihre Team-Mitglieder und deren Rollen
             </p>
           </div>
-          <Button onClick={() => navigate("/admin/users/new")}>
+          <Button onClick={() => navigate("/users/new")}>
             <Plus className="mr-2 h-4 w-4" />
             Neuer User
           </Button>

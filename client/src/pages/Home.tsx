@@ -133,7 +133,7 @@ export default function Home() {
 
               {(user?.role === 'admin' || user?.role === 'super_admin') && (
                 <Button asChild className="w-full" size="lg" variant={user?.role === 'super_admin' ? 'outline' : 'default'}>
-                  <Link href="/admin">
+                  <Link href="/dashboard">
                     <LayoutDashboard className="h-5 w-5 mr-2" />
                     Admin Dashboard
                   </Link>

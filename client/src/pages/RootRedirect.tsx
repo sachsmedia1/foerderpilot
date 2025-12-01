@@ -16,8 +16,8 @@ export default function RootRedirect() {
     if (loading) return;
 
     if (user) {
-      // Authentifizierter User → Admin Dashboard
-      navigate("/admin");
+      // Authentifizierter User → Dashboard
+      navigate("/dashboard");
     } else {
       // Nicht authentifiziert → Login
       navigate("/login");

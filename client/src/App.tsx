@@ -51,20 +51,20 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={RootRedirect} />
-      <Route path={"/admin"} component={AdminDashboard} />
-          <Route path="/admin/courses" component={Courses} />
-          <Route path="/admin/courses/new" component={CourseForm} />
-          <Route path="/admin/courses/:id/edit" component={CourseForm} />
-          <Route path="/admin/courses/:id" component={CourseDetail} />
-      <Route path={"/admin/documents"} component={Documents} />
-      <Route path={"/admin/participants"} component={Participants} />
-      <Route path={"/admin/participants/new"} component={ParticipantForm} />
-      <Route path={"/admin/participants/:id/view"} component={ParticipantDetail} />
-      <Route path={"/admin/participants/:id/edit"} component={ParticipantForm} />
-      <Route path={"/admin/sammeltermine"} component={Sammeltermine} />
-      <Route path={"/admin/sammeltermine/new"} component={SammeltermineForm} />
-      <Route path={"/admin/sammeltermine/:id/edit"} component={SammeltermineForm} />
-      <Route path={"/admin/settings"} component={Settings} />
+      <Route path={"/dashboard"} component={AdminDashboard} />
+          <Route path="/courses" component={Courses} />
+          <Route path="/courses/new" component={CourseForm} />
+          <Route path="/courses/:id/edit" component={CourseForm} />
+          <Route path="/courses/:id" component={CourseDetail} />
+      <Route path={"/documents"} component={Documents} />
+      <Route path={"/participants"} component={Participants} />
+      <Route path={"/participants/new"} component={ParticipantForm} />
+      <Route path={"/participants/:id/view"} component={ParticipantDetail} />
+      <Route path={"/participants/:id/edit"} component={ParticipantForm} />
+      <Route path={"/sammeltermine"} component={Sammeltermine} />
+      <Route path={"/sammeltermine/new"} component={SammeltermineForm} />
+      <Route path={"/sammeltermine/:id/edit"} component={SammeltermineForm} />
+      <Route path={"/settings"} component={Settings} />
       <Route path={"/superadmin"} component={SuperAdmin} />
       <Route path={"/superadmin/tenants/new"} component={TenantForm} />
       <Route path={"/superadmin/tenants/:id"} component={TenantDetail} />

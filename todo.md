@@ -479,4 +479,39 @@
 ### Testing & Checkpoint
 - [x] TypeScript-Check (erfolgreich)
 - [x] Alle Tests ausführen (52 Tests bestanden)
+- [x] Checkpoint erstellt (Version: 6b13b28b)
+
+
+## Multi-Tenancy Architektur-Refactoring (Kritisch)
+
+**Ziel:** Alle Mandanten nutzen app.foerderpilot.io (keine Subdomains mehr)
+
+### Phase 1: Routing vereinfachen (/admin entfernen)
+- [x] App.tsx: Alle /admin/* Routes zu /* geändert (/dashboard für Dashboard)
+- [x] AdminLayout: Navigation-Links angepasst
+- [x] Alle navigate() und setLocation() Aufrufe angepasst
+- [x] Alle href Links angepasst (Dashboard, Courses, Participants etc.)
+- [x] /superadmin bleibt bestehen
+
+### Phase 2: Tenant-Context auf User-Session umstellen
+- [x] server/_core/context.ts: User an getTenantFromRequest übergeben
+- [x] Tenant aus user.tenantId laden (neue Architektur)
+- [x] Custom Domain Support: Tenant aus customDomain lookup (bleibt bestehen)
+- [x] Fallback für Super Admin (kein Tenant) + Login-Seite (kein Fehler)
+
+### Phase 3: Subdomain-Feld entfernen
+- [x] subdomain aus TenantForm.tsx entfernt (formData State)
+- [x] name und subdomain optional in Backend (createTenant/updateTenant)
+- [x] Auto-Generierung: name und subdomain aus companyName generiert
+- [x] subdomain bleibt in DB für technische Zwecke (Custom Domain Fallback)
+
+### Phase 4: Custom Domain Branding
+- [x] BrandingProvider: Custom Domain erkennen (bereits implementiert)
+- [x] Login-Seite: Branding bei Custom Domain anwenden (useBranding Hook)
+- [x] Tenant-Lookup über customDomain in DB (getTenantByCustomDomain)
+
+### Phase 5: Testing & Checkpoint
+- [x] TypeScript-Check (erfolgreich)
+- [x] Alle Tests ausführen (52 Tests bestanden)
 - [ ] Checkpoint erstellen
+- [ ] GitHub Push

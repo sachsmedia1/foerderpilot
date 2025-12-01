@@ -42,33 +42,33 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     title: "Dashboard",
-    href: "/admin",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     title: "Kurse",
-    href: "/admin/courses",
+    href: "/courses",
     icon: BookOpen,
   },
   {
     title: "Sammeltermine",
-    href: "/admin/sammeltermine",
+    href: "/sammeltermine",
     icon: Calendar,
   },
   {
     title: "Teilnehmer",
-    href: "/admin/participants",
+    href: "/participants",
     icon: Users,
   },
   {
     title: "Dokumente",
-    href: "/admin/documents",
+    href: "/documents",
     icon: FileCheck,
   },
 
   {
     title: "Einstellungen",
-    href: "/admin/settings",
+    href: "/settings",
     icon: Settings,
   },
 ];

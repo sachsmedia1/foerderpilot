@@ -55,7 +55,7 @@ export default function UserForm() {
   const createMutation = trpc.userManagement.create.useMutation({
     onSuccess: () => {
       toast.success("User erfolgreich erstellt");
-      navigate("/admin/users");
+      navigate("/users");
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -65,7 +65,7 @@ export default function UserForm() {
   const updateMutation = trpc.userManagement.update.useMutation({
     onSuccess: () => {
       toast.success("User erfolgreich aktualisiert");
-      navigate("/admin/users");
+      navigate("/users");
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -109,7 +109,7 @@ export default function UserForm() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <Button variant="ghost" onClick={() => navigate("/admin/users")} className="mb-4">
+          <Button variant="ghost" onClick={() => navigate("/users")} className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Zurück zur Übersicht
           </Button>
@@ -237,7 +237,7 @@ export default function UserForm() {
             <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
               {isEdit ? "Speichern" : "User erstellen"}
             </Button>
-            <Button type="button" variant="outline" onClick={() => navigate("/admin/users")}>
+            <Button type="button" variant="outline" onClick={() => navigate("/users")}>
               Abbrechen
             </Button>
           </div>

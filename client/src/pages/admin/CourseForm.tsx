@@ -88,7 +88,7 @@ export default function CourseForm() {
   const createMutation = trpc.courses.create.useMutation({
     onSuccess: () => {
       toast.success("Kurs erfolgreich erstellt");
-      setLocation("/admin/courses");
+      setLocation("/courses");
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -98,7 +98,7 @@ export default function CourseForm() {
   const updateMutation = trpc.courses.update.useMutation({
     onSuccess: () => {
       toast.success("Kurs erfolgreich aktualisiert");
-      setLocation("/admin/courses");
+      setLocation("/courses");
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -147,7 +147,7 @@ export default function CourseForm() {
       <div className="max-w-4xl space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <Link href="/admin/courses">
+          <Link href="/courses">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -440,7 +440,7 @@ export default function CourseForm() {
               <Save className="h-4 w-4 mr-2" />
               {isLoading ? "Speichern..." : "Kurs speichern"}
             </Button>
-            <Link href="/admin/courses">
+            <Link href="/courses">
               <Button type="button" variant="outline">
                 Abbrechen
               </Button>

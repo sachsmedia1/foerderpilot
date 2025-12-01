@@ -16,8 +16,6 @@ export default function TenantForm() {
   const tenantId = id ? parseInt(id) : undefined;
 
   const [formData, setFormData] = useState({
-    name: "",
-    subdomain: "",
     companyName: "",
     directorName: "",
     email: "",
@@ -42,8 +40,6 @@ export default function TenantForm() {
   useEffect(() => {
     if (tenant) {
       setFormData({
-        name: tenant.name,
-        subdomain: tenant.subdomain,
         companyName: tenant.companyName || "",
         directorName: tenant.directorName || "",
         email: tenant.email || "",

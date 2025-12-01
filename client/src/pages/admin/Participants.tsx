@@ -79,7 +79,7 @@ export default function Participants() {
               Verwalten Sie Teilnehmer und deren Status
             </p>
           </div>
-          <Link href="/admin/participants/new">
+          <Link href="/participants/new">
             <Button>
               <UserPlus className="h-4 w-4 mr-2" />
               Neuer Teilnehmer

@@ -29,7 +29,7 @@ export default function CourseDetail() {
       <AdminLayout>
         <div className="flex flex-col items-center justify-center h-64 gap-4">
           <div className="text-muted-foreground">Kurs nicht gefunden</div>
-          <Button onClick={() => setLocation("/admin/courses")}>
+          <Button onClick={() => setLocation("/courses")}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Zurück zur Übersicht
           </Button>
@@ -58,7 +58,7 @@ export default function CourseDetail() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => setLocation("/admin/courses")}>
+            <Button variant="ghost" onClick={() => setLocation("/courses")}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Zurück
             </Button>

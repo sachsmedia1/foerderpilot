@@ -45,8 +45,8 @@ export const superadminRouter = router({
   createTenant: superAdminProcedure
     .input(
       z.object({
-        name: z.string().min(1),
-        subdomain: z.string().min(1).regex(/^[a-z0-9-]+$/),
+        name: z.string().min(1).optional(),
+        subdomain: z.string().min(1).regex(/^[a-z0-9-]+$/).optional(),
         companyName: z.string().min(1),
         directorName: z.string().optional(),
         email: z.string().email(),
@@ -65,11 +65,20 @@ export const superadminRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
+      // Auto-generate name and subdomain from companyName if not provided
+      const name = input.name || input.companyName;
+      const subdomain = input.subdomain || input.companyName
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .substring(0, 50);
+
       const [tenant] = await db
         .insert(tenants)
         .values({
-          name: input.name,
-          subdomain: input.subdomain,
+          name,
+          subdomain,
           companyName: input.companyName,
           directorName: input.directorName || null,
           email: input.email,
