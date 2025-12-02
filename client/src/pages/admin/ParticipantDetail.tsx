@@ -183,9 +183,6 @@ export default function ParticipantDetail() {
           <CardContent className="space-y-6">
             {/* Current Status */}
             <div className="flex items-center gap-4">
-              <Badge variant={statusConfig.variant} className="text-sm px-4 py-2">
-                {statusConfig.label}
-              </Badge>
               <Select
                 value={participant.status}
                 onValueChange={handleStatusChange}
