@@ -548,4 +548,24 @@
 ### Testing
 - [x] TypeScript-Check (erfolgreich)
 - [x] Tests ausführen (53 Tests bestanden)
+- [x] Checkpoint erstellt (Version: 78a09bdb)
+
+
+## Bug-Fixes: Login-Button unsichtbar + Login funktioniert nicht
+
+### Button-Styling
+- [x] Login-Button unsichtbar (weißer Text auf weißem Hintergrund) - URSACHE: oklch() nicht von Tailwind CSS 4 unterstützt
+- [x] Alle CSS Variables von oklch() zu RGB konvertiert (Tailwind CSS 4 Format)
+- [x] Primary: 99 102 241 (Indigo #6366F1)
+- [x] Accent-Pink: 236 72 153 (Pink #EC4899)
+- [x] Dark Mode Farben ebenfalls konvertiert
+
+### Login-Funktionalität
+- [ ] Login-Fehler diagnostizieren (Console-Logs prüfen)
+- [ ] Auth-Router prüfen (email/password login)
+- [ ] Session-Cookie prüfen
+
+### Testing
+- [ ] Login testen mit erstelltem User
+- [ ] Button-Visibility auf allen Seiten prüfen
 - [ ] Checkpoint erstellen

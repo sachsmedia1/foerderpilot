@@ -233,11 +233,13 @@ export const superadminRouter = router({
       const passwordHash = await bcrypt.hash(input.password, 10);
 
       // User erstellen
+      // ✅ FIX: openId = email für E-Mail/Passwort Auth (damit getUserByOpenId funktioniert)
       await db
         .insert(users)
         .values({
           tenantId: input.tenantId,
           email: input.email,
+          openId: input.email, // ← WICHTIG: openId = email für E-Mail Auth
           passwordHash,
           name: input.name || input.email.split("@")[0],
           role: input.role,
