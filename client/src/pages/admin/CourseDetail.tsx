@@ -4,15 +4,75 @@ import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Users, FileText, Edit, Plus } from "lucide-react";
+import { ArrowLeft, Calendar, Users, FileText, Edit, Plus, Trash2, Pencil } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { CourseScheduleModal } from "@/components/CourseScheduleModal";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function CourseDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const courseId = parseInt(id || "0");
+  const utils = trpc.useUtils();
+
+  // Modal States
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [editingScheduleId, setEditingScheduleId] = useState<number | undefined>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingScheduleId, setDeletingScheduleId] = useState<number | undefined>();
 
   const { data, isLoading } = trpc.courses.getDetail.useQuery({ id: courseId });
+
+  // Assign Participant Mutation
+  const assignParticipantMutation = trpc.participants.assignToSchedule.useMutation({
+    onSuccess: () => {
+      toast.success("Teilnehmer zugewiesen");
+      utils.courses.getDetail.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  // Delete Mutation
+  const deleteMutation = trpc.courseSchedules.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Kurstermin gelöscht");
+      utils.courses.getDetail.invalidate();
+      setDeleteDialogOpen(false);
+      setDeletingScheduleId(undefined);
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const handleDeleteSchedule = () => {
+    if (deletingScheduleId) {
+      deleteMutation.mutate({ id: deletingScheduleId });
+    }
+  };
+
+  const openEditModal = (scheduleId: number) => {
+    setEditingScheduleId(scheduleId);
+    setScheduleModalOpen(true);
+  };
+
+  const openCreateModal = () => {
+    setEditingScheduleId(undefined);
+    setScheduleModalOpen(true);
+  };
 
   if (isLoading) {
     return (
@@ -180,7 +240,7 @@ export default function CourseDetail() {
                 <CardTitle>Kurstermine</CardTitle>
                 <CardDescription>Geplante Kurs-Durchgänge mit Teilnehmer-Zuordnung</CardDescription>
               </div>
-              <Button size="sm" onClick={() => toast.info("Kurstermin-Formular kommt in nächster Phase")}>
+              <Button size="sm" onClick={openCreateModal}>
                 <Plus className="w-4 h-4 mr-2" />
                 Termin hinzufügen
               </Button>
@@ -218,22 +278,43 @@ export default function CourseDetail() {
                             </div>
                           </div>
                         </div>
-                        <Badge
-                          variant={
-                            schedule.status === "scheduled"
-                              ? "default"
-                              : schedule.status === "in_progress"
-                              ? "secondary"
-                              : schedule.status === "completed"
-                              ? "outline"
-                              : "destructive"
-                          }
-                        >
-                          {schedule.status === "scheduled" && "Geplant"}
-                          {schedule.status === "in_progress" && "Läuft"}
-                          {schedule.status === "completed" && "Abgeschlossen"}
-                          {schedule.status === "cancelled" && "Abgesagt"}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant={
+                              schedule.status === "scheduled"
+                                ? "default"
+                                : schedule.status === "in_progress"
+                                ? "secondary"
+                                : schedule.status === "completed"
+                                ? "outline"
+                                : "destructive"
+                            }
+                          >
+                            {schedule.status === "scheduled" && "Geplant"}
+                            {schedule.status === "in_progress" && "Läuft"}
+                            {schedule.status === "completed" && "Abgeschlossen"}
+                            {schedule.status === "cancelled" && "Abgesagt"}
+                          </Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => openEditModal(schedule.id)}
+                            title="Bearbeiten"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => {
+                              setDeletingScheduleId(schedule.id);
+                              setDeleteDialogOpen(true);
+                            }}
+                            title="Löschen"
+                          >
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
                       </div>
                     </CardHeader>
                     {schedule.participants.length > 0 && (
@@ -279,17 +360,44 @@ export default function CourseDetail() {
             <CardContent>
               <div className="space-y-2">
                 {unassignedParticipants.map((p) => (
-                  <Link key={p.id} href={`/teilnehmer/${p.id}`}>
-                    <div className="flex items-center justify-between p-2 hover:bg-accent rounded-md cursor-pointer">
-                      <div>
-                        <div className="font-medium">
-                          {p.firstName} {p.lastName}
-                        </div>
-                        <div className="text-sm text-muted-foreground">{p.email}</div>
+                  <div key={p.id} className="flex items-center justify-between p-3 border rounded-md">
+                    <div className="flex-1">
+                      <div className="font-medium">
+                        {p.firstName} {p.lastName}
                       </div>
-                      <Badge variant="outline">{p.status}</Badge>
+                      <div className="text-sm text-muted-foreground">{p.email}</div>
                     </div>
-                  </Link>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{p.status}</Badge>
+                      <Select
+                        value=""
+                        onValueChange={(scheduleId) => {
+                          if (scheduleId) {
+                            assignParticipantMutation.mutate({
+                              participantId: p.id,
+                              courseScheduleId: parseInt(scheduleId),
+                            });
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Termin zuweisen" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {schedules.map((schedule) => (
+                            <SelectItem key={schedule.id} value={schedule.id.toString()}>
+                              {formatDate(schedule.startDate)}
+                              {schedule.availableSlots !== null && schedule.availableSlots > 0 && (
+                                <span className="text-xs text-muted-foreground ml-1">
+                                  ({schedule.availableSlots} frei)
+                                </span>
+                              )}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 ))}
               </div>
             </CardContent>
@@ -336,6 +444,39 @@ export default function CourseDetail() {
           </Card>
         )}
       </div>
+
+      {/* Course Schedule Modal */}
+      <CourseScheduleModal
+        open={scheduleModalOpen}
+        onOpenChange={setScheduleModalOpen}
+        courseId={courseId}
+        scheduleId={editingScheduleId}
+        onSuccess={() => {
+          utils.courses.getDetail.invalidate();
+        }}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Kurstermin löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchten Sie diesen Kurstermin wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+              Teilnehmer-Zuordnungen bleiben erhalten, müssen aber neu zugewiesen werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteSchedule}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AdminLayout>
   );
 }

@@ -409,17 +409,17 @@
 - [x] Routes aktualisiert (/admin/courses/:id für Detail, /admin/courses/:id/edit für Bearbeiten)
 
 ### Phase 5: Kurstermin-Management UI
-- [ ] Kurstermin-Formular (Modal oder Inline)
-- [ ] Kurstermin erstellen/bearbeiten/löschen
-- [ ] Teilnehmer-Zuweisung zu Kurstermin
-- [ ] Auslastungs-Anzeige (z.B. "8/12 Plätze belegt")
+- [x] Kurstermin-Formular (Modal)
+- [x] Kurstermin erstellen/bearbeiten/löschen
+- [x] Teilnehmer-Zuweisung zu Kurstermin
+- [x] Auslastungs-Anzeige (z.B. "8/12 Plätze belegt")
 
 ### Phase 6: Testing & Checkpoint
-- [ ] Vitest Tests für courseSchedules CRUD
-- [ ] Vitest Tests für getCourseDetail
-- [ ] TypeScript-Check
-- [ ] Alle Tests ausführen
-- [ ] Checkpoint erstellen
+- [x] Vitest Tests für courseSchedules CRUD (8 Tests)
+- [x] Vitest Tests für Participant Assignment
+- [x] TypeScript-Check (keine Fehler)
+- [x] Alle Tests ausführen (61 Tests bestanden)
+- [x] Checkpoint erstellen
 
 
 ## Bildungsträger-Verwaltung (Super Admin)

@@ -328,4 +328,65 @@ export const participantsRouter = router({
       completed: allParticipants.filter(p => p.status === "completed").length,
     };
   }),
+
+  /**
+   * Assign participant to course schedule
+   */
+  assignToSchedule: adminProcedure
+    .input(
+      z.object({
+        participantId: z.number().int().positive(),
+        courseScheduleId: z.number().int().positive().nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+      // Verify participant belongs to tenant
+      const [participant] = await db
+        .select()
+        .from(participants)
+        .where(
+          and(
+            eq(participants.id, input.participantId),
+            eq(participants.tenantId, ctx.tenant.id)
+          )
+        );
+
+      if (!participant) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Teilnehmer nicht gefunden" });
+      }
+
+      // If courseScheduleId is provided, verify it belongs to the same course and tenant
+      if (input.courseScheduleId) {
+        const { courseSchedules } = await import('../../drizzle/schema');
+        const [schedule] = await db
+          .select()
+          .from(courseSchedules)
+          .where(
+            and(
+              eq(courseSchedules.id, input.courseScheduleId),
+              eq(courseSchedules.tenantId, ctx.tenant.id),
+              eq(courseSchedules.courseId, participant.courseId)
+            )
+          );
+
+        if (!schedule) {
+          throw new TRPCError({ 
+            code: "NOT_FOUND", 
+            message: "Kurstermin nicht gefunden oder gehört nicht zum Kurs des Teilnehmers" 
+          });
+        }
+      }
+
+      // Update participant's courseScheduleId
+      await db
+        .update(participants)
+        .set({ courseScheduleId: input.courseScheduleId })
+        .where(eq(participants.id, input.participantId));
+
+      return { success: true };
+    }),
 });
