@@ -65,7 +65,11 @@ const navItems: NavItem[] = [
     href: "/documents",
     icon: FileCheck,
   },
-
+  {
+    title: "Validierung",
+    href: "/validation",
+    icon: FileText,
+  },
   {
     title: "Einstellungen",
     href: "/settings",
@@ -95,9 +99,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             {branding.logoUrl ? (
               <img src={branding.logoUrl} alt={branding.tenantName} className="h-8" />
             ) : (
-              <Building2 className="h-6 w-6 text-primary" />
+              <img src="/logo.png" alt="FörderPilot" className="h-8" />
             )}
-            <span className="font-semibold">{branding.tenantName}</span>
+            <span className="font-semibold">{branding.tenantName || "FörderPilot"}</span>
           </div>
           <div className="w-10" /> {/* Spacer for centering */}
         </div>
@@ -125,9 +129,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               {branding.logoUrl ? (
                 <img src={branding.logoUrl} alt={branding.tenantName} className="h-8" />
               ) : (
-                <Building2 className="h-6 w-6 text-primary" />
+                <img src="/logo.png" alt="FörderPilot" className="h-8" />
               )}
-              <span className="font-semibold text-lg">{branding.tenantName}</span>
+              <span className="font-semibold text-lg">{branding.tenantName || "FörderPilot"}</span>
             </div>
 
             {/* Navigation */}

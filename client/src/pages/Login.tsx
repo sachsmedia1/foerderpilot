@@ -64,7 +64,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
@@ -75,9 +75,11 @@ export default function LoginPage() {
                 className="h-16 max-w-[200px] object-contain"
               />
             ) : (
-              <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center">
-                <LogIn className="h-6 w-6 text-primary-foreground" />
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="FörderPilot" 
+                className="h-20 max-w-[240px] object-contain"
+              />
             )}
           </div>
           <CardTitle className="text-2xl text-center">
