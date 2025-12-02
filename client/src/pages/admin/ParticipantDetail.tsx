@@ -68,6 +68,10 @@ export default function ParticipantDetail() {
     { id: participant?.courseId! },
     { enabled: !!participant?.courseId }
   );
+  const { data: courseSchedule } = trpc.courseSchedules.getById.useQuery(
+    { id: participant?.courseScheduleId! },
+    { enabled: !!participant?.courseScheduleId }
+  );
 
   const updateStatusMutation = trpc.participants.updateStatus.useMutation({
     onSuccess: () => {
@@ -210,20 +214,15 @@ export default function ParticipantDetail() {
                 return (
                   <div key={status} className="flex items-center flex-1">
                     <div className="flex flex-col items-center flex-1">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                           isCompleted ? config.color : 'bg-muted'
-                        } text-white`}
-                      >
+                        } text-white`}>
                         {isCompleted ? (
                           <CheckCircle2 className="h-5 w-5" />
                         ) : (
                           <span className="text-xs font-medium">{index + 1}</span>
                         )}
                       </div>
-                      <p className={`text-xs mt-2 text-center ${isCurrent ? 'font-semibold' : 'text-muted-foreground'}`}>
-                        {config.label}
-                      </p>
                     </div>
                     {index < STATUS_PIPELINE.length - 1 && (
                       <div className={`h-0.5 flex-1 ${isCompleted ? 'bg-primary' : 'bg-muted'}`} />
@@ -333,13 +332,24 @@ export default function ParticipantDetail() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">Dauer</p>
-                      <p className="font-medium">{course.duration}</p>
+                      <p className="font-medium">{course.duration} Stunden</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">Preis (Brutto)</p>
-                      <p className="font-medium">{course.priceGross.toFixed(2)} €</p>
+                      <p className="text-sm text-muted-foreground mb-1">Preis (Netto)</p>
+                      <p className="font-medium">{course.priceNet.toFixed(2)} €</p>
                     </div>
                   </div>
+                  {courseSchedule && (
+                    <>
+                      <Separator />
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">Eingetragen für Kurstermin</p>
+                        <p className="font-medium">
+                          {format(new Date(courseSchedule.startDate), 'dd.MM.yyyy', { locale: de })} - {courseSchedule.endDate ? format(new Date(courseSchedule.endDate), 'dd.MM.yyyy', { locale: de }) : 'Offen'}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="flex justify-center py-4">

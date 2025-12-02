@@ -576,3 +576,12 @@
 - [x] Teilnehmer-Detail-Seite gibt 404 (/teilnehmer/:id) - Route hinzugefügt
 - [x] Alle Action-Buttons (Speichern, Erstellen, Öffnen) verwenden Primary-Farbe (default variant)
 - [x] Tenant-Override-System: Mandanten können Primary-Farbe in Einstellungen überschreiben (via useBranding Hook)
+
+## Teilnehmer-Detail-Seite Anpassungen
+
+- [x] Statuspipeline: Doppelten Text-Label neben Button entfernen
+- [x] Preis-Berechnung korrigiert (zeigt jetzt priceNet statt priceGross)
+- [x] Nettopreis statt Bruttopreis anzeigen
+- [x] Dauer-Einheit "Stunden" hinzugefügt
+- [x] Kurstermin-Datum anzeigen (Start- und Enddatum)
+- [ ] Nächster KOMPASS-Termin Hinweis hinzufügen (Schema-Feld fehlt noch)
