@@ -278,7 +278,7 @@ export default function SammelterminsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => navigate(`/sammeltermine/${termin.id}/edit`)}
+                          onClick={() => navigate(`/admin/sammeltermine/${termin.id}/edit`)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>

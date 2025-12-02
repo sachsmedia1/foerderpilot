@@ -18,7 +18,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileCheck, FileX, FileWarning, RefreshCw, CheckCircle, XCircle, Search } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { AdminLayout } from "@/components/AdminLayout";
 
 export default function ValidationDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -103,7 +102,6 @@ export default function ValidationDashboard() {
   };
 
   return (
-    <AdminLayout>
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Validierungs-Dashboard</h1>
@@ -300,6 +298,5 @@ export default function ValidationDashboard() {
         </CardContent>
       </Card>
     </div>
-    </AdminLayout>
   );
 }

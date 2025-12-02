@@ -195,7 +195,7 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     </div>
-                    <Link href={`/sammeltermine/${termin.id}/edit`}>
+                    <Link href={`/admin/sammeltermine/${termin.id}/edit`}>
                       <Button variant="ghost" size="sm">
                         Details
                       </Button>

@@ -188,7 +188,7 @@ export default function Users() {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          onClick={() => navigate(`/users/${user.id}/edit`)}
+                          onClick={() => navigate(`/admin/users/${user.id}/edit`)}
                           title="Bearbeiten"
                         >
                           <Pencil className="h-4 w-4" />

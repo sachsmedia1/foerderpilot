@@ -1,9 +1,0 @@
-{
-  "query": "UPDATE users SET openId = email WHERE email = 's.sachs@sachs-media.com' AND loginMethod = 'email'",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute UPDATE users SET openId = email WHERE email = 's.sachs@sachs-media.com' AND loginMethod = 'email'",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 65
-}

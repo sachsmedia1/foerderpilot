@@ -211,12 +211,12 @@ export default function Courses() {
                             <EyeOff className="h-4 w-4" />
                           )}
                         </Button>
-                        <Link href={`/courses/${course.id}`}>
+                        <Link href={`/admin/courses/${course.id}`}>
                           <Button variant="ghost" size="icon" title="Details anzeigen">
                             <BookOpen className="h-4 w-4" />
                           </Button>
                         </Link>
-                        <Link href={`/courses/${course.id}/edit`}>
+                        <Link href={`/admin/courses/${course.id}/edit`}>
                           <Button variant="ghost" size="icon" title="Bearbeiten">
                             <Edit className="h-4 w-4" />
                           </Button>

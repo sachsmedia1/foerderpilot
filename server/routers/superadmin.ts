@@ -194,69 +194,6 @@ export const superadminRouter = router({
       return { success: true };
     }),
 
-  /**
-   * Benutzer für Bildungsträger erstellen (Super Admin)
-   */
-  createTenantUser: superAdminProcedure
-    .input(
-      z.object({
-        tenantId: z.number(),
-        email: z.string().email(),
-        password: z.string().min(8),
-        name: z.string().min(1).optional(),
-        role: z.enum(["admin", "user", "kompass_reviewer"]),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const db = await getDb();
-      if (!db) throw new Error("Database not available");
-
-      // Prüfe ob E-Mail bereits existiert
-      const existingUser = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, input.email))
-        .limit(1);
-
-      if (existingUser.length > 0) {
-        throw new Error("E-Mail bereits vergeben");
-      }
-
-      // Prüfe ob Tenant existiert
-      const tenant = await getTenantById(input.tenantId);
-      if (!tenant) {
-        throw new Error("Bildungsträger nicht gefunden");
-      }
-
-      // Passwort hashen
-      const bcrypt = await import("bcrypt");
-      const passwordHash = await bcrypt.hash(input.password, 10);
-
-      // User erstellen
-      // ✅ FIX: openId = email für E-Mail/Passwort Auth (damit getUserByOpenId funktioniert)
-      await db
-        .insert(users)
-        .values({
-          tenantId: input.tenantId,
-          email: input.email,
-          openId: input.email, // ← WICHTIG: openId = email für E-Mail Auth
-          passwordHash,
-          name: input.name || input.email.split("@")[0],
-          role: input.role,
-          loginMethod: "email",
-          isActive: true,
-        });
-
-      // User abrufen
-      const [newUser] = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, input.email))
-        .limit(1);
-
-      return newUser;
-    }),
-
   // ============================================================================
   // SYSTEM OVERVIEW
   // ============================================================================

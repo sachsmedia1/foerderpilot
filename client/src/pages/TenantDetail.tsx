@@ -4,25 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Edit, Users, BookOpen, FileText, Calendar, UserPlus, MoreVertical, KeyRound, UserCog, Ban, Check } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { ArrowLeft, Edit, Users, BookOpen, FileText, Calendar } from "lucide-react";
 import { toast } from "sonner";
 
 export default function TenantDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const tenantId = id ? parseInt(id) : undefined;
-
-  // User Creation Form State
-  const [showUserForm, setShowUserForm] = useState(false);
-  const [newUserEmail, setNewUserEmail] = useState("");
-  const [newUserPassword, setNewUserPassword] = useState("");
-  const [newUserName, setNewUserName] = useState("");
-  const [newUserRole, setNewUserRole] = useState<"admin" | "user" | "kompass_reviewer">("user");
 
   const { data: tenant, isLoading } = trpc.superadmin.getTenant.useQuery(
     { id: tenantId! },
@@ -51,34 +39,6 @@ export default function TenantDetail() {
   const handleToggleStatus = () => {
     if (!tenantId) return;
     toggleStatusMutation.mutate({ id: tenantId });
-  };
-
-  const utils = trpc.useUtils();
-  const createUserMutation = trpc.superadmin.createTenantUser.useMutation({
-    onSuccess: () => {
-      toast.success("Benutzer erfolgreich erstellt");
-      setShowUserForm(false);
-      setNewUserEmail("");
-      setNewUserPassword("");
-      setNewUserName("");
-      setNewUserRole("user");
-      utils.superadmin.getTenantUsers.invalidate({ tenantId: tenantId! });
-    },
-    onError: (error) => {
-      toast.error(`Fehler: ${error.message}`);
-    },
-  });
-
-  const handleCreateUser = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!tenantId) return;
-    createUserMutation.mutate({
-      tenantId,
-      email: newUserEmail,
-      password: newUserPassword,
-      name: newUserName || undefined,
-      role: newUserRole,
-    });
   };
 
   if (isLoading) {
@@ -326,89 +286,12 @@ export default function TenantDetail() {
         {/* Users */}
         <Card className="mt-6">
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Benutzer</CardTitle>
-                <CardDescription>
-                  Alle Benutzer dieses Bildungsträgers
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowUserForm(!showUserForm)}
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                Neuer Benutzer
-              </Button>
-            </div>
+            <CardTitle>Benutzer</CardTitle>
+            <CardDescription>
+              Alle Benutzer dieses Bildungsträgers
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* User Creation Form */}
-            {showUserForm && (
-              <form onSubmit={handleCreateUser} className="mb-6 p-4 border rounded-lg bg-muted/50">
-                <h3 className="font-semibold mb-4">Neuen Benutzer erstellen</h3>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">E-Mail *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={newUserEmail}
-                      onChange={(e) => setNewUserEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="password">Passwort * (min. 8 Zeichen)</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={newUserPassword}
-                      onChange={(e) => setNewUserPassword(e.target.value)}
-                      minLength={8}
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Name (optional)</Label>
-                    <Input
-                      id="name"
-                      type="text"
-                      value={newUserName}
-                      onChange={(e) => setNewUserName(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="role">Rolle *</Label>
-                    <Select value={newUserRole} onValueChange={(value: any) => setNewUserRole(value)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="user">Benutzer</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                        <SelectItem value="kompass_reviewer">KOMPASS Reviewer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button type="submit" disabled={createUserMutation.isPending}>
-                      {createUserMutation.isPending ? "Erstelle..." : "Benutzer erstellen"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowUserForm(false)}
-                    >
-                      Abbrechen
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            )}
-
-            {/* User List */}
             {tenantUsers && tenantUsers.length > 0 ? (
               <Table>
                 <TableHeader>
@@ -417,7 +300,6 @@ export default function TenantDetail() {
                     <TableHead>E-Mail</TableHead>
                     <TableHead>Rolle</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -440,50 +322,6 @@ export default function TenantDetail() {
                         ) : (
                           <Badge variant="secondary">Inaktiv</Badge>
                         )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreVertical className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => {
-                                toast.info("Passwort-Reset-Funktion wird in Kürze implementiert");
-                              }}
-                            >
-                              <KeyRound className="w-4 h-4 mr-2" />
-                              Passwort zurücksetzen
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                toast.info("Rollen-Änderungs-Funktion wird in Kürze implementiert");
-                              }}
-                            >
-                              <UserCog className="w-4 h-4 mr-2" />
-                              Rolle ändern
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                toast.info("Status-Änderungs-Funktion wird in Kürze implementiert");
-                              }}
-                            >
-                              {user.isActive ? (
-                                <>
-                                  <Ban className="w-4 h-4 mr-2" />
-                                  Deaktivieren
-                                </>
-                              ) : (
-                                <>
-                                  <Check className="w-4 h-4 mr-2" />
-                                  Aktivieren
-                                </>
-                              )}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   ))}

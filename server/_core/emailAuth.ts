@@ -81,10 +81,8 @@ export function registerEmailAuthRoutes(app: Express) {
       const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
       // Erstelle User
-      // ✅ FIX: openId = email für E-Mail/Passwort Auth (damit getUserByOpenId funktioniert)
       const [result] = await db.insert(users).values({
         email,
-        openId: email, // ← WICHTIG: openId = email für E-Mail Auth
         passwordHash,
         firstName,
         lastName,

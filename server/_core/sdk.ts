@@ -269,18 +269,12 @@ class SDKServer {
     const sessionUserId = session.openId;
     const signedInAt = new Date();
     
-    console.log('[Auth] Authenticating user:', sessionUserId);
-    
     // Try to find user by openId first (OAuth)
     let user = await db.getUserByOpenId(sessionUserId);
-    console.log('[Auth] getUserByOpenId result:', user ? 'found' : 'not found');
     
     // If not found, try by email (E-Mail/Password auth)
-    // For email/password auth, openId in JWT is the email address
     if (!user) {
-      console.log('[Auth] Trying getUserByEmail:', sessionUserId);
       user = await db.getUserByEmail(sessionUserId);
-      console.log('[Auth] getUserByEmail result:', user ? 'found' : 'not found');
     }
 
     // If user not in DB, sync from OAuth server automatically
