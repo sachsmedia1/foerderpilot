@@ -15,6 +15,7 @@ import { getDb } from '../db';
 import { courses } from '../../drizzle/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
+import { validateTenantAccess, validateResourceOwnership } from '../_core/security';
 
 // Validation Schemas
 const courseCreateSchema = z.object({
@@ -64,14 +65,14 @@ export const coursesRouter = router({
       const [course] = await db
         .select()
         .from(courses)
-        .where(and(
-          eq(courses.id, input.id),
-          eq(courses.tenantId, ctx.tenant.id)
-        ));
+        .where(eq(courses.id, input.id));
 
       if (!course) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Kurs nicht gefunden' });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, course.tenantId, 'Course');
 
       // Get sammeltermins for this course
       const { sammeltermins } = await import('../../drizzle/schema');
@@ -159,6 +160,9 @@ export const coursesRouter = router({
       if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
+      // ✅ RLS: Validate tenant access
+      validateTenantAccess(ctx, ctx.tenant.id);
+
       // Build WHERE conditions
       const conditions = [eq(courses.tenantId, ctx.tenant.id)];
       
@@ -200,15 +204,15 @@ export const coursesRouter = router({
       const result = await db
         .select()
         .from(courses)
-        .where(and(
-          eq(courses.id, input.id),
-          eq(courses.tenantId, ctx.tenant.id)
-        ))
+        .where(eq(courses.id, input.id))
         .limit(1);
 
       if (result.length === 0) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Kurs nicht gefunden' });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, result[0].tenantId, 'Course');
 
       return result[0];
     }),
@@ -259,15 +263,15 @@ export const coursesRouter = router({
       const existing = await db
         .select()
         .from(courses)
-        .where(and(
-          eq(courses.id, input.id),
-          eq(courses.tenantId, ctx.tenant.id)
-        ))
+        .where(eq(courses.id, input.id))
         .limit(1);
 
       if (existing.length === 0) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Kurs nicht gefunden' });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, existing[0].tenantId, 'Course');
 
       const { id, ...updateData } = input;
       
@@ -302,15 +306,15 @@ export const coursesRouter = router({
       const existing = await db
         .select()
         .from(courses)
-        .where(and(
-          eq(courses.id, input.id),
-          eq(courses.tenantId, ctx.tenant.id)
-        ))
+        .where(eq(courses.id, input.id))
         .limit(1);
 
       if (existing.length === 0) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Kurs nicht gefunden' });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, existing[0].tenantId, 'Course');
 
       await db
         .update(courses)
@@ -337,15 +341,15 @@ export const coursesRouter = router({
       const existing = await db
         .select()
         .from(courses)
-        .where(and(
-          eq(courses.id, input.id),
-          eq(courses.tenantId, ctx.tenant.id)
-        ))
+        .where(eq(courses.id, input.id))
         .limit(1);
 
       if (existing.length === 0) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Kurs nicht gefunden' });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, existing[0].tenantId, 'Course');
 
       await db
         .update(courses)

@@ -270,3 +270,43 @@ export const documents = mysqlTable("documents", {
 
 export type Document = typeof documents.$inferSelect;
 export type InsertDocument = typeof documents.$inferInsert;
+
+
+// ============================================================================
+// DATABASE INDEXES (Performance-Optimierung)
+// ============================================================================
+import { index } from "drizzle-orm/mysql-core";
+
+// Indexes für Tenants
+export const tenantsBySubdomain = index("idx_tenants_subdomain").on(tenants.subdomain);
+export const tenantsByCustomDomain = index("idx_tenants_custom_domain").on(tenants.customDomain);
+
+// Indexes für Users
+export const usersByTenantId = index("idx_users_tenant_id").on(users.tenantId);
+export const usersByEmail = index("idx_users_email").on(users.email);
+export const usersByOpenId = index("idx_users_open_id").on(users.openId);
+
+// Indexes für Courses
+export const coursesByTenantId = index("idx_courses_tenant_id").on(courses.tenantId);
+export const coursesByStatus = index("idx_courses_status").on(courses.isActive, courses.isPublished);
+
+// Indexes für Course Schedules
+export const courseSchedulesByTenantId = index("idx_course_schedules_tenant_id").on(courseSchedules.tenantId);
+export const courseSchedulesByCourseId = index("idx_course_schedules_course_id").on(courseSchedules.courseId);
+
+// Indexes für Participants
+export const participantsByTenantId = index("idx_participants_tenant_id").on(participants.tenantId);
+export const participantsByCourseId = index("idx_participants_course_id").on(participants.courseId);
+export const participantsByStatus = index("idx_participants_status").on(participants.status);
+export const participantsByUserId = index("idx_participants_user_id").on(participants.userId);
+export const participantsByCourseScheduleId = index("idx_participants_course_schedule_id").on(participants.courseScheduleId);
+
+// Indexes für Documents
+export const documentsByTenantId = index("idx_documents_tenant_id").on(documents.tenantId);
+export const documentsByParticipantId = index("idx_documents_participant_id").on(documents.participantId);
+export const documentsByValidationStatus = index("idx_documents_validation_status").on(documents.validationStatus);
+
+// Indexes für Sammeltermins
+export const sammelterminsByTenantId = index("idx_sammeltermins_tenant_id").on(sammeltermins.tenantId);
+export const sammelterminsByCourseId = index("idx_sammeltermins_course_id").on(sammeltermins.courseId);
+export const sammelterminsByStatus = index("idx_sammeltermins_status").on(sammeltermins.status);

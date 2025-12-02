@@ -13,6 +13,7 @@ import { getDb } from "../db";
 import { participants, courses } from "../../drizzle/schema";
 import { eq, and, like, or, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { validateTenantAccess, validateResourceOwnership } from "../_core/security";
 
 export const participantsRouter = router({
   /**
@@ -38,8 +39,12 @@ export const participantsRouter = router({
     .query(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
-      const conditions = [eq(participants.tenantId, ctx.tenant!.id)];
+      // ✅ RLS: Validate tenant access
+      validateTenantAccess(ctx, ctx.tenant.id);
+
+      const conditions = [eq(participants.tenantId, ctx.tenant.id)];
 
       if (input?.courseId) {
         conditions.push(eq(participants.courseId, input.courseId));
@@ -76,21 +81,20 @@ export const participantsRouter = router({
     .query(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
       const result = await db
         .select()
         .from(participants)
-        .where(
-          and(
-            eq(participants.id, input.id),
-            eq(participants.tenantId, ctx.tenant!.id)
-          )
-        )
+        .where(eq(participants.id, input.id))
         .limit(1);
 
       if (result.length === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Participant not found" });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, result[0].tenantId, 'Participant');
 
       return result[0];
     }),

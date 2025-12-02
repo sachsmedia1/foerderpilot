@@ -1,0 +1,17 @@
+{
+  "query": "-- Update User: role = admin, tenantId = 1\nUPDATE users \nSET role = 'admin', tenantId = 1 \nWHERE id = 240175;\n\n-- Prüfe Änderung\nSELECT id, email, name, role, tenantId FROM users WHERE id = 240175;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute -- Update User: role = admin, tenantId = 1\nUPDATE users \nSET role = 'admin', tenantId = 1 \nWHERE id = 240175;\n\n-- Prüfe Änderung\nSELECT id, email, name, role, tenantId FROM users WHERE id = 240175;",
+  "rows": [
+    {
+      "id": "240175",
+      "email": "info@stefan-sachs.de",
+      "name": "Stefan",
+      "role": "admin",
+      "tenantId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\trole\ttenantId\n240175\tinfo@stefan-sachs.de\tStefan\tadmin\t1\n",
+  "stderr": "",
+  "execution_time_ms": 81
+}
