@@ -84,7 +84,7 @@ export default function ParticipantDetail() {
   const deleteMutation = trpc.participants.delete.useMutation({
     onSuccess: () => {
       toast.success('Teilnehmer gelöscht');
-      setLocation('/admin/participants');
+      setLocation('/participants');
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -137,7 +137,7 @@ export default function ParticipantDetail() {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setLocation('/admin/participants')}
+              onClick={() => setLocation('/participants')}
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -151,7 +151,7 @@ export default function ParticipantDetail() {
           <div className="flex gap-2">
             <Button
               variant="outline"
-              onClick={() => setLocation(`/admin/participants/${participantId}/edit`)}
+              onClick={() => setLocation(`/participants/${participantId}/edit`)}
             >
               <Edit className="h-4 w-4 mr-2" />
               Bearbeiten

@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, email, openId, IFNULL(openId, 'NULL') as openId_display FROM users WHERE email = 's.sachs@sachs-media.com'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT id, email, openId, IFNULL(openId, 'NULL') as openId_display FROM users WHERE email = 's.sachs@sachs-media.com'",
+  "rows": [
+    {
+      "id": "1530083",
+      "email": "s.sachs@sachs-media.com",
+      "openId": "NULL",
+      "openId_display": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\topenId\topenId_display\n1530083\ts.sachs@sachs-media.com\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

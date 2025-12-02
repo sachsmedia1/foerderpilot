@@ -208,7 +208,7 @@ export default function Participants() {
                       </div>
 
                       <div className="flex items-center gap-2 ml-4">
-                        <Link href={`/admin/participants/${participant.id}/view`}>
+                        <Link href={`/participants/${participant.id}/view`}>
                           <Button variant="outline" size="sm">
                             <Eye className="h-4 w-4" />
                           </Button>
