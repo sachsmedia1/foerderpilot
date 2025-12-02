@@ -16,6 +16,7 @@ import CourseDetail from "./pages/admin/CourseDetail";
 import CourseForm from "@/pages/admin/CourseForm";
 import Documents from "@/pages/admin/Documents";
 import Participants from "@/pages/admin/Participants";
+import ValidationDashboard from "@/pages/admin/ValidationDashboard";
 import ParticipantForm from "@/pages/admin/ParticipantForm";
 import ParticipantDetail from "@/pages/admin/ParticipantDetail";
 import Sammeltermine from "@/pages/admin/sammeltermine/index";
@@ -61,6 +62,7 @@ function Router() {
       <Route path={"/participants/new"} component={ParticipantForm} />
       <Route path={"/participants/:id/view"} component={ParticipantDetail} />
       <Route path={"/participants/:id/edit"} component={ParticipantForm} />
+      <Route path={"/validation"} component={ValidationDashboard} />
       <Route path={"/sammeltermine"} component={Sammeltermine} />
       <Route path={"/sammeltermine/new"} component={SammeltermineForm} />
       <Route path={"/sammeltermine/:id/edit"} component={SammeltermineForm} />

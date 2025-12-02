@@ -11,6 +11,7 @@ import { participantsRouter } from './routers/participants';
 import { tenantSettingsRouter } from "./routers/tenantSettings";
 import { userManagementRouter } from "./routers/userManagement";
 import { publicRouter } from './routers/public';
+import { vorvertragRouter } from './routers/vorvertrag';
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -24,6 +25,7 @@ export const appRouter = router({
   participants: participantsRouter,
   tenantSettings: tenantSettingsRouter,
   userManagement: userManagementRouter,
+  vorvertrag: vorvertragRouter,
   // TODO: Add more feature routers here
   
   auth: router({

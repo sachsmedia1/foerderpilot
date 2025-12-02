@@ -272,6 +272,37 @@ export const documents = mysqlTable("documents", {
 export type Document = typeof documents.$inferSelect;
 export type InsertDocument = typeof documents.$inferInsert;
 
+// ============================================================================
+// VORVERTRÄGE (Pre-Contracts - Digitale Vertragsunterzeichnung)
+// ============================================================================
+export const vorvertraege = mysqlTable("vorvertraege", {
+  id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenantId").notNull(),
+  participantId: int("participantId").notNull(),
+  
+  // Vertrags-Status
+  status: varchar("status", { length: 50 }).default("pending").notNull(),
+  // Stati: 'pending', 'signed', 'declined'
+  
+  // Unterschrift-Informationen
+  signedAt: timestamp("signedAt"),
+  signatureData: text("signatureData"), // Base64-encoded signature image or text
+  
+  // Tracking (für Rechtssicherheit)
+  ipAddress: varchar("ipAddress", { length: 50 }),
+  userAgent: text("userAgent"),
+  
+  // Vertrags-Inhalt (optional - falls dynamisch)
+  contractVersion: varchar("contractVersion", { length: 50 }).default("1.0"),
+  contractText: text("contractText"), // Optional: Gespeicherter Vertragstext
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Vorvertrag = typeof vorvertraege.$inferSelect;
+export type InsertVorvertrag = typeof vorvertraege.$inferInsert;
+
 
 // ============================================================================
 // DATABASE INDEXES (Performance-Optimierung)
