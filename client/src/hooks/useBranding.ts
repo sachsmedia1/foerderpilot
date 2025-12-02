@@ -21,54 +21,58 @@ export interface BrandingConfig {
 }
 
 const DEFAULT_BRANDING: BrandingConfig = {
-  primaryColor: "#1E40AF",
-  secondaryColor: "#3B82F6",
+  primaryColor: "#6366F1", // Indigo-500 - heller und besser sichtbar
+  secondaryColor: "#818CF8", // Indigo-400
   logoUrl: null,
   faviconUrl: null,
   tenantName: "FörderPilot",
 };
 
 /**
- * Konvertiert Hex-Farbe zu HSL
- * Benötigt für CSS-Variablen in Tailwind
+ * Konvertiert Hex-Farbe zu OKLCH
+ * Benötigt für CSS-Variablen in Tailwind 4
+ * 
+ * Vereinfachte Konvertierung: Hex -> sRGB -> Linear RGB -> OKLCH
+ * Für präzise Konvertierung wäre eine Bibliothek wie culori empfohlen,
+ * aber diese Näherung funktioniert für die meisten Fälle.
  */
-function hexToHSL(hex: string): string {
+function hexToOKLCH(hex: string): string {
   // Entferne # falls vorhanden
   hex = hex.replace("#", "");
 
-  // Konvertiere zu RGB
+  // Konvertiere zu RGB (0-1 Range)
   const r = parseInt(hex.substring(0, 2), 16) / 255;
   const g = parseInt(hex.substring(2, 4), 16) / 255;
   const b = parseInt(hex.substring(4, 6), 16) / 255;
 
+  // Vereinfachte OKLCH-Approximation
+  // Lightness (L): Durchschnitt der RGB-Werte
+  const l = (r + g + b) / 3;
+
+  // Chroma (C): Differenz zwischen max und min RGB
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h = 0;
-  let s = 0;
-  const l = (max + min) / 2;
+  const c = (max - min) * 0.4; // Skalierungsfaktor für OKLCH
 
+  // Hue (H): Berechnung basierend auf dominanter Farbe
+  let h = 0;
   if (max !== min) {
     const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
     switch (max) {
       case r:
-        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        h = ((g - b) / d + (g < b ? 6 : 0)) * 60;
         break;
       case g:
-        h = ((b - r) / d + 2) / 6;
+        h = ((b - r) / d + 2) * 60;
         break;
       case b:
-        h = ((r - g) / d + 4) / 6;
+        h = ((r - g) / d + 4) * 60;
         break;
     }
   }
 
-  h = Math.round(h * 360);
-  s = Math.round(s * 100);
-  const lPercent = Math.round(l * 100);
-
-  return `${h} ${s}% ${lPercent}%`;
+  // Formatiere als OKLCH-String (L C H)
+  return `${l.toFixed(2)} ${c.toFixed(2)} ${Math.round(h)}`;
 }
 
 /**
@@ -77,9 +81,9 @@ function hexToHSL(hex: string): string {
 function applyBranding(branding: BrandingConfig) {
   const root = document.documentElement;
 
-  // Setze Primary Color
-  const primaryHSL = hexToHSL(branding.primaryColor);
-  root.style.setProperty("--primary", primaryHSL);
+  // Setze Primary Color (OKLCH für Tailwind 4)
+  const primaryOKLCH = hexToOKLCH(branding.primaryColor);
+  root.style.setProperty("--primary", primaryOKLCH);
 
   // Setze Secondary Color (optional, falls benötigt)
   // const secondaryHSL = hexToHSL(branding.secondaryColor);

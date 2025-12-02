@@ -62,6 +62,7 @@ function Router() {
       <Route path={"/participants/new"} component={ParticipantForm} />
       <Route path={"/participants/:id/view"} component={ParticipantDetail} />
       <Route path={"/participants/:id/edit"} component={ParticipantForm} />
+      <Route path={"/teilnehmer/:id"} component={ParticipantDetail} />
       <Route path={"/validation"} component={ValidationDashboard} />
       <Route path={"/sammeltermine"} component={Sammeltermine} />
       <Route path={"/sammeltermine/new"} component={SammeltermineForm} />

@@ -1,0 +1,40 @@
+{
+  "query": "SELECT id, name, primaryColor, secondaryColor FROM tenants LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT id, name, primaryColor, secondaryColor FROM tenants LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "FörderPilot App",
+      "primaryColor": "#FF0000",
+      "secondaryColor": "#00FF00"
+    },
+    {
+      "id": "30001",
+      "name": "Sachs Media",
+      "primaryColor": "#44af20",
+      "secondaryColor": "#33f6d2"
+    },
+    {
+      "id": "60001",
+      "name": "Test Tenant 1764671996945",
+      "primaryColor": "#1E40AF",
+      "secondaryColor": "#3B82F6"
+    },
+    {
+      "id": "60002",
+      "name": "Test Tenant 1764672018801",
+      "primaryColor": "#1E40AF",
+      "secondaryColor": "#3B82F6"
+    },
+    {
+      "id": "60003",
+      "name": "Test Tenant 1764672043561",
+      "primaryColor": "#1E40AF",
+      "secondaryColor": "#3B82F6"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tprimaryColor\tsecondaryColor\n1\tFörderPilot App\t#FF0000\t#00FF00\n30001\tSachs Media\t#44af20\t#33f6d2\n60001\tTest Tenant 1764671996945\t#1E40AF\t#3B82F6\n60002\tTest Tenant 1764672018801\t#1E40AF\t#3B82F6\n60003\tTest Tenant 1764672043561\t#1E40AF\t#3B82F6\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}

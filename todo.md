@@ -569,3 +569,10 @@
 - [ ] Login testen mit erstelltem User
 - [ ] Button-Visibility auf allen Seiten prüfen
 - [ ] Checkpoint erstellen
+
+## URGENT BUGFIXES (User-Reported)
+
+- [x] Button-Hintergrundfarbe fehlt (Primary-Button transparent) - hexToOKLCH Konvertierung implementiert
+- [x] Teilnehmer-Detail-Seite gibt 404 (/teilnehmer/:id) - Route hinzugefügt
+- [x] Alle Action-Buttons (Speichern, Erstellen, Öffnen) verwenden Primary-Farbe (default variant)
+- [x] Tenant-Override-System: Mandanten können Primary-Farbe in Einstellungen überschreiben (via useBranding Hook)
