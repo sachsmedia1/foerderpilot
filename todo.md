@@ -528,3 +528,24 @@
 - [x] TypeScript-Check erfolgreich
 - [x] Alle Tests bestehen (52 passed)
 - [x] Checkpoint erstellt (Version: e27984da)
+
+
+## Super Admin: Benutzer für Bildungsträger erstellen ✅
+
+### Backend
+- [x] superadmin.createTenantUser Procedure (E-Mail, Passwort, Rolle, tenantId)
+- [x] Passwort-Hashing mit bcrypt
+- [x] Validierung: E-Mail unique, Passwort-Stärke (min. 8 Zeichen)
+- [x] User automatisch aktivieren (isActive: true)
+- [x] Tenant-Existenz-Prüfung
+
+### Frontend
+- [x] User-Creation-Form in TenantDetail.tsx ("Neuer Benutzer" Button)
+- [x] Felder: E-Mail, Passwort, Name (optional), Rolle (admin/user/kompass_reviewer)
+- [x] User-Liste in TenantDetail.tsx erweitert (Aktionen-Spalte)
+- [x] Aktionen-Menü: Passwort zurücksetzen, Rolle ändern, Aktivieren/Deaktivieren (Platzhalter)
+
+### Testing
+- [x] TypeScript-Check (erfolgreich)
+- [x] Tests ausführen (53 Tests bestanden)
+- [ ] Checkpoint erstellen

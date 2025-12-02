@@ -68,7 +68,7 @@
 - [x] TypeScript-Check (erfolgreich)
 - [x] pnpm test ausgeführt (53 Tests bestanden)
 - [x] OpenAI API-Key Test erfolgreich (2.1s)
-- [ ] Finaler Sprint 1.4 Checkpoint
+- [x] Finaler Sprint 1.4 Checkpoint (Version: 4ea6fe95)
 
 ---
 
