@@ -223,6 +223,9 @@ export default function ParticipantDetail() {
                           <span className="text-xs font-medium">{index + 1}</span>
                         )}
                       </div>
+                      <p className={`text-xs mt-2 text-center ${isCurrent ? 'font-semibold' : 'text-muted-foreground'}`}>
+                        {config.label}
+                      </p>
                     </div>
                     {index < STATUS_PIPELINE.length - 1 && (
                       <div className={`h-0.5 flex-1 ${isCompleted ? 'bg-primary' : 'bg-muted'}`} />
@@ -336,7 +339,7 @@ export default function ParticipantDetail() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">Preis (Netto)</p>
-                      <p className="font-medium">{course.priceNet.toFixed(2)} €</p>
+                      <p className="font-medium">{(course.priceNet / 100).toFixed(2).replace('.', ',')} €</p>
                     </div>
                   </div>
                   {courseSchedule && (
