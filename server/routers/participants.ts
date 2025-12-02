@@ -182,20 +182,20 @@ export const participantsRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
       // Verify participant belongs to tenant
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
       const existing = await db
         .select()
         .from(participants)
-        .where(
-          and(
-            eq(participants.id, input.id),
-            eq(participants.tenantId, ctx.tenant!.id)
-          )
-        )
+        .where(eq(participants.id, input.id))
         .limit(1);
 
       if (existing.length === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Participant not found" });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, existing[0].tenantId, 'Participant');
 
       const updateData: Record<string, unknown> = {
         updatedAt: new Date(),
@@ -246,20 +246,20 @@ export const participantsRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
       // Verify participant belongs to tenant
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
       const existing = await db
         .select()
         .from(participants)
-        .where(
-          and(
-            eq(participants.id, input.id),
-            eq(participants.tenantId, ctx.tenant!.id)
-          )
-        )
+        .where(eq(participants.id, input.id))
         .limit(1);
 
       if (existing.length === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Participant not found" });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, existing[0].tenantId, 'Participant');
 
       await db
         .update(participants)
@@ -282,20 +282,20 @@ export const participantsRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
       // Verify participant belongs to tenant
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
       const existing = await db
         .select()
         .from(participants)
-        .where(
-          and(
-            eq(participants.id, input.id),
-            eq(participants.tenantId, ctx.tenant!.id)
-          )
-        )
+        .where(eq(participants.id, input.id))
         .limit(1);
 
       if (existing.length === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Participant not found" });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, existing[0].tenantId, 'Participant');
 
       await db.delete(participants).where(eq(participants.id, input.id));
 
@@ -308,11 +308,15 @@ export const participantsRouter = router({
   getStats: adminProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+    if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+    // ✅ RLS: Validate tenant access
+    validateTenantAccess(ctx, ctx.tenant.id);
 
     const allParticipants = await db
       .select()
       .from(participants)
-      .where(eq(participants.tenantId, ctx.tenant!.id));
+      .where(eq(participants.tenantId, ctx.tenant.id));
 
     return {
       total: allParticipants.length,

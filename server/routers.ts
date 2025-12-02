@@ -7,13 +7,15 @@ import { coursesRouter } from './routers/courses';
 import { courseSchedulesRouter } from './routers/courseSchedules';
 import { sammelterminsRouter } from "./routers/sammeltermins";
 import { documentsRouter } from "./routers/documents";
-import { participantsRouter } from "./routers/participants";
+import { participantsRouter } from './routers/participants';
 import { tenantSettingsRouter } from "./routers/tenantSettings";
 import { userManagementRouter } from "./routers/userManagement";
+import { publicRouter } from './routers/public';
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
+  public: publicRouter,
   superadmin: superadminRouter,
   courses: coursesRouter,
   courseSchedules: courseSchedulesRouter,

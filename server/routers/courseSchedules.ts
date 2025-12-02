@@ -15,6 +15,7 @@ import { getDb } from '../db';
 import { courseSchedules } from '../../drizzle/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
+import { validateTenantAccess, validateResourceOwnership } from '../_core/security';
 
 // Validation Schemas
 const courseScheduleCreateSchema = z.object({
@@ -42,6 +43,9 @@ export const courseSchedulesRouter = router({
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
       const conditions = [eq(courseSchedules.tenantId, ctx.tenant.id)];
+
+      // ✅ RLS: Validate tenant access
+      validateTenantAccess(ctx, ctx.tenant.id);
       if (input.courseId) {
         conditions.push(eq(courseSchedules.courseId, input.courseId));
       }

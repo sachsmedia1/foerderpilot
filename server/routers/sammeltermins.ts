@@ -15,6 +15,7 @@ import { getDb } from '../db';
 import { sammeltermins, courses } from '../../drizzle/schema';
 import { eq, and, desc, gte } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
+import { validateTenantAccess, validateResourceOwnership } from '../_core/security';
 
 // Validation Schemas
 const sammelterminCreateSchema = z.object({
@@ -44,6 +45,9 @@ export const sammelterminsRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+      // ✅ RLS: Validate tenant access
+      validateTenantAccess(ctx, ctx.tenant.id);
 
       let query = db
         .select({

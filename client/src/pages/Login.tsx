@@ -4,9 +4,10 @@
  * E-Mail/Passwort Login-Seite
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -27,6 +28,10 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Get tenant branding based on hostname
+  const hostname = window.location.hostname;
+  const { data: branding } = trpc.public.getLoginBranding.useQuery({ hostname });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,11 +68,21 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center">
-              <LogIn className="h-6 w-6 text-primary-foreground" />
-            </div>
+            {branding?.logoUrl ? (
+              <img 
+                src={branding.logoUrl} 
+                alt={branding.companyName || 'Logo'} 
+                className="h-16 max-w-[200px] object-contain"
+              />
+            ) : (
+              <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center">
+                <LogIn className="h-6 w-6 text-primary-foreground" />
+              </div>
+            )}
           </div>
-          <CardTitle className="text-2xl text-center">Willkommen zurück</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            {branding ? `Willkommen bei ${branding.companyName}` : 'Willkommen zurück'}
+          </CardTitle>
           <CardDescription className="text-center">
             Melden Sie sich mit Ihrer E-Mail-Adresse an
           </CardDescription>

@@ -16,6 +16,7 @@ import { eq, and, desc } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { storagePut } from '../storage';
 import { invokeLLM } from '../_core/llm';
+import { validateTenantAccess, validateResourceOwnership } from '../_core/security';
 
 // Validation Schemas
 const documentUploadSchema = z.object({
@@ -54,6 +55,9 @@ export const documentsRouter = router({
       if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
+      // ✅ RLS: Validate tenant access
+      validateTenantAccess(ctx, ctx.tenant.id);
+
       // Build WHERE conditions
       const conditions = [eq(documents.tenantId, ctx.tenant.id)];
       
@@ -90,15 +94,15 @@ export const documentsRouter = router({
       const participant = await db
         .select()
         .from(participants)
-        .where(and(
-          eq(participants.id, input.participantId),
-          eq(participants.tenantId, ctx.tenant.id)
-        ))
+        .where(eq(participants.id, input.participantId))
         .limit(1);
 
       if (participant.length === 0) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Participant not found' });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, participant[0].tenantId, 'Participant');
 
       // Decode base64 file data
       const fileBuffer = Buffer.from(input.fileData, 'base64');
@@ -146,15 +150,15 @@ export const documentsRouter = router({
       const [document] = await db
         .select()
         .from(documents)
-        .where(and(
-          eq(documents.id, input.documentId),
-          eq(documents.tenantId, ctx.tenant.id)
-        ))
+        .where(eq(documents.id, input.documentId))
         .limit(1);
 
       if (!document) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Document not found' });
       }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, document.tenantId, 'Document');
 
       // Update status to validating
       await db
@@ -271,12 +275,23 @@ export const documentsRouter = router({
       if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
+      // Get document to validate ownership
+      const [document] = await db
+        .select()
+        .from(documents)
+        .where(eq(documents.id, input.id))
+        .limit(1);
+
+      if (!document) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Document not found' });
+      }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, document.tenantId, 'Document');
+
       await db
         .delete(documents)
-        .where(and(
-          eq(documents.id, input.id),
-          eq(documents.tenantId, ctx.tenant.id)
-        ));
+        .where(eq(documents.id, input.id));
 
       return { success: true };
     }),

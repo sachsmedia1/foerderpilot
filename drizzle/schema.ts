@@ -214,9 +214,10 @@ export const participants = mysqlTable("participants", {
   
   // Status-Pipeline (13 Schritte)
   status: varchar("status", { length: 50 }).default("registered").notNull(),
-  // Stati: registered, onboarding, documents_uploading, documents_complete,
-  // vorvertrag_sent, vorvertrag_signed, zeus_pending, zeus_completed,
-  // kompass_submitted, kompass_approved, course_enrolled, course_active, course_completed
+  // 1. registered → 2. onboarding → 3. documents_uploading → 4. documents_complete →
+  // 5. documents_approved → 6. zeus_pending → 7. zeus_completed → 8. kompass_submitted →
+  // 9. kompass_approved → 10. course_enrolled → 11. course_active → 12. course_completed →
+  // 13. certificate_issued
   
   // Persönliche Daten
   firstName: varchar("firstName", { length: 100 }).notNull(),
