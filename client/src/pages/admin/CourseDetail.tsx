@@ -68,7 +68,7 @@ export default function CourseDetail() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => setLocation(`/admin/courses/${course.id}/edit`)}>
+            <Button onClick={() => setLocation(`/courses/${course.id}/edit`)}>
               <Edit className="w-4 h-4 mr-2" />
               Bearbeiten
             </Button>
@@ -242,7 +242,7 @@ export default function CourseDetail() {
                           <div className="font-medium mb-2">Zugeordnete Teilnehmer:</div>
                           <div className="space-y-1">
                             {schedule.participants.slice(0, 5).map((p) => (
-                              <Link key={p.id} href={`/admin/teilnehmer/${p.id}`}>
+                              <Link key={p.id} href={`/teilnehmer/${p.id}`}>
                                 <div className="text-sm hover:underline cursor-pointer">
                                   {p.firstName} {p.lastName}
                                   <Badge variant="outline" className="ml-2 text-xs">
@@ -279,7 +279,7 @@ export default function CourseDetail() {
             <CardContent>
               <div className="space-y-2">
                 {unassignedParticipants.map((p) => (
-                  <Link key={p.id} href={`/admin/teilnehmer/${p.id}`}>
+                  <Link key={p.id} href={`/teilnehmer/${p.id}`}>
                     <div className="flex items-center justify-between p-2 hover:bg-accent rounded-md cursor-pointer">
                       <div>
                         <div className="font-medium">

@@ -46,7 +46,7 @@ export default function ParticipantForm() {
   const createMutation = trpc.participants.create.useMutation({
     onSuccess: () => {
       toast.success('Teilnehmer erstellt');
-      setLocation('/admin/participants');
+      setLocation('/participants');
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -56,7 +56,7 @@ export default function ParticipantForm() {
   const updateMutation = trpc.participants.update.useMutation({
     onSuccess: () => {
       toast.success('Teilnehmer aktualisiert');
-      setLocation('/admin/participants');
+      setLocation('/participants');
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -132,7 +132,7 @@ export default function ParticipantForm() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => setLocation('/admin/participants')}
+            onClick={() => setLocation('/participants')}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -302,7 +302,7 @@ export default function ParticipantForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setLocation('/admin/participants')}
+              onClick={() => setLocation('/participants')}
               disabled={isPending}
             >
               Abbrechen
