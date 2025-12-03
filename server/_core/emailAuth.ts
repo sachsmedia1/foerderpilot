@@ -252,9 +252,31 @@ export function registerEmailAuthRoutes(app: Express) {
         })
         .where(eq(users.id, user.id));
 
-      // TODO: E-Mail senden
-      console.log(`[PASSWORD RESET] Token für ${email}: ${resetToken}`);
-      console.log(`[PASSWORD RESET] Link: /reset-password/${resetToken}`);
+      // E-Mail senden
+      try {
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        
+        const resetLink = `https://app.foerderpilot.io/reset-password/${resetToken}`;
+        
+        await resend.emails.send({
+          from: "FörderPilot <noreply@app.foerderpilot.io>",
+          to: email,
+          subject: "Passwort zurücksetzen - FörderPilot",
+          html: `
+            <h2>Passwort zurücksetzen</h2>
+            <p>Sie haben eine Anfrage zum Zurücksetzen Ihres Passworts gestellt.</p>
+            <p><a href="${resetLink}">Klicken Sie hier, um Ihr Passwort zurückzusetzen</a></p>
+            <p>Dieser Link ist nur 1 Stunde gültig.</p>
+            <p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p>
+          `,
+        });
+        
+        console.log(`[PASSWORD RESET] E-Mail gesendet an ${email}`);
+      } catch (emailError) {
+        console.error("[PASSWORD RESET] E-Mail-Versand fehlgeschlagen:", emailError);
+        // Fehler nicht an User weitergeben aus Sicherheitsgründen
+      }
 
       res.json({
         success: true,

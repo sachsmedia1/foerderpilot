@@ -1,0 +1,18 @@
+FörderPilot - Dokument-Validierung
+
+Hallo {{name}},
+
+Ihr Dokument {{documentType}} wurde validiert.
+
+Status: {{status}}
+
+Details:
+{{reason}}
+
+Sie können den Status Ihrer Dokumente jederzeit in Ihrem Dashboard einsehen:
+{{dashboardLink}}
+
+---
+
+© 2025 FörderPilot. Alle Rechte vorbehalten.
+Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese E-Mail.

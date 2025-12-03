@@ -1,0 +1,21 @@
+FörderPilot - Willkommen!
+
+Hallo {{name}},
+
+herzlich willkommen bei FörderPilot! Sie wurden erfolgreich für {{courseName}} registriert.
+
+📋 Nächste Schritte:
+
+1. Melden Sie sich in Ihrem Dashboard an
+2. Laden Sie die erforderlichen Dokumente hoch
+3. Warten Sie auf die Validierung durch unser Team
+4. Erhalten Sie Updates zu Ihrem Förderantrag
+
+Zum Dashboard: {{loginLink}}
+
+Bei Fragen stehen wir Ihnen gerne zur Verfügung!
+
+---
+
+© 2025 FörderPilot. Alle Rechte vorbehalten.
+Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese E-Mail.

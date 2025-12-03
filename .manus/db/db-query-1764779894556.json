@@ -1,0 +1,1277 @@
+{
+  "query": "SELECT id, email, name, role, tenantId FROM users ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT id, email, name, role, tenantId FROM users ORDER BY id",
+  "rows": [
+    {
+      "id": "240175",
+      "email": "info@stefan-sachs.de",
+      "name": "Stefan",
+      "role": "super_admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1530083",
+      "email": "s.sachs@sachs-media.com",
+      "name": "Stefan Sachs",
+      "role": "admin",
+      "tenantId": "30001"
+    },
+    {
+      "id": "1590023",
+      "email": "update-1764666039780@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1590024",
+      "email": "toggle-1764666039900@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1590025",
+      "email": "delete-1764666040119@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1590026",
+      "email": "admin-filter-1764666040387@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1590027",
+      "email": "reviewer-filter-1764666040465@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1590028",
+      "email": "status-filter-1764666040568@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1590029",
+      "email": "search-1764666040890@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620060",
+      "email": "test-1764666804273@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1620061",
+      "email": "test-1764666804691@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620062",
+      "email": "duplicate-1764666804786@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620063",
+      "email": "getbyid-1764666804884@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620064",
+      "email": "update-1764666804974@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620065",
+      "email": "toggle-1764666805096@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620066",
+      "email": "delete-1764666805314@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620067",
+      "email": "admin-filter-1764666805527@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620068",
+      "email": "reviewer-filter-1764666805608@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620069",
+      "email": "status-filter-1764666805712@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620070",
+      "email": "search-1764666806040@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620093",
+      "email": "test-1764667271009@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1620094",
+      "email": "test-1764667277970@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620095",
+      "email": "duplicate-1764667278064@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620096",
+      "email": "getbyid-1764667278173@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620097",
+      "email": "update-1764667278281@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620098",
+      "email": "toggle-1764667278395@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620099",
+      "email": "delete-1764667278616@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620100",
+      "email": "admin-filter-1764667278825@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620101",
+      "email": "reviewer-filter-1764667278927@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620102",
+      "email": "status-filter-1764667279029@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1620103",
+      "email": "search-1764667279354@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680010",
+      "email": "test-1764670773596@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680011",
+      "email": "duplicate-1764670773685@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680012",
+      "email": "getbyid-1764670773792@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680013",
+      "email": "update-1764670773890@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680014",
+      "email": "toggle-1764670774006@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680015",
+      "email": "delete-1764670774236@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680016",
+      "email": "admin-filter-1764670774451@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680017",
+      "email": "reviewer-filter-1764670774530@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680018",
+      "email": "status-filter-1764670774641@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680019",
+      "email": "search-1764670774973@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680027",
+      "email": "test-1764670804772@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1680028",
+      "email": "test-1764670805250@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680029",
+      "email": "duplicate-1764670805337@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680030",
+      "email": "getbyid-1764670805439@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680031",
+      "email": "update-1764670805581@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680032",
+      "email": "toggle-1764670805737@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680033",
+      "email": "delete-1764670806036@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680034",
+      "email": "admin-filter-1764670806262@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680035",
+      "email": "reviewer-filter-1764670806420@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680036",
+      "email": "status-filter-1764670806567@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680037",
+      "email": "search-1764670807011@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680101",
+      "email": "test-1764671144325@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1680102",
+      "email": "test-1764671144857@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680103",
+      "email": "duplicate-1764671144942@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680104",
+      "email": "getbyid-1764671145032@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680105",
+      "email": "update-1764671145119@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680106",
+      "email": "toggle-1764671145228@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680107",
+      "email": "delete-1764671145447@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680108",
+      "email": "admin-filter-1764671145655@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680109",
+      "email": "reviewer-filter-1764671145737@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680110",
+      "email": "status-filter-1764671145844@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1680111",
+      "email": "search-1764671146179@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710026",
+      "email": "test-1764671954846@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1710027",
+      "email": "test-1764671955417@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710028",
+      "email": "duplicate-1764671955509@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710029",
+      "email": "getbyid-1764671955607@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710030",
+      "email": "update-1764671955697@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710031",
+      "email": "toggle-1764671955820@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710032",
+      "email": "delete-1764671956042@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710033",
+      "email": "admin-filter-1764671956252@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710034",
+      "email": "reviewer-filter-1764671956332@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710035",
+      "email": "status-filter-1764671956439@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710036",
+      "email": "search-1764671956766@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710041",
+      "email": "test-1764671977490@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1710042",
+      "email": "test-1764671978088@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710043",
+      "email": "duplicate-1764671978199@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710044",
+      "email": "getbyid-1764671978291@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710045",
+      "email": "update-1764671978385@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710046",
+      "email": "toggle-1764671978495@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710047",
+      "email": "delete-1764671978733@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710048",
+      "email": "admin-filter-1764671978949@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710049",
+      "email": "reviewer-filter-1764671979030@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710050",
+      "email": "status-filter-1764671979128@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710051",
+      "email": "search-1764671979449@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710054",
+      "email": "test-1764671996539@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1710055",
+      "email": "test-1764671997100@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "60001"
+    },
+    {
+      "id": "1710056",
+      "email": "test-1764671997091@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710057",
+      "email": "duplicate-1764671997181@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710058",
+      "email": "getbyid-1764671997296@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710059",
+      "email": "update-1764671997388@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710060",
+      "email": "toggle-1764671997499@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710061",
+      "email": "delete-1764671997711@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710062",
+      "email": "admin-filter-1764671997917@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710063",
+      "email": "reviewer-filter-1764671997996@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710064",
+      "email": "status-filter-1764671998100@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710065",
+      "email": "search-1764671998416@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710070",
+      "email": "test-1764672018453@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1710071",
+      "email": "test-1764672018915@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "60002"
+    },
+    {
+      "id": "1710072",
+      "email": "test-1764672018920@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710073",
+      "email": "duplicate-1764672019005@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710074",
+      "email": "getbyid-1764672019097@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710075",
+      "email": "update-1764672019189@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710076",
+      "email": "toggle-1764672019293@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710077",
+      "email": "delete-1764672019506@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710078",
+      "email": "admin-filter-1764672019713@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710079",
+      "email": "reviewer-filter-1764672019795@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710080",
+      "email": "status-filter-1764672019897@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710081",
+      "email": "search-1764672020211@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710088",
+      "email": "test-1764672043109@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1710089",
+      "email": "test-1764672043696@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "60003"
+    },
+    {
+      "id": "1710090",
+      "email": "test-1764672043699@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710091",
+      "email": "duplicate-1764672043786@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710092",
+      "email": "getbyid-1764672043882@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710093",
+      "email": "update-1764672043973@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710094",
+      "email": "toggle-1764672044079@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710095",
+      "email": "delete-1764672044304@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710096",
+      "email": "admin-filter-1764672044523@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710097",
+      "email": "reviewer-filter-1764672044601@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710098",
+      "email": "status-filter-1764672044700@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1710099",
+      "email": "search-1764672045017@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770039",
+      "email": "test-1764677023122@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1770040",
+      "email": "test-1764677023635@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "90001"
+    },
+    {
+      "id": "1770041",
+      "email": "test-1764677023626@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770042",
+      "email": "duplicate-1764677023712@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770043",
+      "email": "getbyid-1764677023808@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770044",
+      "email": "update-1764677023897@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770045",
+      "email": "toggle-1764677024006@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770046",
+      "email": "delete-1764677024263@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770047",
+      "email": "admin-filter-1764677024472@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770048",
+      "email": "reviewer-filter-1764677024552@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770049",
+      "email": "status-filter-1764677024658@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1770050",
+      "email": "search-1764677024992@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800033",
+      "email": "test-1764677944009@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1800034",
+      "email": "test-1764677944578@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "120001"
+    },
+    {
+      "id": "1800035",
+      "email": "test-1764677944693@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800036",
+      "email": "duplicate-1764677944788@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800037",
+      "email": "getbyid-1764677944892@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800038",
+      "email": "update-1764677944988@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800039",
+      "email": "toggle-1764677945105@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800040",
+      "email": "delete-1764677945551@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800041",
+      "email": "admin-filter-1764677945761@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800042",
+      "email": "reviewer-filter-1764677945947@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800043",
+      "email": "status-filter-1764677946061@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1800044",
+      "email": "search-1764677946391@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830060",
+      "email": "test-1764678679242@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1830061",
+      "email": "test-1764678679861@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "150001"
+    },
+    {
+      "id": "1830062",
+      "email": "test-1764678679843@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830063",
+      "email": "duplicate-1764678679947@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830064",
+      "email": "getbyid-1764678680047@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830065",
+      "email": "update-1764678680143@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830066",
+      "email": "toggle-1764678680263@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830067",
+      "email": "delete-1764678680507@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830068",
+      "email": "admin-filter-1764678680748@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830069",
+      "email": "reviewer-filter-1764678680845@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830070",
+      "email": "status-filter-1764678681021@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830071",
+      "email": "search-1764678681361@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830096",
+      "email": "test-1764679093291@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1830097",
+      "email": "test-1764679094871@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "150002"
+    },
+    {
+      "id": "1830098",
+      "email": "test-1764679094887@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830099",
+      "email": "duplicate-1764679094971@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830100",
+      "email": "getbyid-1764679095067@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830101",
+      "email": "update-1764679095158@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830102",
+      "email": "toggle-1764679095396@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830103",
+      "email": "delete-1764679095642@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830104",
+      "email": "admin-filter-1764679095944@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830105",
+      "email": "reviewer-filter-1764679096034@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830106",
+      "email": "status-filter-1764679096142@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830107",
+      "email": "search-1764679096532@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830127",
+      "email": "test-1764679636395@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "NULL"
+    },
+    {
+      "id": "1830128",
+      "email": "test-1764679637036@example.com",
+      "name": "Test User",
+      "role": "admin",
+      "tenantId": "150003"
+    },
+    {
+      "id": "1830129",
+      "email": "test-1764679637073@example.com",
+      "name": "Test User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830130",
+      "email": "duplicate-1764679637190@example.com",
+      "name": "First User",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830131",
+      "email": "getbyid-1764679637322@example.com",
+      "name": "Get By ID Test",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830132",
+      "email": "update-1764679637470@example.com",
+      "name": "Updated Name",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830133",
+      "email": "toggle-1764679637756@example.com",
+      "name": "Toggle Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830134",
+      "email": "delete-1764679638041@example.com",
+      "name": "Delete Test",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830135",
+      "email": "admin-filter-1764679638338@example.com",
+      "name": "Admin Filter",
+      "role": "admin",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830136",
+      "email": "reviewer-filter-1764679638422@example.com",
+      "name": "Reviewer Filter",
+      "role": "kompass_reviewer",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830137",
+      "email": "status-filter-1764679638526@example.com",
+      "name": "Status Filter",
+      "role": "user",
+      "tenantId": "1"
+    },
+    {
+      "id": "1830138",
+      "email": "search-1764679638848@example.com",
+      "name": "Searchable User",
+      "role": "user",
+      "tenantId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\trole\ttenantId\n240175\tinfo@stefan-sachs.de\tStefan\tsuper_admin\t1\n1530083\ts.sachs@sachs-media.com\tStefan Sachs\tadmin\t30001\n1590023\tupdate-1764666039780@example.com\tUpdated Name\tadmin\t1\n1590024\ttoggle-1764666039900@example.com\tToggle Test\tuser\t1\n1590025\tdelete-1764666040119@example.com\tDelete Test\tuser\t1\n1590026\tadmin-filter-1764666040387@example.com\tAdmin Filter\tadmin\t1\n1590027\treviewer-filter-1764666040465@example.com\tReviewer Filter\tkompass_reviewer\t1\n1590028\tstatus-filter-1764666040568@example.com\tStatus Filter\tuser\t1\n1590029\tsearch-1764666040890@example.com\tSearchable User\tuser\t1\n1620060\ttest-1764666804273@example.com\tTest User\tuser\tNULL\n1620061\ttest-1764666804691@example.com\tTest User\tuser\t1\n1620062\tduplicate-1764666804786@example.com\tFirst User\tuser\t1\n1620063\tgetbyid-1764666804884@example.com\tGet By ID Test\tkompass_reviewer\t1\n1620064\tupdate-1764666804974@example.com\tUpdated Name\tadmin\t1\n1620065\ttoggle-1764666805096@example.com\tToggle Test\tuser\t1\n1620066\tdelete-1764666805314@example.com\tDelete Test\tuser\t1\n1620067\tadmin-filter-1764666805527@example.com\tAdmin Filter\tadmin\t1\n1620068\treviewer-filter-1764666805608@example.com\tReviewer Filter\tkompass_reviewer\t1\n1620069\tstatus-filter-1764666805712@example.com\tStatus Filter\tuser\t1\n1620070\tsearch-1764666806040@example.com\tSearchable User\tuser\t1\n1620093\ttest-1764667271009@example.com\tTest User\tuser\tNULL\n1620094\ttest-1764667277970@example.com\tTest User\tuser\t1\n1620095\tduplicate-1764667278064@example.com\tFirst User\tuser\t1\n1620096\tgetbyid-1764667278173@example.com\tGet By ID Test\tkompass_reviewer\t1\n1620097\tupdate-1764667278281@example.com\tUpdated Name\tadmin\t1\n1620098\ttoggle-1764667278395@example.com\tToggle Test\tuser\t1\n1620099\tdelete-1764667278616@example.com\tDelete Test\tuser\t1\n1620100\tadmin-filter-1764667278825@example.com\tAdmin Filter\tadmin\t1\n1620101\treviewer-filter-1764667278927@example.com\tReviewer Filter\tkompass_reviewer\t1\n1620102\tstatus-filter-1764667279029@example.com\tStatus Filter\tuser\t1\n1620103\tsearch-1764667279354@example.com\tSearchable User\tuser\t1\n1680010\ttest-1764670773596@example.com\tTest User\tuser\t1\n1680011\tduplicate-1764670773685@example.com\tFirst User\tuser\t1\n1680012\tgetbyid-1764670773792@example.com\tGet By ID Test\tkompass_reviewer\t1\n1680013\tupdate-1764670773890@example.com\tUpdated Name\tadmin\t1\n1680014\ttoggle-1764670774006@example.com\tToggle Test\tuser\t1\n1680015\tdelete-1764670774236@example.com\tDelete Test\tuser\t1\n1680016\tadmin-filter-1764670774451@example.com\tAdmin Filter\tadmin\t1\n1680017\treviewer-filter-1764670774530@example.com\tReviewer Filter\tkompass_reviewer\t1\n1680018\tstatus-filter-1764670774641@example.com\tStatus Filter\tuser\t1\n1680019\tsearch-1764670774973@example.com\tSearchable User\tuser\t1\n1680027\ttest-1764670804772@example.com\tTest User\tuser\tNULL\n1680028\ttest-1764670805250@example.com\tTest User\tuser\t1\n1680029\tduplicate-1764670805337@example.com\tFirst User\tuser\t1\n1680030\tgetbyid-1764670805439@example.com\tGet By ID Test\tkompass_reviewer\t1\n1680031\tupdate-1764670805581@example.com\tUpdated Name\tadmin\t1\n1680032\ttoggle-1764670805737@example.com\tToggle Test\tuser\t1\n1680033\tdelete-1764670806036@example.com\tDelete Test\tuser\t1\n1680034\tadmin-filter-1764670806262@example.com\tAdmin Filter\tadmin\t1\n1680035\treviewer-filter-1764670806420@example.com\tReviewer Filter\tkompass_reviewer\t1\n1680036\tstatus-filter-1764670806567@example.com\tStatus Filter\tuser\t1\n1680037\tsearch-1764670807011@example.com\tSearchable User\tuser\t1\n1680101\ttest-1764671144325@example.com\tTest User\tuser\tNULL\n1680102\ttest-1764671144857@example.com\tTest User\tuser\t1\n1680103\tduplicate-1764671144942@example.com\tFirst User\tuser\t1\n1680104\tgetbyid-1764671145032@example.com\tGet By ID Test\tkompass_reviewer\t1\n1680105\tupdate-1764671145119@example.com\tUpdated Name\tadmin\t1\n1680106\ttoggle-1764671145228@example.com\tToggle Test\tuser\t1\n1680107\tdelete-1764671145447@example.com\tDelete Test\tuser\t1\n1680108\tadmin-filter-1764671145655@example.com\tAdmin Filter\tadmin\t1\n1680109\treviewer-filter-1764671145737@example.com\tReviewer Filter\tkompass_reviewer\t1\n1680110\tstatus-filter-1764671145844@example.com\tStatus Filter\tuser\t1\n1680111\tsearch-1764671146179@example.com\tSearchable User\tuser\t1\n1710026\ttest-1764671954846@example.com\tTest User\tuser\tNULL\n1710027\ttest-1764671955417@example.com\tTest User\tuser\t1\n1710028\tduplicate-1764671955509@example.com\tFirst User\tuser\t1\n1710029\tgetbyid-1764671955607@example.com\tGet By ID Test\tkompass_reviewer\t1\n1710030\tupdate-1764671955697@example.com\tUpdated Name\tadmin\t1\n1710031\ttoggle-1764671955820@example.com\tToggle Test\tuser\t1\n1710032\tdelete-1764671956042@example.com\tDelete Test\tuser\t1\n1710033\tadmin-filter-1764671956252@example.com\tAdmin Filter\tadmin\t1\n1710034\treviewer-filter-1764671956332@example.com\tReviewer Filter\tkompass_reviewer\t1\n1710035\tstatus-filter-1764671956439@example.com\tStatus Filter\tuser\t1\n1710036\tsearch-1764671956766@example.com\tSearchable User\tuser\t1\n1710041\ttest-1764671977490@example.com\tTest User\tuser\tNULL\n1710042\ttest-1764671978088@example.com\tTest User\tuser\t1\n1710043\tduplicate-1764671978199@example.com\tFirst User\tuser\t1\n1710044\tgetbyid-1764671978291@example.com\tGet By ID Test\tkompass_reviewer\t1\n1710045\tupdate-1764671978385@example.com\tUpdated Name\tadmin\t1\n1710046\ttoggle-1764671978495@example.com\tToggle Test\tuser\t1\n1710047\tdelete-1764671978733@example.com\tDelete Test\tuser\t1\n1710048\tadmin-filter-1764671978949@example.com\tAdmin Filter\tadmin\t1\n1710049\treviewer-filter-1764671979030@example.com\tReviewer Filter\tkompass_reviewer\t1\n1710050\tstatus-filter-1764671979128@example.com\tStatus Filter\tuser\t1\n1710051\tsearch-1764671979449@example.com\tSearchable User\tuser\t1\n1710054\ttest-1764671996539@example.com\tTest User\tuser\tNULL\n1710055\ttest-1764671997100@example.com\tTest User\tadmin\t60001\n1710056\ttest-1764671997091@example.com\tTest User\tuser\t1\n1710057\tduplicate-1764671997181@example.com\tFirst User\tuser\t1\n1710058\tgetbyid-1764671997296@example.com\tGet By ID Test\tkompass_reviewer\t1\n1710059\tupdate-1764671997388@example.com\tUpdated Name\tadmin\t1\n1710060\ttoggle-1764671997499@example.com\tToggle Test\tuser\t1\n1710061\tdelete-1764671997711@example.com\tDelete Test\tuser\t1\n1710062\tadmin-filter-1764671997917@example.com\tAdmin Filter\tadmin\t1\n1710063\treviewer-filter-1764671997996@example.com\tReviewer Filter\tkompass_reviewer\t1\n1710064\tstatus-filter-1764671998100@example.com\tStatus Filter\tuser\t1\n1710065\tsearch-1764671998416@example.com\tSearchable User\tuser\t1\n1710070\ttest-1764672018453@example.com\tTest User\tuser\tNULL\n1710071\ttest-1764672018915@example.com\tTest User\tadmin\t60002\n1710072\ttest-1764672018920@example.com\tTest User\tuser\t1\n1710073\tduplicate-1764672019005@example.com\tFirst User\tuser\t1\n1710074\tgetbyid-1764672019097@example.com\tGet By ID Test\tkompass_reviewer\t1\n1710075\tupdate-1764672019189@example.com\tUpdated Name\tadmin\t1\n1710076\ttoggle-1764672019293@example.com\tToggle Test\tuser\t1\n1710077\tdelete-1764672019506@example.com\tDelete Test\tuser\t1\n1710078\tadmin-filter-1764672019713@example.com\tAdmin Filter\tadmin\t1\n1710079\treviewer-filter-1764672019795@example.com\tReviewer Filter\tkompass_reviewer\t1\n1710080\tstatus-filter-1764672019897@example.com\tStatus Filter\tuser\t1\n1710081\tsearch-1764672020211@example.com\tSearchable User\tuser\t1\n1710088\ttest-1764672043109@example.com\tTest User\tuser\tNULL\n1710089\ttest-1764672043696@example.com\tTest User\tadmin\t60003\n1710090\ttest-1764672043699@example.com\tTest User\tuser\t1\n1710091\tduplicate-1764672043786@example.com\tFirst User\tuser\t1\n1710092\tgetbyid-1764672043882@example.com\tGet By ID Test\tkompass_reviewer\t1\n1710093\tupdate-1764672043973@example.com\tUpdated Name\tadmin\t1\n1710094\ttoggle-1764672044079@example.com\tToggle Test\tuser\t1\n1710095\tdelete-1764672044304@example.com\tDelete Test\tuser\t1\n1710096\tadmin-filter-1764672044523@example.com\tAdmin Filter\tadmin\t1\n1710097\treviewer-filter-1764672044601@example.com\tReviewer Filter\tkompass_reviewer\t1\n1710098\tstatus-filter-1764672044700@example.com\tStatus Filter\tuser\t1\n1710099\tsearch-1764672045017@example.com\tSearchable User\tuser\t1\n1770039\ttest-1764677023122@example.com\tTest User\tuser\tNULL\n1770040\ttest-1764677023635@example.com\tTest User\tadmin\t90001\n1770041\ttest-1764677023626@example.com\tTest User\tuser\t1\n1770042\tduplicate-1764677023712@example.com\tFirst User\tuser\t1\n1770043\tgetbyid-1764677023808@example.com\tGet By ID Test\tkompass_reviewer\t1\n1770044\tupdate-1764677023897@example.com\tUpdated Name\tadmin\t1\n1770045\ttoggle-1764677024006@example.com\tToggle Test\tuser\t1\n1770046\tdelete-1764677024263@example.com\tDelete Test\tuser\t1\n1770047\tadmin-filter-1764677024472@example.com\tAdmin Filter\tadmin\t1\n1770048\treviewer-filter-1764677024552@example.com\tReviewer Filter\tkompass_reviewer\t1\n1770049\tstatus-filter-1764677024658@example.com\tStatus Filter\tuser\t1\n1770050\tsearch-1764677024992@example.com\tSearchable User\tuser\t1\n1800033\ttest-1764677944009@example.com\tTest User\tuser\tNULL\n1800034\ttest-1764677944578@example.com\tTest User\tadmin\t120001\n1800035\ttest-1764677944693@example.com\tTest User\tuser\t1\n1800036\tduplicate-1764677944788@example.com\tFirst User\tuser\t1\n1800037\tgetbyid-1764677944892@example.com\tGet By ID Test\tkompass_reviewer\t1\n1800038\tupdate-1764677944988@example.com\tUpdated Name\tadmin\t1\n1800039\ttoggle-1764677945105@example.com\tToggle Test\tuser\t1\n1800040\tdelete-1764677945551@example.com\tDelete Test\tuser\t1\n1800041\tadmin-filter-1764677945761@example.com\tAdmin Filter\tadmin\t1\n1800042\treviewer-filter-1764677945947@example.com\tReviewer Filter\tkompass_reviewer\t1\n1800043\tstatus-filter-1764677946061@example.com\tStatus Filter\tuser\t1\n1800044\tsearch-1764677946391@example.com\tSearchable User\tuser\t1\n1830060\ttest-1764678679242@example.com\tTest User\tuser\tNULL\n1830061\ttest-1764678679861@example.com\tTest User\tadmin\t150001\n1830062\ttest-1764678679843@example.com\tTest User\tuser\t1\n1830063\tduplicate-1764678679947@example.com\tFirst User\tuser\t1\n1830064\tgetbyid-1764678680047@example.com\tGet By ID Test\tkompass_reviewer\t1\n1830065\tupdate-1764678680143@example.com\tUpdated Name\tadmin\t1\n1830066\ttoggle-1764678680263@example.com\tToggle Test\tuser\t1\n1830067\tdelete-1764678680507@example.com\tDelete Test\tuser\t1\n1830068\tadmin-filter-1764678680748@example.com\tAdmin Filter\tadmin\t1\n1830069\treviewer-filter-1764678680845@example.com\tReviewer Filter\tkompass_reviewer\t1\n1830070\tstatus-filter-1764678681021@example.com\tStatus Filter\tuser\t1\n1830071\tsearch-1764678681361@example.com\tSearchable User\tuser\t1\n1830096\ttest-1764679093291@example.com\tTest User\tuser\tNULL\n1830097\ttest-1764679094871@example.com\tTest User\tadmin\t150002\n1830098\ttest-1764679094887@example.com\tTest User\tuser\t1\n1830099\tduplicate-1764679094971@example.com\tFirst User\tuser\t1\n1830100\tgetbyid-1764679095067@example.com\tGet By ID Test\tkompass_reviewer\t1\n1830101\tupdate-1764679095158@example.com\tUpdated Name\tadmin\t1\n1830102\ttoggle-1764679095396@example.com\tToggle Test\tuser\t1\n1830103\tdelete-1764679095642@example.com\tDelete Test\tuser\t1\n1830104\tadmin-filter-1764679095944@example.com\tAdmin Filter\tadmin\t1\n1830105\treviewer-filter-1764679096034@example.com\tReviewer Filter\tkompass_reviewer\t1\n1830106\tstatus-filter-1764679096142@example.com\tStatus Filter\tuser\t1\n1830107\tsearch-1764679096532@example.com\tSearchable User\tuser\t1\n1830127\ttest-1764679636395@example.com\tTest User\tuser\tNULL\n1830128\ttest-1764679637036@example.com\tTest User\tadmin\t150003\n1830129\ttest-1764679637073@example.com\tTest User\tuser\t1\n1830130\tduplicate-1764679637190@example.com\tFirst User\tuser\t1\n1830131\tgetbyid-1764679637322@example.com\tGet By ID Test\tkompass_reviewer\t1\n1830132\tupdate-1764679637470@example.com\tUpdated Name\tadmin\t1\n1830133\ttoggle-1764679637756@example.com\tToggle Test\tuser\t1\n1830134\tdelete-1764679638041@example.com\tDelete Test\tuser\t1\n1830135\tadmin-filter-1764679638338@example.com\tAdmin Filter\tadmin\t1\n1830136\treviewer-filter-1764679638422@example.com\tReviewer Filter\tkompass_reviewer\t1\n1830137\tstatus-filter-1764679638526@example.com\tStatus Filter\tuser\t1\n1830138\tsearch-1764679638848@example.com\tSearchable User\tuser\t1\n",
+  "stderr": "",
+  "execution_time_ms": 3156
+}
