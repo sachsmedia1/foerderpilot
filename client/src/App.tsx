@@ -10,7 +10,7 @@ import SuperAdmin from "./pages/SuperAdmin";
 import TenantForm from "./pages/TenantForm";
 import TenantDetail from "./pages/TenantDetail";
 import Maintenance from "./pages/Maintenance";
-import AdminDashboard from "./pages/admin/Dashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import Courses from "./pages/admin/Courses";
 import CourseDetail from "./pages/admin/CourseDetail";
 import CourseForm from "@/pages/admin/CourseForm";
