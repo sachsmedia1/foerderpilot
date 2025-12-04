@@ -608,3 +608,5 @@
 - [x] 404-Fehler nach Registrierung: /set-password Route existiert nicht - Route zu /reset-password geändert, Query-Parameter-Parsing hinzugefügt
 
 - [x] E-Mail verwendet noch /set-password statt /reset-password - generateWelcomeEmail Parameter korrigiert (kurstitel statt kursname, starttermin hinzugefügt, eigenanteil entfernt)
+
+- [x] Password-Reset-Token ungültig: "Ungültiger oder abgelaufener Token" beim Passwort-Setzen - Backend verwendete passwordResetToken statt resetToken (Schema-Spaltenname)

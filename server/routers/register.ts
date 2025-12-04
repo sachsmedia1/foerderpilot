@@ -495,8 +495,8 @@ export const registerRouter = router({
           role: "user",
           tenantId: session.tenantId,
           passwordHash: null, // Wird beim ersten Login gesetzt
-          passwordResetToken: resetToken,
-          passwordResetExpiry: resetTokenExpiry,
+          resetToken: resetToken,
+          resetTokenExpiry: resetTokenExpiry,
         });
 
       // Participant erstellen
