@@ -23,6 +23,7 @@ import ParticipantDetail from "@/pages/admin/ParticipantDetail";
 import Sammeltermine from "@/pages/admin/sammeltermine/index";
 import SammeltermineForm from "@/pages/admin/sammeltermine/SammeltermineForm";
 import Settings from "@/pages/admin/Settings";
+import EmailTest from "@/pages/admin/EmailTest";
 
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -65,7 +66,8 @@ function Router() {
       <Route path={"/participants/:id/view"} component={ParticipantDetail} />
       <Route path={"/participants/:id/edit"} component={ParticipantForm} />
       <Route path={"/teilnehmer/:id"} component={ParticipantDetail} />
-      <Route path={"/validation"} component={ValidationDashboard} />
+        <Route path="/validation" component={ValidationDashboard} />
+        <Route path="/email-test" component={EmailTest} />
       <Route path={"/sammeltermine"} component={Sammeltermine} />
       <Route path={"/sammeltermine/new"} component={SammeltermineForm} />
       <Route path={"/sammeltermine/:id/edit"} component={SammeltermineForm} />

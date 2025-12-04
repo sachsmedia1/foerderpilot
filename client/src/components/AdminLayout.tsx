@@ -24,7 +24,8 @@ import {
   LogOut,
   FileCheck,
   FileText,
-  Kanban
+  Kanban,
+  Mail
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, type ReactNode } from "react";
@@ -75,6 +76,11 @@ const navItems: NavItem[] = [
     title: "Validierung",
     href: "/validation",
     icon: FileText,
+  },
+  {
+    title: "E-Mail Test",
+    href: "/email-test",
+    icon: Mail,
   },
   {
     title: "Einstellungen",
