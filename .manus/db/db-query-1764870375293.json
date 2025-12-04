@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, email, firstName, lastName, tenantId, userId, courseId, status FROM participants WHERE email = 's.sachs+kompass@sachs-media.com'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT id, email, firstName, lastName, tenantId, userId, courseId, status FROM participants WHERE email = 's.sachs+kompass@sachs-media.com'",
+  "rows": [
+    {
+      "id": "390001",
+      "email": "s.sachs+kompass@sachs-media.com",
+      "firstName": "Stefan",
+      "lastName": "Sachs",
+      "tenantId": "1",
+      "userId": "3210003",
+      "courseId": "30001",
+      "status": "anmeldung_eingegangen"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tfirstName\tlastName\ttenantId\tuserId\tcourseId\tstatus\n390001\ts.sachs+kompass@sachs-media.com\tStefan\tSachs\t1\t3210003\t30001\tanmeldung_eingegangen\n",
+  "stderr": "",
+  "execution_time_ms": 93
+}

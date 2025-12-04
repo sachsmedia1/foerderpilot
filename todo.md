@@ -610,3 +610,19 @@
 - [x] E-Mail verwendet noch /set-password statt /reset-password - generateWelcomeEmail Parameter korrigiert (kurstitel statt kursname, starttermin hinzugefügt, eigenanteil entfernt)
 
 - [x] Password-Reset-Token ungültig: "Ungültiger oder abgelaufener Token" beim Passwort-Setzen - Backend verwendete passwordResetToken statt resetToken (Schema-Spaltenname)
+
+
+## Zurückgestellt auf später
+
+### Tenant-Zuweisung
+- [ ] Tenant-Zuweisung aus Subdomain extrahieren (aktuell hardcoded auf Tenant 1 in RegisterFunnel.tsx)
+- [ ] Subdomain-Parsing im Frontend implementieren
+- [ ] Tenant-Lookup-API erstellen (Subdomain → tenantId)
+
+### Registrierungs-Funnel Verbesserungen
+- [ ] Kurstermine in Kursauswahl anzeigen (Backend getCourses um courseSchedules erweitern)
+- [ ] Nächster KOMPASS-Termin Hinweis im Funnel hinzufügen
+- [ ] E-Mail-Branding mit Tenant-Logo und Farben
+
+### Bekannte UI-Issues (niedrige Priorität)
+- [ ] Dropdown-Menü überlappt Content (Shadcn/ui Standard-Verhalten, kein Bug)
