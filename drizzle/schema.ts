@@ -342,3 +342,34 @@ export const documentsByValidationStatus = index("idx_documents_validation_statu
 export const sammelterminsByTenantId = index("idx_sammeltermins_tenant_id").on(sammeltermins.tenantId);
 export const sammelterminsByCourseId = index("idx_sammeltermins_course_id").on(sammeltermins.courseId);
 export const sammelterminsByStatus = index("idx_sammeltermins_status").on(sammeltermins.status);
+
+
+// ============================================================================
+// E-MAIL TEMPLATES (Editierbare E-Mail-Vorlagen)
+// ============================================================================
+export const emailTemplates = mysqlTable("emailTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenantId").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  
+  // Template-Typ
+  templateType: varchar("templateType", { length: 100 }).notNull(), // 'welcome', 'password_reset', 'document_validation_valid', 'document_validation_invalid', 'sammeltermin_reminder', 'status_change'
+  
+  // E-Mail-Inhalt
+  subject: varchar("subject", { length: 500 }).notNull(),
+  bodyHtml: text("bodyHtml").notNull(),
+  bodyText: text("bodyText"), // Plain-Text-Fallback (optional)
+  
+  // Status
+  isActive: boolean("isActive").default(true).notNull(),
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EmailTemplate = typeof emailTemplates.$inferSelect;
+export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
+
+// Index für E-Mail-Templates
+export const emailTemplatesByTenantId = index("idx_email_templates_tenant_id").on(emailTemplates.tenantId);
+export const emailTemplatesByType = index("idx_email_templates_type").on(emailTemplates.templateType);

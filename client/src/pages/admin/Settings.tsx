@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Building2, Palette, Globe, Loader2, Award, Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Mail } from "lucide-react";
+import { Building2, Palette, Globe, Loader2, Award, Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Mail, FileText } from "lucide-react";
 
 export default function SettingsPage() {
   const { data: tenant, isLoading, refetch } = trpc.tenantSettings.get.useQuery();
@@ -177,6 +177,10 @@ export default function SettingsPage() {
             <TabsTrigger value="users">
               <Users className="h-4 w-4 mr-2" />
               Team-Verwaltung
+            </TabsTrigger>
+            <TabsTrigger value="email-templates">
+              <FileText className="h-4 w-4 mr-2" />
+              E-Mail-Vorlagen
             </TabsTrigger>
             <TabsTrigger value="email-test">
               <Mail className="h-4 w-4 mr-2" />
@@ -633,6 +637,29 @@ export default function SettingsPage() {
           {/* Team-Verwaltung Tab */}
           <TabsContent value="users">
             <UsersTabContent />
+          </TabsContent>
+
+          {/* E-Mail-Vorlagen Tab */}
+          <TabsContent value="email-templates">
+            <Card>
+              <CardHeader>
+                <CardTitle>E-Mail-Vorlagen bearbeiten</CardTitle>
+                <CardDescription>
+                  Passen Sie die E-Mail-Templates für Ihren Bildungsträger an
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Hier können Sie die E-Mail-Vorlagen für verschiedene Ereignisse anpassen (Willkommens-E-Mail, Passwort-Reset, Dokument-Validierung, etc.).
+                </p>
+                <Button asChild>
+                  <a href="/settings/email-templates">
+                    <FileText className="h-4 w-4 mr-2" />
+                    E-Mail-Vorlagen verwalten
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* E-Mail Test Tab */}

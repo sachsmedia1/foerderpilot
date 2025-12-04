@@ -24,6 +24,7 @@ import Sammeltermine from "@/pages/admin/sammeltermine/index";
 import SammeltermineForm from "@/pages/admin/sammeltermine/SammeltermineForm";
 import Settings from "@/pages/admin/Settings";
 import EmailTest from "@/pages/admin/EmailTest";
+import EmailTemplatesSettings from "@/pages/admin/EmailTemplatesSettings";
 
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -70,8 +71,8 @@ function Router() {
         <Route path="/email-test" component={EmailTest} />
       <Route path={"/sammeltermine"} component={Sammeltermine} />
       <Route path={"/sammeltermine/new"} component={SammeltermineForm} />
-      <Route path={"/sammeltermine/:id/edit"} component={SammeltermineForm} />
-      <Route path={"/settings"} component={Settings} />
+      <Route path={"/sammeltermine/:id/edit"} component={SammeltermineForm} />      <Route path={"/settings"} component={Settings} />
+      <Route path={"/settings/email-templates"} component={EmailTemplatesSettings} />
       <Route path={"/superadmin"} component={SuperAdmin} />
       <Route path={"/superadmin/tenants/new"} component={TenantForm} />
       <Route path={"/superadmin/tenants/:id"} component={TenantDetail} />

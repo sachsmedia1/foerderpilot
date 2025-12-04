@@ -1,7 +1,7 @@
 import { AdminLayout } from "@/components/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
 import { Users, BookOpen, Calendar, FileCheck, AlertCircle } from "lucide-react";
 import { Link } from "wouter";
 
@@ -43,9 +43,10 @@ export default function AdminDashboard() {
   const { data: stats, isLoading: statsLoading } = trpc.dashboard.getStats.useQuery();
   const { data: recentActivities, isLoading: activitiesLoading } = trpc.dashboard.getRecentActivities.useQuery();
   const { data: pendingValidations } = trpc.dashboard.getPendingValidations.useQuery();
+  const { data: additionalChartData, isLoading: chartDataLoading } = trpc.dashboard.getChartData.useQuery();
 
   // Prepare chart data with shortened labels
-  const chartData = stats?.statusDistribution.map((item) => ({
+  const statusChartData = stats?.statusDistribution.map((item) => ({
     name: STATUS_LABELS_SHORT[item.status] || item.status,
     value: item.count,
     color: STATUS_COLORS[item.status] || "#6b7280",
@@ -144,7 +145,7 @@ export default function AdminDashboard() {
                 <div className="h-[300px] flex items-center justify-center">
                   <p className="text-muted-foreground">Lade Daten...</p>
                 </div>
-              ) : chartData.length === 0 ? (
+              ) : statusChartData.length === 0 ? (
                 <div className="h-[300px] flex items-center justify-center">
                   <p className="text-muted-foreground">Keine Daten verfügbar</p>
                 </div>
@@ -152,7 +153,7 @@ export default function AdminDashboard() {
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
-                      data={chartData}
+                      data={statusChartData}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -161,13 +162,122 @@ export default function AdminDashboard() {
                       fill="#8884d8"
                       dataKey="value"
                     >
-                      {chartData.map((entry, index) => (
+                      {statusChartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <Tooltip />
                     <Legend />
                   </PieChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Chart 2: Anmeldungen pro Woche (Liniendiagramm) */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Anmeldungen pro Woche</CardTitle>
+              <CardDescription>
+                Entwicklung der Neuanmeldungen (letzte 8 Wochen)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartDataLoading ? (
+                <div className="h-[300px] flex items-center justify-center">
+                  <p className="text-muted-foreground">Lade Daten...</p>
+                </div>
+              ) : !additionalChartData?.weeklySignups || additionalChartData.weeklySignups.length === 0 ? (
+                <div className="h-[300px] flex items-center justify-center">
+                  <p className="text-muted-foreground">Keine Daten verfügbar</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={additionalChartData.weeklySignups}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="week" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={2} name="Anmeldungen" />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Chart 3: Dokument-Validierungs-Status (Pie Chart) */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Dokument-Validierung</CardTitle>
+              <CardDescription>
+                Übersicht der Dokument-Validierungsstatus
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartDataLoading ? (
+                <div className="h-[300px] flex items-center justify-center">
+                  <p className="text-muted-foreground">Lade Daten...</p>
+                </div>
+              ) : !additionalChartData?.validationStatusDistribution || additionalChartData.validationStatusDistribution.length === 0 ? (
+                <div className="h-[300px] flex items-center justify-center">
+                  <p className="text-muted-foreground">Keine Daten verfügbar</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={additionalChartData.validationStatusDistribution.map(item => ({
+                        name: item.status === 'pending' ? 'Ausstehend' : item.status === 'valid' ? 'Gültig' : item.status === 'invalid' ? 'Ungültig' : 'Manuelle Prüfung',
+                        value: item.count,
+                      }))}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {additionalChartData.validationStatusDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.status === 'pending' ? '#f59e0b' : entry.status === 'valid' ? '#10b981' : entry.status === 'invalid' ? '#ef4444' : '#6b7280'} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Chart 4: Top 3 Kurse (Balkendiagramm) */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Top 3 Kurse</CardTitle>
+              <CardDescription>
+                Kurse mit den meisten Teilnehmern
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartDataLoading ? (
+                <div className="h-[300px] flex items-center justify-center">
+                  <p className="text-muted-foreground">Lade Daten...</p>
+                </div>
+              ) : !additionalChartData?.topCourses || additionalChartData.topCourses.length === 0 ? (
+                <div className="h-[300px] flex items-center justify-center">
+                  <p className="text-muted-foreground">Keine Daten verfügbar</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={additionalChartData.topCourses}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="courseName" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="participantCount" fill="#6366f1" name="Teilnehmer" />
+                  </BarChart>
                 </ResponsiveContainer>
               )}
             </CardContent>

@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `emailTemplates` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `tenantId` INT NOT NULL,\n  `templateType` VARCHAR(100) NOT NULL,\n  `subject` VARCHAR(500) NOT NULL,\n  `bodyHtml` TEXT NOT NULL,\n  `bodyText` TEXT,\n  `isActive` BOOLEAN DEFAULT TRUE NOT NULL,\n  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  FOREIGN KEY (`tenantId`) REFERENCES `tenants`(`id`) ON DELETE CASCADE,\n  INDEX `idx_email_templates_tenant_id` (`tenantId`),\n  INDEX `idx_email_templates_type` (`templateType`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute CREATE TABLE IF NOT EXISTS `emailTemplates` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `tenantId` INT NOT NULL,\n  `templateType` VARCHAR(100) NOT NULL,\n  `subject` VARCHAR(500) NOT NULL,\n  `bodyHtml` TEXT NOT NULL,\n  `bodyText` TEXT,\n  `isActive` BOOLEAN DEFAULT TRUE NOT NULL,\n  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  FOREIGN KEY (`tenantId`) REFERENCES `tenants`(`id`) ON DELETE CASCADE,\n  INDEX `idx_email_templates_tenant_id` (`tenantId`),\n  INDEX `idx_email_templates_type` (`templateType`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 376
+}
