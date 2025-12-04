@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS registrationSessions (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  sessionId VARCHAR(100) UNIQUE NOT NULL,\n  tenantId INT NOT NULL,\n  \n  foerdercheck JSON,\n  foerdercheckErgebnis VARCHAR(30),\n  \n  courseId INT,\n  \n  firstName VARCHAR(100),\n  lastName VARCHAR(100),\n  email VARCHAR(255),\n  phone VARCHAR(50),\n  street VARCHAR(255),\n  zipCode VARCHAR(10),\n  city VARCHAR(100),\n  company VARCHAR(255),\n  dateOfBirth DATE,\n  \n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  expiresAt TIMESTAMP NULL,\n  \n  INDEX idx_registrationSessions_sessionId (sessionId),\n  INDEX idx_registrationSessions_expires (expiresAt)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute CREATE TABLE IF NOT EXISTS registrationSessions (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  sessionId VARCHAR(100) UNIQUE NOT NULL,\n  tenantId INT NOT NULL,\n  \n  foerdercheck JSON,\n  foerdercheckErgebnis VARCHAR(30),\n  \n  courseId INT,\n  \n  firstName VARCHAR(100),\n  lastName VARCHAR(100),\n  email VARCHAR(255),\n  phone VARCHAR(50),\n  street VARCHAR(255),\n  zipCode VARCHAR(10),\n  city VARCHAR(100),\n  company VARCHAR(255),\n  dateOfBirth DATE,\n  \n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  expiresAt TIMESTAMP NULL,\n  \n  INDEX idx_registrationSessions_sessionId (sessionId),\n  INDEX idx_registrationSessions_expires (expiresAt)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 226
+}

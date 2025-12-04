@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, json } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, json, date } from "drizzle-orm/mysql-core";
 
 /**
  * FOERDERPILOT - MULTI-TENANT SAAS DATABASE SCHEMA
@@ -373,3 +373,75 @@ export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
 // Index für E-Mail-Templates
 export const emailTemplatesByTenantId = index("idx_email_templates_tenant_id").on(emailTemplates.tenantId);
 export const emailTemplatesByType = index("idx_email_templates_type").on(emailTemplates.templateType);
+
+
+// ============================================================================
+// REGISTRATION SESSIONS (Temp-Daten für Funnel)
+// ============================================================================
+export const registrationSessions = mysqlTable("registrationSessions", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: varchar("sessionId", { length: 100 }).notNull().unique(),
+  tenantId: int("tenantId").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  
+  // Step 1: Fördercheck
+  foerdercheck: json("foerdercheck"), // JSON mit allen Antworten
+  foerdercheckErgebnis: varchar("foerdercheckErgebnis", { length: 30 }), // '90_kompass_erst', '50_bafa_mitarbeiter', etc.
+  
+  // Step 2: Kursauswahl
+  courseId: int("courseId").references(() => courses.id, { onDelete: "set null" }),
+  
+  // Step 3: Persönliche Daten
+  firstName: varchar("firstName", { length: 100 }),
+  lastName: varchar("lastName", { length: 100 }),
+  email: varchar("email", { length: 255 }),
+  phone: varchar("phone", { length: 50 }),
+  street: varchar("street", { length: 255 }),
+  zipCode: varchar("zipCode", { length: 10 }),
+  city: varchar("city", { length: 100 }),
+  company: varchar("company", { length: 255 }),
+  dateOfBirth: date("dateOfBirth"),
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt"), // Auto-Cleanup nach 2 Stunden
+});
+
+export type RegistrationSession = typeof registrationSessions.$inferSelect;
+export type InsertRegistrationSession = typeof registrationSessions.$inferInsert;
+
+// Indexes für Registration Sessions
+export const registrationSessionsBySessionId = index("idx_registrationSessions_sessionId").on(registrationSessions.sessionId);
+export const registrationSessionsByExpires = index("idx_registrationSessions_expires").on(registrationSessions.expiresAt);
+
+// ============================================================================
+// VORVERTRAG TEMPLATES (Editierbare Vorvertrag-Vorlagen)
+// ============================================================================
+export const vorvertragTemplates = mysqlTable("vorvertragTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenantId").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  
+  // Version
+  version: varchar("version", { length: 10 }).notNull(), // '1.0', '1.1', etc.
+  isActive: boolean("isActive").default(false).notNull(),
+  
+  // Template-Text
+  templateText: text("templateText").notNull(), // Vorvertrag mit Platzhaltern
+  
+  // Checkbox-Texte
+  checkboxZuarbeitText: text("checkboxZuarbeitText"),
+  checkboxTeilnahmeText: text("checkboxTeilnahmeText"),
+  checkboxDatenschutzText: text("checkboxDatenschutzText"),
+  checkboxAgbText: text("checkboxAgbText"),
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdBy: int("createdBy").references(() => users.id, { onDelete: "set null" }),
+});
+
+export type VorvertragTemplate = typeof vorvertragTemplates.$inferSelect;
+export type InsertVorvertragTemplate = typeof vorvertragTemplates.$inferInsert;
+
+// Indexes für Vorvertrag Templates
+export const vorvertragTemplatesByTenantId = index("idx_vorvertragTemplates_tenant").on(vorvertragTemplates.tenantId);
+export const vorvertragTemplatesByActive = index("idx_vorvertragTemplates_active").on(vorvertragTemplates.tenantId, vorvertragTemplates.isActive);

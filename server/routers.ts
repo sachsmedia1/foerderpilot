@@ -16,6 +16,7 @@ import { emailRouter } from './routers/emailRouter';
 import { dashboardRouter } from './routers/dashboardRouter';
 import { emailTestRouter } from './routers/emailTest';
 import { emailTemplatesRouter } from './routers/emailTemplates';
+import { registerRouter } from './routers/register';
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -34,6 +35,7 @@ export const appRouter = router({
   emailTest: emailTestRouter,
   emailTemplates: emailTemplatesRouter,
   dashboard: dashboardRouter,
+  register: registerRouter,
   // TODO: Add more feature routers here
   
   auth: router({

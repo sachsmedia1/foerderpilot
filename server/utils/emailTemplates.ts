@@ -384,3 +384,164 @@ Ihr ${data.tenantName} Team
     subject: `Erinnerung: Sammeltermin morgen - ${data.courseName}`,
   };
 }
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FUNNEL: WELCOME-E-MAIL (nach Account-Erstellung)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface WelcomeEmailData {
+  vorname: string;
+  nachname: string;
+  email: string;
+  kurstitel: string;
+  starttermin: string;
+  kurspreis: number;
+  foerderbetrag: number;
+  passwordResetLink: string;
+  tenantName: string;
+  vorvertragText: string;
+}
+
+export function generateWelcomeEmail(data: WelcomeEmailData) {
+  const eigenanteil = data.kurspreis - data.foerderbetrag;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h1 style="color: #2563eb;">Willkommen bei ${data.tenantName}!</h1>
+      
+      <p>Hallo ${data.vorname} ${data.nachname},</p>
+      
+      <p>vielen Dank für Ihre Anmeldung! Ihr Account wurde erfolgreich erstellt.</p>
+      
+      <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Ihre Kursdetails:</h3>
+        <p><strong>Kurs:</strong> ${data.kurstitel}</p>
+        <p><strong>Starttermin:</strong> ${data.starttermin}</p>
+        <p><strong>Kurspreis:</strong> €${data.kurspreis}</p>
+        <p><strong>Förderung:</strong> -€${data.foerderbetrag}</p>
+        <p style="font-size: 18px; font-weight: bold;"><strong>Ihr Eigenanteil:</strong> €${eigenanteil}</p>
+      </div>
+      
+      <h3>Nächste Schritte:</h3>
+      <ol>
+        <li>Setzen Sie Ihr Passwort: <a href="${data.passwordResetLink}" style="color: #2563eb;">Passwort festlegen</a></li>
+        <li>Loggen Sie sich ein und laden Sie die erforderlichen Dokumente hoch</li>
+        <li>Wir prüfen Ihre Unterlagen und melden uns bei Ihnen</li>
+      </ol>
+      
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+      
+      <h3>Ihr Vorvertrag:</h3>
+      <div style="background: #f9fafb; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0; white-space: pre-wrap; font-size: 14px;">
+${data.vorvertragText}
+      </div>
+      
+      <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
+        Bei Fragen stehen wir Ihnen gerne zur Verfügung.<br>
+        Ihr ${data.tenantName} Team
+      </p>
+    </div>
+  `;
+
+  const text = `
+Willkommen bei ${data.tenantName}!
+
+Hallo ${data.vorname} ${data.nachname},
+
+vielen Dank für Ihre Anmeldung! Ihr Account wurde erfolgreich erstellt.
+
+Ihre Kursdetails:
+- Kurs: ${data.kurstitel}
+- Starttermin: ${data.starttermin}
+- Kurspreis: €${data.kurspreis}
+- Förderung: -€${data.foerderbetrag}
+- Ihr Eigenanteil: €${eigenanteil}
+
+Nächste Schritte:
+1. Setzen Sie Ihr Passwort: ${data.passwordResetLink}
+2. Loggen Sie sich ein und laden Sie die erforderlichen Dokumente hoch
+3. Wir prüfen Ihre Unterlagen und melden uns bei Ihnen
+
+Ihr Vorvertrag:
+${data.vorvertragText}
+
+Bei Fragen stehen wir Ihnen gerne zur Verfügung.
+Ihr ${data.tenantName} Team
+  `;
+
+  return {
+    subject: `Willkommen bei ${data.tenantName} - Ihre Anmeldung für ${data.kurstitel}`,
+    html,
+    text,
+  };
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FUNNEL: ADMIN-BENACHRICHTIGUNG (neue Anmeldung)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface AdminNotificationEmailData {
+  vorname: string;
+  nachname: string;
+  email: string;
+  kurstitel: string;
+  starttermin: string;
+  kurspreis: number;
+  foerderbetrag: number;
+  tenantName: string;
+}
+
+export function generateAdminNotificationEmail(data: AdminNotificationEmailData) {
+  const eigenanteil = data.kurspreis - data.foerderbetrag;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h1 style="color: #2563eb;">Neue Anmeldung!</h1>
+      
+      <p>Ein neuer Teilnehmer hat sich über den Funnel angemeldet:</p>
+      
+      <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Teilnehmer-Details:</h3>
+        <p><strong>Name:</strong> ${data.vorname} ${data.nachname}</p>
+        <p><strong>E-Mail:</strong> ${data.email}</p>
+        <p><strong>Kurs:</strong> ${data.kurstitel}</p>
+        <p><strong>Starttermin:</strong> ${data.starttermin}</p>
+        <p><strong>Kurspreis:</strong> €${data.kurspreis}</p>
+        <p><strong>Förderung:</strong> €${data.foerderbetrag}</p>
+        <p><strong>Eigenanteil:</strong> €${eigenanteil}</p>
+      </div>
+      
+      <p>Bitte prüfen Sie die Unterlagen und kontaktieren Sie den Teilnehmer bei Bedarf.</p>
+      
+      <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
+        ${data.tenantName} Admin-System
+      </p>
+    </div>
+  `;
+
+  const text = `
+Neue Anmeldung!
+
+Ein neuer Teilnehmer hat sich über den Funnel angemeldet:
+
+Teilnehmer-Details:
+- Name: ${data.vorname} ${data.nachname}
+- E-Mail: ${data.email}
+- Kurs: ${data.kurstitel}
+- Starttermin: ${data.starttermin}
+- Kurspreis: €${data.kurspreis}
+- Förderung: €${data.foerderbetrag}
+- Eigenanteil: €${eigenanteil}
+
+Bitte prüfen Sie die Unterlagen und kontaktieren Sie den Teilnehmer bei Bedarf.
+
+${data.tenantName} Admin-System
+  `;
+
+  return {
+    subject: `Neue Anmeldung: ${data.vorname} ${data.nachname} - ${data.kurstitel}`,
+    html,
+    text,
+  };
+}

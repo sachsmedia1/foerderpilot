@@ -17,6 +17,38 @@ import {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+/**
+ * Generic Send Email Function
+ */
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  text,
+  from = 'FörderPilot <noreply@app.foerderpilot.io>',
+}: {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  from?: string;
+}): Promise<boolean> {
+  try {
+    await resend.emails.send({
+      from,
+      to,
+      subject,
+      html,
+      text,
+    });
+    console.log(`[Email] Sent to ${to}: ${subject}`);
+    return true;
+  } catch (error) {
+    console.error('[Email] Failed to send:', error);
+    return false;
+  }
+}
+
 interface TenantBranding {
   name: string;
   logoUrl?: string;

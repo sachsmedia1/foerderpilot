@@ -28,6 +28,7 @@ import EmailTemplatesSettings from "@/pages/admin/EmailTemplatesSettings";
 
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import RegisterFunnel from "@/pages/RegisterFunnel";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import { useAuth } from "./_core/hooks/useAuth";
@@ -79,6 +80,7 @@ function Router() {
       <Route path={"/superadmin/tenants/:id/edit"} component={TenantForm} />
       <Route path={"/login"} component={Login} />
       <Route path={"/register"} component={Register} />
+      <Route path={"/anmeldung"} component={RegisterFunnel} />
       <Route path={"/forgot-password"} component={ForgotPassword} />
       <Route path={"/reset-password/:token"} component={ResetPassword} />
       <Route path={"/404"} component={NotFound} />
