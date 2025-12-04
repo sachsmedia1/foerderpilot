@@ -602,3 +602,5 @@
 - [x] Checkboxen-Status nicht visuell erkennbar (erste 2 Checkboxen sind gecheckt, aber nicht sichtbar) - mt-0.5 für Alignment, Shadcn/ui Checkbox verwendet data-[state=checked]:bg-primary
 
 - [x] Checkboxen zeigen visuell keinen checked-State (CSS/Theme-Problem) - Explizites bg-indigo-600 statt bg-primary, stroke-[3] für dickeres Checkmark
+
+- [x] SQL-Fehler beim Vorvertrag-Absenden: "insert into participants" zu viele default-Werte - userId fehlte (notNull field), unnötige Felder entfernt

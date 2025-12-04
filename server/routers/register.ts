@@ -504,19 +504,17 @@ export const registerRouter = router({
         .insert(participants)
         .values({
           tenantId: session.tenantId,
+          userId: newUser.insertId,
           courseId: session.courseId,
           firstName: session.firstName,
           lastName: session.lastName,
           email: session.email,
-          phone: session.phone,
-          street: session.street,
-          zipCode: session.zipCode,
-          city: session.city,
-          company: session.company || null,
-          dateOfBirth: session.dateOfBirth,
+          phone: session.phone || null,
+          dateOfBirth: session.dateOfBirth ? new Date(session.dateOfBirth) : null,
+          street: session.street || null,
+          zipCode: session.zipCode || null,
+          city: session.city || null,
           status: "anmeldung_eingegangen",
-          foerdercheck: session.foerdercheck as any,
-          foerdercheckErgebnis: session.foerdercheckErgebnis || null,
         });
 
       // Vorvertrag erstellen
