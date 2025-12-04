@@ -122,28 +122,11 @@ export const registerRouter = router({
         };
       }
 
-      // 2. Selbstständigkeit <2 Jahre? → K.O.
+      // 2. Selbstständigkeit <2 Jahre? → BAFA 50% (nicht KOMPASS-fähig)
       const selbststaendigkeitDauer =
         new Date().getFullYear() -
         new Date(input.selbststaendigkeitSeit).getFullYear();
-      if (selbststaendigkeitDauer < 2) {
-        const ergebnis = "nicht_foerderfaehig";
-        
-        await upsertSession(db, {
-          sessionId: input.sessionId,
-          tenantId: input.tenantId,
-          foerdercheck: input,
-          foerdercheckErgebnis: ergebnis,
-        });
-
-        return {
-          success: true,
-          ergebnis,
-          message: "Selbstständigkeit muss mindestens 2 Jahre bestehen.",
-          foerderprozent: 0,
-          foerderbetrag: 0,
-        };
-      }
+      const istKompassFaehig = selbststaendigkeitDauer >= 2;
 
       // 3. Mehr als 1 VZÄ? → K.O.
       if (input.mitarbeiterVzae > 1) {
@@ -194,21 +177,28 @@ export const registerRouter = router({
       let foerderprozent: number;
       let foerderbetrag: number = 4500; // Default KOMPASS
 
-      // 5. 1 VZÄ? → BAFA-Fallback
-      if (input.mitarbeiterVzae === 1) {
+      // 5. Weniger als 2 Jahre selbstständig? → BAFA 50%
+      if (!istKompassFaehig) {
+        ergebnis = "50_bafa_zu_jung";
+        message = "Sie qualifizieren sich für 50% BAFA-Förderung (Selbstständigkeit unter 2 Jahren).";
+        foerderprozent = 50;
+        foerderbetrag = 2500;
+      }
+      // 6. 1 VZÄ? → BAFA-Fallback
+      else if (input.mitarbeiterVzae === 1) {
         ergebnis = "50_bafa_mitarbeiter";
         message = "Sie qualifizieren sich für 50% BAFA-Förderung (1 Mitarbeiter).";
         foerderprozent = 50;
         foerderbetrag = 2500; // Beispiel BAFA-Betrag
       }
-      // 6. 2 KOMPASS-Schecks bereits genutzt? → BAFA-Fallback
+      // 7. 2 KOMPASS-Schecks bereits genutzt? → BAFA-Fallback
       else if (input.kompassSchecksAnzahl >= 2) {
         ergebnis = "50_bafa_ausgeschoepft";
         message = "KOMPASS-Kontingent ausgeschöpft. Sie qualifizieren sich für 50% BAFA-Förderung.";
         foerderprozent = 50;
         foerderbetrag = 2500;
       }
-      // 7. Letzter KOMPASS-Scheck <12 Monate? → BAFA-Fallback
+      // 8. Letzter KOMPASS-Scheck <12 Monate? → BAFA-Fallback
       else if (input.kompassSchecksAnzahl > 0 && input.letzterKompassScheckDatum) {
         const letzterScheckDatum = new Date(input.letzterKompassScheckDatum);
         const monateVergangen =
@@ -221,14 +211,14 @@ export const registerRouter = router({
           foerderprozent = 50;
           foerderbetrag = 2500;
         } else {
-          // 8. KOMPASS-Zweitantrag (≥12 Monate + 1 Scheck)
+          // 9. KOMPASS-Zweitantrag (≥12 Monate + 1 Scheck)
           ergebnis = "90_kompass_zweit";
           message = "Sie qualifizieren sich für Ihren zweiten KOMPASS-Gutschein (90%).";
           foerderprozent = 90;
           foerderbetrag = 4500;
         }
       }
-      // 9. KOMPASS-Erstantrag (0 Schecks)
+      // 10. KOMPASS-Erstantrag (0 Schecks)
       else {
         ergebnis = "90_kompass_erst";
         message = "Sie qualifizieren sich für Ihren ersten KOMPASS-Gutschein (90%).";

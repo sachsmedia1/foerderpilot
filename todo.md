@@ -595,3 +595,5 @@
 - [ ] Kurstermine nicht sichtbar in Kursauswahl (Backend liefert keine Kurstermine im getCourses Response)
 
 - [x] "Weiter"-Button ragt rechts aus Card-Container heraus (w-full zu flex-1 geändert in allen Steps)
+
+- [x] Fördercheck-Logik anpassen: Weniger als 2 Jahre Selbstständigkeit = BAFA 50% (nicht Ablehnung)
