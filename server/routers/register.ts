@@ -16,6 +16,54 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendEmail } from "../utils/emailNotifications";
 import { generateWelcomeEmail, generateAdminNotificationEmail } from "../utils/emailTemplates";
+import { registrationSessions, courses, users, participants, vorvertraege, vorvertragTemplates } from "../../drizzle/schema";
+import { eq, and, sql, desc } from "drizzle-orm";
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Upsert Registration Session
+ */
+async function upsertSession(db: any, data: {
+  sessionId: string;
+  tenantId: number;
+  foerdercheck?: any;
+  foerdercheckErgebnis?: string;
+  courseId?: number | null;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  street?: string;
+  zipCode?: string;
+  city?: string;
+  company?: string;
+  dateOfBirth?: string;
+}) {
+  const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
+  
+  // Check if session exists
+  const existing = await db
+    .select()
+    .from(registrationSessions)
+    .where(eq(registrationSessions.sessionId, data.sessionId))
+    .limit(1);
+  
+  if (existing.length > 0) {
+    // Update
+    await db
+      .update(registrationSessions)
+      .set({ ...data, expiresAt })
+      .where(eq(registrationSessions.sessionId, data.sessionId));
+  } else {
+    // Insert
+    await db
+      .insert(registrationSessions)
+      .values({ ...data, expiresAt });
+  }
+}
 
 // ============================================================================
 // STEP 1: FÖRDERCHECK
@@ -42,7 +90,8 @@ export const registerRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const db = getDb();
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       // FÖRDERCHECK-LOGIK (Decision Tree)
@@ -57,19 +106,11 @@ export const registerRouter = router({
         const ergebnis = "nicht_foerderfaehig";
         
         // Session speichern
-        await db.execute({
-          sql: `INSERT INTO registrationSessions (sessionId, tenantId, foerdercheck, foerdercheckErgebnis, expiresAt)
-                VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL 2 HOUR))
-                ON DUPLICATE KEY UPDATE 
-                  foerdercheck = VALUES(foerdercheck),
-                  foerdercheckErgebnis = VALUES(foerdercheckErgebnis),
-                  expiresAt = VALUES(expiresAt)`,
-          args: [
-            input.sessionId,
-            input.tenantId,
-            JSON.stringify(input),
-            ergebnis,
-          ],
+        await upsertSession(db, {
+          sessionId: input.sessionId,
+          tenantId: input.tenantId,
+          foerdercheck: input,
+          foerdercheckErgebnis: ergebnis,
         });
 
         return {
@@ -88,19 +129,11 @@ export const registerRouter = router({
       if (selbststaendigkeitDauer < 2) {
         const ergebnis = "nicht_foerderfaehig";
         
-        await db.execute({
-          sql: `INSERT INTO registrationSessions (sessionId, tenantId, foerdercheck, foerdercheckErgebnis, expiresAt)
-                VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL 2 HOUR))
-                ON DUPLICATE KEY UPDATE 
-                  foerdercheck = VALUES(foerdercheck),
-                  foerdercheckErgebnis = VALUES(foerdercheckErgebnis),
-                  expiresAt = VALUES(expiresAt)`,
-          args: [
-            input.sessionId,
-            input.tenantId,
-            JSON.stringify(input),
-            ergebnis,
-          ],
+        await upsertSession(db, {
+          sessionId: input.sessionId,
+          tenantId: input.tenantId,
+          foerdercheck: input,
+          foerdercheckErgebnis: ergebnis,
         });
 
         return {
@@ -116,19 +149,11 @@ export const registerRouter = router({
       if (input.mitarbeiterVzae > 1) {
         const ergebnis = "nicht_foerderfaehig";
         
-        await db.execute({
-          sql: `INSERT INTO registrationSessions (sessionId, tenantId, foerdercheck, foerdercheckErgebnis, expiresAt)
-                VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL 2 HOUR))
-                ON DUPLICATE KEY UPDATE 
-                  foerdercheck = VALUES(foerdercheck),
-                  foerdercheckErgebnis = VALUES(foerdercheckErgebnis),
-                  expiresAt = VALUES(expiresAt)`,
-          args: [
-            input.sessionId,
-            input.tenantId,
-            JSON.stringify(input),
-            ergebnis,
-          ],
+        await upsertSession(db, {
+          sessionId: input.sessionId,
+          tenantId: input.tenantId,
+          foerdercheck: input,
+          foerdercheckErgebnis: ergebnis,
         });
 
         return {
@@ -144,19 +169,11 @@ export const registerRouter = router({
       if (input.deminimisBeihilfen > 300000) {
         const ergebnis = "nicht_foerderfaehig";
         
-        await db.execute({
-          sql: `INSERT INTO registrationSessions (sessionId, tenantId, foerdercheck, foerdercheckErgebnis, expiresAt)
-                VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL 2 HOUR))
-                ON DUPLICATE KEY UPDATE 
-                  foerdercheck = VALUES(foerdercheck),
-                  foerdercheckErgebnis = VALUES(foerdercheckErgebnis),
-                  expiresAt = VALUES(expiresAt)`,
-          args: [
-            input.sessionId,
-            input.tenantId,
-            JSON.stringify(input),
-            ergebnis,
-          ],
+        await upsertSession(db, {
+          sessionId: input.sessionId,
+          tenantId: input.tenantId,
+          foerdercheck: input,
+          foerdercheckErgebnis: ergebnis,
         });
 
         return {
@@ -220,19 +237,11 @@ export const registerRouter = router({
       }
 
       // Session speichern
-      await db.execute({
-        sql: `INSERT INTO registrationSessions (sessionId, tenantId, foerdercheck, foerdercheckErgebnis, expiresAt)
-              VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL 2 HOUR))
-              ON DUPLICATE KEY UPDATE 
-                foerdercheck = VALUES(foerdercheck),
-                foerdercheckErgebnis = VALUES(foerdercheckErgebnis),
-                expiresAt = VALUES(expiresAt)`,
-        args: [
-          input.sessionId,
-          input.tenantId,
-          JSON.stringify(input),
-          ergebnis,
-        ],
+      await upsertSession(db, {
+        sessionId: input.sessionId,
+        tenantId: input.tenantId,
+        foerdercheck: input,
+        foerdercheckErgebnis: ergebnis,
       });
 
       return {
@@ -256,58 +265,61 @@ export const registerRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const db = getDb();
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
       // Session abrufen
-      const sessionResult = await db.execute({
-        sql: `SELECT * FROM registrationSessions WHERE sessionId = ?`,
-        args: [input.sessionId],
-      });
+      const sessionData = await db
+        .select()
+        .from(registrationSessions)
+        .where(eq(registrationSessions.sessionId, input.sessionId))
+        .limit(1);
 
-      if (sessionResult.rows.length === 0) {
+      if (sessionData.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Session nicht gefunden. Bitte starten Sie den Fördercheck erneut.",
         });
       }
 
-      const session = sessionResult.rows[0] as any;
+      const session = sessionData[0];
 
       // Kurs abrufen
-      const courseResult = await db.execute({
-        sql: `SELECT * FROM courses WHERE id = ? AND tenantId = ?`,
-        args: [input.courseId, session.tenantId],
-      });
+      const courseData = await db
+        .select()
+        .from(courses)
+        .where(and(
+          eq(courses.id, input.courseId),
+          eq(courses.tenantId, session.tenantId)
+        ))
+        .limit(1);
 
-      if (courseResult.rows.length === 0) {
+      if (courseData.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Kurs nicht gefunden.",
         });
       }
 
-      const course = courseResult.rows[0] as any;
-
-      // Förderhöhe berechnen
-      const foerderprozent = session.foerdercheckErgebnis?.startsWith("90_") ? 90 : 50;
-      const foerderbetrag = Math.round((course.price * foerderprozent) / 100);
-      const eigenanteil = course.price - foerderbetrag;
+      const course = courseData[0];
 
       // Session aktualisieren
-      await db.execute({
-        sql: `UPDATE registrationSessions SET courseId = ? WHERE sessionId = ?`,
-        args: [input.courseId, input.sessionId],
+      await upsertSession(db, {
+        sessionId: input.sessionId,
+        tenantId: session.tenantId,
+        courseId: input.courseId,
       });
 
       return {
         success: true,
         course: {
           id: course.id,
-          title: course.title,
-          price: course.price,
-          foerderprozent,
-          foerderbetrag,
-          eigenanteil,
+          name: course.name,
+          shortDescription: course.shortDescription,
+          priceNet: course.priceNet,
+          priceGross: course.priceGross,
+          subsidyPercentage: course.subsidyPercentage,
+          duration: course.duration,
         },
       };
     }),
@@ -323,38 +335,42 @@ export const registerRouter = router({
         firstName: z.string().min(1),
         lastName: z.string().min(1),
         email: z.string().email(),
-        phone: z.string().min(5),
+        phone: z.string().min(1),
         street: z.string().min(1),
-        zipCode: z.string().min(4),
+        zipCode: z.string().min(1),
         city: z.string().min(1),
         company: z.string().optional(),
         dateOfBirth: z.string(), // ISO Date
       })
     )
     .mutation(async ({ input }) => {
-      const db = getDb();
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
       // Session abrufen
-      const sessionResult = await db.execute({
-        sql: `SELECT * FROM registrationSessions WHERE sessionId = ?`,
-        args: [input.sessionId],
-      });
+      const sessionData = await db
+        .select()
+        .from(registrationSessions)
+        .where(eq(registrationSessions.sessionId, input.sessionId))
+        .limit(1);
 
-      if (sessionResult.rows.length === 0) {
+      if (sessionData.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Session nicht gefunden.",
         });
       }
 
-      // E-Mail bereits registriert?
-      const session = sessionResult.rows[0] as any;
-      const emailCheck = await db.execute({
-        sql: `SELECT id FROM users WHERE email = ? AND tenantId = ?`,
-        args: [input.email, session.tenantId],
-      });
+      const session = sessionData[0];
 
-      if (emailCheck.rows.length > 0) {
+      // E-Mail-Duplikat-Check
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, input.email))
+        .limit(1);
+
+      if (existingUser.length > 0) {
         throw new TRPCError({
           code: "CONFLICT",
           message: "Diese E-Mail-Adresse ist bereits registriert.",
@@ -362,28 +378,23 @@ export const registerRouter = router({
       }
 
       // Session aktualisieren
-      await db.execute({
-        sql: `UPDATE registrationSessions 
-              SET firstName = ?, lastName = ?, email = ?, phone = ?, 
-                  street = ?, zipCode = ?, city = ?, company = ?, dateOfBirth = ?
-              WHERE sessionId = ?`,
-        args: [
-          input.firstName,
-          input.lastName,
-          input.email,
-          input.phone,
-          input.street,
-          input.zipCode,
-          input.city,
-          input.company || null,
-          input.dateOfBirth,
-          input.sessionId,
-        ],
+      await upsertSession(db, {
+        sessionId: input.sessionId,
+        tenantId: session.tenantId,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        phone: input.phone,
+        street: input.street,
+        zipCode: input.zipCode,
+        city: input.city,
+        company: input.company || null,
+        dateOfBirth: input.dateOfBirth,
       });
 
       return {
         success: true,
-        message: "Persönliche Daten gespeichert.",
+        message: "Daten gespeichert.",
       };
     }),
 
@@ -404,317 +415,237 @@ export const registerRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const db = getDb();
-
-      // Alle Checkboxen müssen true sein
-      if (
-        !input.checkboxZuarbeit ||
-        !input.checkboxTeilnahme ||
-        !input.checkboxDatenschutz ||
-        !input.checkboxAgb
-      ) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Bitte bestätigen Sie alle Checkboxen.",
-        });
-      }
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
       // Session abrufen
-      const sessionResult = await db.execute({
-        sql: `SELECT * FROM registrationSessions WHERE sessionId = ?`,
-        args: [input.sessionId],
-      });
+      const sessionData = await db
+        .select()
+        .from(registrationSessions)
+        .where(eq(registrationSessions.sessionId, input.sessionId))
+        .limit(1);
 
-      if (sessionResult.rows.length === 0) {
+      if (sessionData.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Session nicht gefunden.",
         });
       }
 
-      const session = sessionResult.rows[0] as any;
+      const session = sessionData[0];
 
       // Validierung: Alle Daten vorhanden?
-      if (
-        !session.foerdercheckErgebnis ||
-        !session.courseId ||
-        !session.firstName ||
-        !session.lastName ||
-        !session.email
-      ) {
+      if (!session.firstName || !session.lastName || !session.email || !session.courseId) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Bitte vervollständigen Sie alle Schritte.",
+          message: "Unvollständige Session-Daten. Bitte durchlaufen Sie alle Schritte.",
         });
       }
 
       // Kurs abrufen
-      const courseResult = await db.execute({
-        sql: `SELECT * FROM courses WHERE id = ?`,
-        args: [session.courseId],
-      });
+      const courseData = await db
+        .select()
+        .from(courses)
+        .where(eq(courses.id, session.courseId))
+        .limit(1);
 
-      if (courseResult.rows.length === 0) {
+      if (courseData.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Kurs nicht gefunden.",
         });
       }
 
-      const course = courseResult.rows[0] as any;
+      const course = courseData[0];
 
       // Vorvertrag-Template abrufen
-      const templateResult = await db.execute({
-        sql: `SELECT * FROM vorvertragTemplates WHERE tenantId = ? AND isActive = true LIMIT 1`,
-        args: [session.tenantId],
-      });
+      const templateData = await db
+        .select()
+        .from(vorvertragTemplates)
+        .where(and(
+          eq(vorvertragTemplates.tenantId, session.tenantId),
+          eq(vorvertragTemplates.isActive, true)
+        ))
+        .orderBy(desc(vorvertragTemplates.id))
+        .limit(1);
 
-      if (templateResult.rows.length === 0) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Vorvertrag-Template nicht gefunden.",
-        });
+      let vorvertragText = "Standard-Vorvertrag (kein Template gefunden)";
+      if (templateData.length > 0) {
+        vorvertragText = templateData[0].templateText;
       }
 
-      const template = templateResult.rows[0] as any;
-
-      // Förderhöhe berechnen
-      const foerderprozent = session.foerdercheckErgebnis.startsWith("90_") ? 90 : 50;
-      const foerderbetrag = Math.round((course.price * foerderprozent) / 100);
-      const eigenanteil = course.price - foerderbetrag;
-
-      // Vorvertrag-Text mit Platzhaltern ersetzen
-      let contractText = template.templateText;
-      contractText = contractText.replace(/{{vorname}}/g, session.firstName);
-      contractText = contractText.replace(/{{nachname}}/g, session.lastName);
-      contractText = contractText.replace(
-        /{{adresse}}/g,
-        `${session.street}, ${session.zipCode} ${session.city}`
-      );
-      contractText = contractText.replace(/{{email}}/g, session.email);
-      contractText = contractText.replace(/{{telefon}}/g, session.phone || "");
-      contractText = contractText.replace(/{{kurstitel}}/g, course.title);
-      contractText = contractText.replace(/{{starttermin}}/g, course.startDate || "TBD");
-      contractText = contractText.replace(/{{kurspreis}}/g, course.price.toString());
-      contractText = contractText.replace(/{{foerderbetrag}}/g, foerderbetrag.toString());
-      contractText = contractText.replace(/{{foerderprozent}}/g, foerderprozent.toString());
-      contractText = contractText.replace(/{{eigenanteil}}/g, eigenanteil.toString());
-      contractText = contractText.replace(/{{checkboxZuarbeitText}}/g, template.checkboxZuarbeitText);
-      contractText = contractText.replace(/{{checkboxTeilnahmeText}}/g, template.checkboxTeilnahmeText);
-      contractText = contractText.replace(/{{checkboxDatenschutzText}}/g, template.checkboxDatenschutzText);
-      contractText = contractText.replace(/{{checkboxAgbText}}/g, template.checkboxAgbText);
-      contractText = contractText.replace(/{{signedAt}}/g, new Date().toLocaleString("de-DE"));
-      contractText = contractText.replace(/{{ipAddress}}/g, input.ipAddress);
+      // Platzhalter ersetzen
+      vorvertragText = vorvertragText
+        .replace(/{{vorname}}/g, session.firstName)
+        .replace(/{{nachname}}/g, session.lastName)
+        .replace(/{{email}}/g, session.email)
+        .replace(/{{kursname}}/g, course.name)
+        .replace(/{{kurspreis}}/g, (course.priceNet / 100).toFixed(2))
+        .replace(/{{foerderbetrag}}/g, ((course.priceNet * course.subsidyPercentage) / 10000).toFixed(2))
+        .replace(/{{eigenanteil}}/g, ((course.priceNet - (course.priceNet * course.subsidyPercentage) / 100) / 100).toFixed(2));
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      // ACCOUNT-ERSTELLUNG (User + Participant + Vorvertrag)
+      // ACCOUNT ERSTELLEN
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-      // 1. User erstellen
-      const userResult = await db.execute({
-        sql: `INSERT INTO users (tenantId, email, firstName, lastName, phone, loginMethod, role, isActive)
-              VALUES (?, ?, ?, ?, ?, 'email', 'user', true)`,
-        args: [
-          session.tenantId,
-          session.email,
-          session.firstName,
-          session.lastName,
-          session.phone || null,
-        ],
-      });
-
-      const userId = Number(userResult.insertId);
-
-      // 2. Participant erstellen
-      const foerdercheck = JSON.parse(session.foerdercheck);
-      const participantResult = await db.execute({
-        sql: `INSERT INTO participants (
-                tenantId, userId, courseId, firstName, lastName, email, phone, 
-                street, zipCode, city, company, dateOfBirth, status,
-                foerdercheck, foerdercheckErgebnis, deminimisBeihilfen, mitarbeiterVzae,
-                kompassSchecksAnzahl, letzterKompassScheckDatum, funnelStep
-              )
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'registered', ?, ?, ?, ?, ?, ?, 'abgeschlossen')`,
-        args: [
-          session.tenantId,
-          userId,
-          session.courseId,
-          session.firstName,
-          session.lastName,
-          session.email,
-          session.phone || null,
-          session.street,
-          session.zipCode,
-          session.city,
-          session.company || null,
-          session.dateOfBirth,
-          session.foerdercheck,
-          session.foerdercheckErgebnis,
-          foerdercheck.deminimisBeihilfen,
-          foerdercheck.mitarbeiterVzae,
-          foerdercheck.kompassSchecksAnzahl,
-          foerdercheck.letzterKompassScheckDatum || null,
-        ],
-      });
-
-      const participantId = Number(participantResult.insertId);
-
-      // 3. Vorvertrag erstellen
-      const vorvertragResult = await db.execute({
-        sql: `INSERT INTO vorvertraege (
-                tenantId, participantId, status, signedAt,
-                checkboxZuarbeit, checkboxTeilnahme, checkboxDatenschutz, checkboxAgb,
-                ipAddress, userAgent, contractVersion, contractText
-              )
-              VALUES (?, ?, 'signed', NOW(), ?, ?, ?, ?, ?, ?, ?, ?)`,
-        args: [
-          session.tenantId,
-          participantId,
-          input.checkboxZuarbeit,
-          input.checkboxTeilnahme,
-          input.checkboxDatenschutz,
-          input.checkboxAgb,
-          input.ipAddress,
-          input.userAgent,
-          template.version,
-          contractText,
-        ],
-      });
-
-      const vorvertragId = Number(vorvertragResult.insertId);
-
-      // 4. Password-Reset-Token generieren
+      // Password-Reset-Token generieren (für initiales Passwort-Setzen)
       const resetToken = crypto.randomBytes(32).toString("hex");
       const resetTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
 
-      await db.execute({
-        sql: `UPDATE users SET resetToken = ?, resetTokenExpiry = ? WHERE id = ?`,
-        args: [resetToken, resetTokenExpiry, userId],
-      });
+      // User erstellen
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          email: session.email,
+          openId: session.email, // Wichtig für E-Mail/Passwort-Auth
+          name: `${session.firstName} ${session.lastName}`,
+          firstName: session.firstName,
+          lastName: session.lastName,
+          phone: session.phone,
+          role: "user",
+          tenantId: session.tenantId,
+          passwordHash: null, // Wird beim ersten Login gesetzt
+          passwordResetToken: resetToken,
+          passwordResetExpiry: resetTokenExpiry,
+        });
 
-      // 5. Session löschen (Cleanup)
-      await db.execute({
-        sql: `DELETE FROM registrationSessions WHERE sessionId = ?`,
-        args: [input.sessionId],
-      });
+      // Participant erstellen
+      const [newParticipant] = await db
+        .insert(participants)
+        .values({
+          tenantId: session.tenantId,
+          courseId: session.courseId,
+          firstName: session.firstName,
+          lastName: session.lastName,
+          email: session.email,
+          phone: session.phone,
+          street: session.street,
+          zipCode: session.zipCode,
+          city: session.city,
+          company: session.company || null,
+          dateOfBirth: session.dateOfBirth,
+          status: "anmeldung_eingegangen",
+          foerdercheck: session.foerdercheck as any,
+          foerdercheckErgebnis: session.foerdercheckErgebnis || null,
+        });
+
+      // Vorvertrag erstellen
+      const [newVorvertrag] = await db
+        .insert(vorvertraege)
+        .values({
+          participantId: newParticipant.insertId,
+          tenantId: session.tenantId,
+          vorvertragText,
+          checkboxZuarbeit: input.checkboxZuarbeit,
+          checkboxTeilnahme: input.checkboxTeilnahme,
+          checkboxDatenschutz: input.checkboxDatenschutz,
+          checkboxAgb: input.checkboxAgb,
+          signedAt: new Date(),
+          ipAddress: input.ipAddress,
+          userAgent: input.userAgent,
+        });
+
+      // Session löschen (nicht mehr benötigt)
+      await db
+        .delete(registrationSessions)
+        .where(eq(registrationSessions.sessionId, input.sessionId));
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      // E-MAIL-WORKFLOWS
+      // E-MAILS VERSENDEN
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-      // Tenant abrufen für E-Mail-Absender
-      const tenantResult = await db.execute({
-        sql: `SELECT name, logo FROM tenants WHERE id = ?`,
-        args: [session.tenantId],
+      // Tenant-Daten abrufen für E-Mail
+      const { tenants } = await import("../../drizzle/schema");
+      const tenantData = await db
+        .select()
+        .from(tenants)
+        .where(eq(tenants.id, session.tenantId))
+        .limit(1);
+
+      const tenant = tenantData[0];
+
+      // Welcome-E-Mail mit Vorvertrag
+      const welcomeEmail = generateWelcomeEmail({
+        vorname: session.firstName,
+        nachname: session.lastName,
+        email: session.email,
+        kursname: course.name,
+        kurspreis: course.priceNet / 100,
+        foerderbetrag: (course.priceNet * course.subsidyPercentage) / 10000,
+        eigenanteil: (course.priceNet - (course.priceNet * course.subsidyPercentage) / 100) / 100,
+        vorvertragText,
+        passwordResetLink: `https://app.foerderpilot.io/reset-password?token=${resetToken}`,
+        tenantName: tenant.companyName || tenant.name,
       });
 
-      const tenant = tenantResult.rows[0] as any;
+      await sendEmail({
+        to: session.email,
+        subject: "Willkommen bei FörderPilot - Ihre Anmeldung",
+        html: welcomeEmail.html,
+        text: welcomeEmail.text,
+      });
 
-      // 6. Welcome-E-Mail an Teilnehmer (mit Vorvertrag im Body)
-      try {
-        const welcomeEmail = generateWelcomeEmail({
+      // Admin-Benachrichtigung
+      const adminUsers = await db
+        .select()
+        .from(users)
+        .where(and(
+          eq(users.tenantId, session.tenantId),
+          eq(users.role, "admin")
+        ))
+        .limit(1);
+
+      if (adminUsers.length > 0) {
+        const adminEmail = adminUsers[0].email;
+
+        const adminNotification = generateAdminNotificationEmail({
           vorname: session.firstName,
           nachname: session.lastName,
           email: session.email,
-          kurstitel: course.title,
-          starttermin: course.startDate || "TBD",
-          kurspreis: course.price,
-          foerderbetrag,
-          passwordResetLink: `${process.env.VITE_FRONTEND_URL || "https://app.foerderpilot.io"}/reset-password/${resetToken}`,
-          tenantName: tenant.name,
-          vorvertragText: contractText,
+          kursname: course.name,
+          kurspreis: course.priceNet / 100,
+          foerderbetrag: (course.priceNet * course.subsidyPercentage) / 10000,
+          tenantName: tenant.companyName || tenant.name,
         });
 
         await sendEmail({
-          to: session.email,
-          subject: welcomeEmail.subject,
-          html: welcomeEmail.html,
-          text: welcomeEmail.text,
+          to: adminEmail,
+          subject: "Neue Anmeldung - FörderPilot",
+          html: adminNotification.html,
+          text: adminNotification.text,
         });
-      } catch (error) {
-        console.error("Fehler beim Versenden der Welcome-E-Mail:", error);
-        // Nicht blockieren, Account wurde bereits erstellt
-      }
-
-      // 7. Admin-Benachrichtigung
-      try {
-        // Admin-E-Mail abrufen
-        const adminResult = await db.execute({
-          sql: `SELECT email FROM users WHERE tenantId = ? AND role = 'admin' LIMIT 1`,
-          args: [session.tenantId],
-        });
-
-        if (adminResult.rows.length > 0) {
-          const adminEmail = (adminResult.rows[0] as any).email;
-
-          const adminNotification = generateAdminNotificationEmail({
-            vorname: session.firstName,
-            nachname: session.lastName,
-            email: session.email,
-            kurstitel: course.title,
-            starttermin: course.startDate || "TBD",
-            kurspreis: course.price,
-            foerderbetrag,
-            tenantName: tenant.name,
-          });
-
-          await sendEmail({
-            to: adminEmail,
-            subject: adminNotification.subject,
-            html: adminNotification.html,
-            text: adminNotification.text,
-          });
-        }
-      } catch (error) {
-        console.error("Fehler beim Versenden der Admin-Benachrichtigung:", error);
-        // Nicht blockieren
       }
 
       return {
         success: true,
-        userId,
-        participantId,
-        vorvertragId,
-        resetToken,
-        message: "Account erfolgreich erstellt.",
+        message: "Account erfolgreich erstellt!",
+        resetToken, // Für Weiterleitung zu Password-Set-Seite
       };
     }),
 
   // ============================================================================
-  // HELPER: Session abrufen
-  // ============================================================================
-
-  getSession: publicProcedure
-    .input(z.object({ sessionId: z.string().uuid() }))
-    .query(async ({ input }) => {
-      const db = getDb();
-
-      const result = await db.execute({
-        sql: `SELECT * FROM registrationSessions WHERE sessionId = ?`,
-        args: [input.sessionId],
-      });
-
-      if (result.rows.length === 0) {
-        return null;
-      }
-
-      return result.rows[0];
-    }),
-
-  // ============================================================================
-  // HELPER: Kurse abrufen (für Dropdown)
+  // HELPER: GET COURSES (für Dropdown)
   // ============================================================================
 
   getCourses: publicProcedure
-    .input(z.object({ tenantId: z.number() }))
+    .input(
+      z.object({
+        tenantId: z.number(),
+      })
+    )
     .query(async ({ input }) => {
-      const db = getDb();
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
-      const result = await db.execute({
-        sql: `SELECT id, title, description, price, startDate FROM courses WHERE tenantId = ? AND isActive = true`,
-        args: [input.tenantId],
-      });
+      const courseList = await db
+        .select()
+        .from(courses)
+        .where(and(
+          eq(courses.tenantId, input.tenantId),
+          eq(courses.isActive, true),
+          eq(courses.isPublished, true)
+        ));
 
-      return result.rows;
+      return courseList;
     }),
 });
