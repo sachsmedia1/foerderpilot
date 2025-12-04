@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AdminLayout } from '@/components/AdminLayout';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -108,14 +109,17 @@ export default function EmailTemplatesSettings() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-5xl">
+    <AdminLayout>
+      <div className="space-y-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold">E-Mail-Vorlagen</h1>
         <p className="text-muted-foreground mt-2">
@@ -226,6 +230,7 @@ export default function EmailTemplatesSettings() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }
