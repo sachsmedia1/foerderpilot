@@ -14,7 +14,10 @@ import { participants, courses } from "../../drizzle/schema";
 import { eq, and, like, or, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { validateTenantAccess, validateResourceOwnership } from "../_core/security";
-import { sendStatusChangeNotification } from "../utils/emailNotifications";
+import { sendStatusChangeNotification, sendEmail } from "../utils/emailNotifications";
+import { generateWelcomeEmail } from "../utils/emailTemplates";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export const participantsRouter = router({
   /**
@@ -401,6 +404,129 @@ export const participantsRouter = router({
         .update(participants)
         .set({ courseScheduleId: input.courseScheduleId })
         .where(eq(participants.id, input.participantId));
+
+      return { success: true };
+    }),
+
+  /**
+   * Set password for participant (Admin only)
+   */
+  setPassword: adminProcedure
+    .input(
+      z.object({
+        participantId: z.number(),
+        password: z.string().min(8, "Passwort muss mindestens 8 Zeichen lang sein"),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+      // Verify participant belongs to tenant
+      const [participant] = await db
+        .select()
+        .from(participants)
+        .where(
+          and(
+            eq(participants.id, input.participantId),
+            eq(participants.tenantId, ctx.tenant.id)
+          )
+        );
+
+      if (!participant) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Teilnehmer nicht gefunden" });
+      }
+
+      if (!participant.userId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Teilnehmer hat keinen User-Account" });
+      }
+
+      // Hash password
+      const passwordHash = await bcrypt.hash(input.password, 10);
+
+      // Update user password
+      const { users } = await import('../../drizzle/schema');
+      await db
+        .update(users)
+        .set({ 
+          passwordHash,
+          resetToken: null,
+          resetTokenExpiry: null
+        })
+        .where(eq(users.id, participant.userId));
+
+      return { success: true };
+    }),
+
+  /**
+   * Send password reset email to participant
+   */
+  sendPasswordReset: adminProcedure
+    .input(
+      z.object({
+        participantId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+      // Verify participant belongs to tenant
+      const [participant] = await db
+        .select()
+        .from(participants)
+        .where(
+          and(
+            eq(participants.id, input.participantId),
+            eq(participants.tenantId, ctx.tenant.id)
+          )
+        );
+
+      if (!participant) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Teilnehmer nicht gefunden" });
+      }
+
+      if (!participant.userId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Teilnehmer hat keinen User-Account" });
+      }
+
+      // Generate reset token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Update user with reset token
+      const { users } = await import('../../drizzle/schema');
+      await db
+        .update(users)
+        .set({ 
+          resetToken,
+          resetTokenExpiry
+        })
+        .where(eq(users.id, participant.userId));
+
+      // Get course info for email
+      const [course] = await db
+        .select()
+        .from(courses)
+        .where(eq(courses.id, participant.courseId));
+
+      // Send reset email
+      const passwordResetLink = `${process.env.VITE_OAUTH_PORTAL_URL?.replace('/oauth/portal', '')}/reset-password?token=${resetToken}`;
+      
+      const emailHtml = generateWelcomeEmail({
+        teilnehmername: `${participant.firstName} ${participant.lastName}`,
+        kurstitel: course?.name || 'Ihr Kurs',
+        starttermin: 'Wird noch bekannt gegeben',
+        passwordResetLink,
+      });
+
+      await sendEmail({
+        to: participant.email,
+        subject: `Passwort zurücksetzen - ${ctx.tenant.name}`,
+        html: emailHtml,
+      });
 
       return { success: true };
     }),

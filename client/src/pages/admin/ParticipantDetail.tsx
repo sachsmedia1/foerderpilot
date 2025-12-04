@@ -28,8 +28,14 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Key,
+  Send
 } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { useLocation, useParams } from 'wouter';
 import { format } from 'date-fns';
@@ -61,6 +67,8 @@ export default function ParticipantDetail() {
   const params = useParams();
   const participantId = parseInt(params.id!);
   const utils = trpc.useUtils();
+  const [password, setPassword] = useState('');
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
   const { data: participant, isLoading } = trpc.participants.getById.useQuery({ id: participantId });
   const { data: documents } = trpc.documents.list.useQuery({ participantId });
@@ -89,6 +97,26 @@ export default function ParticipantDetail() {
     onSuccess: () => {
       toast.success('Teilnehmer gelöscht');
       setLocation('/participants');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const setPasswordMutation = trpc.participants.setPassword.useMutation({
+    onSuccess: () => {
+      toast.success('Passwort erfolgreich gesetzt');
+      setPasswordDialogOpen(false);
+      setPassword('');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const sendPasswordResetMutation = trpc.participants.sendPasswordReset.useMutation({
+    onSuccess: () => {
+      toast.success('Passwort-Reset-E-Mail wurde versendet');
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -153,6 +181,77 @@ export default function ParticipantDetail() {
             </div>
           </div>
           <div className="flex gap-2">
+            <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Key className="h-4 w-4 mr-2" />
+                  Passwort setzen
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Passwort setzen</DialogTitle>
+                  <DialogDescription>
+                    Setzen Sie ein neues Passwort für {participant.firstName} {participant.lastName}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Neues Passwort</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Mindestens 8 Zeichen"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setPasswordDialogOpen(false);
+                      setPassword('');
+                    }}
+                  >
+                    Abbrechen
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (password.length < 8) {
+                        toast.error('Passwort muss mindestens 8 Zeichen lang sein');
+                        return;
+                      }
+                      setPasswordMutation.mutate({
+                        participantId,
+                        password,
+                      });
+                    }}
+                    disabled={setPasswordMutation.isPending || password.length < 8}
+                  >
+                    {setPasswordMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    Passwort setzen
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (confirm(`Passwort-Reset-E-Mail an ${participant.email} senden?`)) {
+                  sendPasswordResetMutation.mutate({ participantId });
+                }
+              }}
+              disabled={sendPasswordResetMutation.isPending}
+            >
+              {sendPasswordResetMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              Reset-E-Mail senden
+            </Button>
             <Button
               variant="outline"
               onClick={() => setLocation(`/participants/${participantId}/edit`)}

@@ -626,3 +626,12 @@
 
 ### Bekannte UI-Issues (niedrige Priorität)
 - [ ] Dropdown-Menü überlappt Content (Shadcn/ui Standard-Verhalten, kein Bug)
+
+
+## Teilnehmer Passwort-Management (Admin-Bereich)
+
+- [x] Backend: setParticipantPassword Procedure (Admin kann Passwort für Teilnehmer setzen)
+- [x] Backend: sendPasswordReset Procedure (Reset-Token generieren und E-Mail senden)
+- [x] Frontend: Passwort-setzen-Dialog in Teilnehmer-Detail-View
+- [x] Frontend: Passwort-zurücksetzen-Button (sendet Reset-E-Mail)
+- [ ] Testing: Passwort setzen und Login testen
