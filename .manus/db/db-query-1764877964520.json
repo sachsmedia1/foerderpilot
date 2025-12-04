@@ -1,0 +1,30 @@
+{
+  "query": "SELECT p.id, p.userId, p.firstName, p.lastName, p.email, u.email as userEmail, u.openId, u.role \nFROM participants p \nLEFT JOIN users u ON p.userId = u.id \nWHERE u.email = 's.sachs@sachs-media.com' OR u.openId = 's.sachs@sachs-media.com'\nLIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT p.id, p.userId, p.firstName, p.lastName, p.email, u.email as userEmail, u.openId, u.role \nFROM participants p \nLEFT JOIN users u ON p.userId = u.id \nWHERE u.email = 's.sachs@sachs-media.com' OR u.openId = 's.sachs@sachs-media.com'\nLIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "userId": "1530083",
+      "firstName": "Max",
+      "lastName": "Muster",
+      "email": "sachs.stefan@icloud.com",
+      "userEmail": "s.sachs@sachs-media.com",
+      "openId": "s.sachs@sachs-media.com",
+      "role": "admin"
+    },
+    {
+      "id": "240001",
+      "userId": "1530083",
+      "firstName": "Marie",
+      "lastName": "Müller",
+      "email": "sachs.stefan@icloud.com",
+      "userEmail": "s.sachs@sachs-media.com",
+      "openId": "s.sachs@sachs-media.com",
+      "role": "admin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tfirstName\tlastName\temail\tuserEmail\topenId\trole\n1\t1530083\tMax\tMuster\tsachs.stefan@icloud.com\ts.sachs@sachs-media.com\ts.sachs@sachs-media.com\tadmin\n240001\t1530083\tMarie\tMüller\tsachs.stefan@icloud.com\ts.sachs@sachs-media.com\ts.sachs@sachs-media.com\tadmin\n",
+  "stderr": "",
+  "execution_time_ms": 90
+}

@@ -41,20 +41,69 @@ export default function ParticipantDashboard() {
 
   if (!participantData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Keine Teilnehmerdaten gefunden</CardTitle>
-            <CardDescription>
-              Es konnten keine Teilnehmerdaten für Ihren Account gefunden werden.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => navigate("/")} className="w-full">
-              Zur Startseite
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        {/* Header */}
+        <header className="bg-white border-b">
+          <div className="container py-4 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">FörderPilot</h1>
+              <p className="text-sm text-muted-foreground">Teilnehmer-Dashboard</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm font-medium">{user?.name}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={logout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Abmelden
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <div className="container py-16">
+          <div className="max-w-2xl mx-auto">
+            <Card>
+              <CardHeader className="text-center">
+                <div className="mx-auto w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                  <BookOpen className="h-6 w-6 text-indigo-600" />
+                </div>
+                <CardTitle>Noch kein Kurs zugewiesen</CardTitle>
+                <CardDescription>
+                  Sie sind noch keinem Kurs zugeordnet. Bitte wenden Sie sich an Ihren Bildungsträger, um sich für einen Kurs anzumelden.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-2">Ihre Account-Informationen:</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Name:</span>
+                      <span className="font-medium">{user?.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">E-Mail:</span>
+                      <span className="font-medium">{user?.email}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center pt-4">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Sobald Sie einem Kurs zugeordnet wurden, sehen Sie hier Ihre Kursdetails, Dokumente und weitere Informationen.
+                  </p>
+                  <Button variant="outline" onClick={logout}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Abmelden
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }
