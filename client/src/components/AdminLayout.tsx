@@ -78,11 +78,6 @@ const navItems: NavItem[] = [
     icon: FileText,
   },
   {
-    title: "E-Mail Test",
-    href: "/email-test",
-    icon: Mail,
-  },
-  {
     title: "Einstellungen",
     href: "/settings",
     icon: Settings,

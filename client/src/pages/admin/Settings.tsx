@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Building2, Palette, Globe, Loader2, Award, Users, Plus, Search, UserCheck, UserX, Pencil, Trash2 } from "lucide-react";
+import { Building2, Palette, Globe, Loader2, Award, Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Mail } from "lucide-react";
 
 export default function SettingsPage() {
   const { data: tenant, isLoading, refetch } = trpc.tenantSettings.get.useQuery();
@@ -177,6 +177,10 @@ export default function SettingsPage() {
             <TabsTrigger value="users">
               <Users className="h-4 w-4 mr-2" />
               Team-Verwaltung
+            </TabsTrigger>
+            <TabsTrigger value="email-test">
+              <Mail className="h-4 w-4 mr-2" />
+              E-Mail Test
             </TabsTrigger>
           </TabsList>
 
@@ -630,6 +634,11 @@ export default function SettingsPage() {
           <TabsContent value="users">
             <UsersTabContent />
           </TabsContent>
+
+          {/* E-Mail Test Tab */}
+          <TabsContent value="email-test">
+            <EmailTestTabContent />
+          </TabsContent>
         </Tabs>
       </div>
     </AdminLayout>
@@ -1071,5 +1080,226 @@ function UserFormInline({ userId, onClose }: { userId: number | null; onClose: (
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+
+// E-Mail Test Tab Component
+function EmailTestTabContent() {
+  const [email, setEmail] = useState('sachs@stefan-sachs.de');
+
+  const sendTestEmail = trpc.emailTest.sendTestEmail.useMutation({
+    onSuccess: () => {
+      toast.success('Test-E-Mail wurde erfolgreich versendet');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const testStatusChange = trpc.emailTest.testStatusChangeEmail.useMutation({
+    onSuccess: () => {
+      toast.success('Status-Change E-Mail wurde erfolgreich versendet');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const testDocumentUpload = trpc.emailTest.testDocumentUploadEmail.useMutation({
+    onSuccess: () => {
+      toast.success('Document-Upload E-Mail wurde erfolgreich versendet');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const testValidationValid = trpc.emailTest.testDocumentValidationEmailValid.useMutation({
+    onSuccess: () => {
+      toast.success('Document-Validation E-Mail (Valid) wurde erfolgreich versendet');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const testValidationInvalid = trpc.emailTest.testDocumentValidationEmailInvalid.useMutation({
+    onSuccess: () => {
+      toast.success('Document-Validation E-Mail (Invalid) wurde erfolgreich versendet');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const testSammelterminReminder = trpc.emailTest.testSammelterminReminderEmail.useMutation({
+    onSuccess: () => {
+      toast.success('Sammeltermin-Reminder E-Mail wurde erfolgreich versendet');
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  const isLoading =
+    sendTestEmail.isPending ||
+    testStatusChange.isPending ||
+    testDocumentUpload.isPending ||
+    testValidationValid.isPending ||
+    testValidationInvalid.isPending ||
+    testSammelterminReminder.isPending;
+
+  return (
+    <div className="space-y-6">
+      {/* E-Mail Input */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Test-E-Mail-Adresse</CardTitle>
+          <CardDescription>
+            Geben Sie die E-Mail-Adresse ein, an die die Test-E-Mails gesendet werden sollen
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 items-end">
+            <div className="flex-1">
+              <Label htmlFor="email">E-Mail-Adresse</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ihre@email.de"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Basic Test */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            Basis-Test
+          </CardTitle>
+          <CardDescription>
+            Einfache Test-E-Mail ohne Template
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={() => sendTestEmail.mutate({ to: email })}
+            disabled={isLoading || !email}
+          >
+            {sendTestEmail.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+            Test-E-Mail senden
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Status-Change Template */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <UserCheck className="h-5 w-5 text-green-600" />
+            Status-Änderung Template
+          </CardTitle>
+          <CardDescription>
+            E-Mail bei Teilnehmer-Status-Änderung (z.B. "Dokumente ausstehend" → "Dokumente genehmigt")
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={() => testStatusChange.mutate({ to: email })}
+            disabled={isLoading || !email}
+          >
+            {testStatusChange.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+            Status-Change E-Mail senden
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Document-Upload Template */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5 text-blue-600" />
+            Dokument-Upload Template
+          </CardTitle>
+          <CardDescription>
+            Bestätigungs-E-Mail nach erfolgreichem Dokument-Upload
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={() => testDocumentUpload.mutate({ to: email })}
+            disabled={isLoading || !email}
+          >
+            {testDocumentUpload.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+            Document-Upload E-Mail senden
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Document-Validation Templates */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <UserCheck className="h-5 w-5 text-green-600" />
+            Dokument-Validierung Templates
+          </CardTitle>
+          <CardDescription>
+            E-Mails nach Dokument-Prüfung (genehmigt oder abgelehnt)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h3 className="font-medium mb-2">Dokument genehmigt</h3>
+            <Button
+              onClick={() => testValidationValid.mutate({ to: email })}
+              disabled={isLoading || !email}
+              variant="outline"
+            >
+              {testValidationValid.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <UserCheck className="h-4 w-4 mr-2 text-green-600" />}
+              Validation Valid E-Mail senden
+            </Button>
+          </div>
+          <div>
+            <h3 className="font-medium mb-2">Dokument abgelehnt (mit Issues & Recommendations)</h3>
+            <Button
+              onClick={() => testValidationInvalid.mutate({ to: email })}
+              disabled={isLoading || !email}
+              variant="outline"
+            >
+              {testValidationInvalid.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <UserX className="h-4 w-4 mr-2 text-red-600" />}
+              Validation Invalid E-Mail senden
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Sammeltermin-Reminder Template */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5 text-purple-600" />
+            Sammeltermin-Reminder Template
+          </CardTitle>
+          <CardDescription>
+            Erinnerungs-E-Mail 24 Stunden vor Sammeltermin
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={() => testSammelterminReminder.mutate({ to: email })}
+            disabled={isLoading || !email}
+          >
+            {testSammelterminReminder.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+            Sammeltermin-Reminder E-Mail senden
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
