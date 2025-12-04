@@ -27,14 +27,26 @@ const STATUS_LABELS: Record<string, string> = {
   dropped_out: "Abgebrochen",
 };
 
+// Shortened labels for chart display
+const STATUS_LABELS_SHORT: Record<string, string> = {
+  registered: "Registriert",
+  documents_pending: "Dok. ausstehend",
+  documents_submitted: "Dok. eingereicht",
+  documents_approved: "Dok. genehmigt",
+  documents_rejected: "Dok. abgelehnt",
+  enrolled: "Eingeschrieben",
+  completed: "Abgeschlossen",
+  dropped_out: "Abgebrochen",
+};
+
 export default function AdminDashboard() {
   const { data: stats, isLoading: statsLoading } = trpc.dashboard.getStats.useQuery();
   const { data: recentActivities, isLoading: activitiesLoading } = trpc.dashboard.getRecentActivities.useQuery();
   const { data: pendingValidations } = trpc.dashboard.getPendingValidations.useQuery();
 
-  // Prepare chart data
+  // Prepare chart data with shortened labels
   const chartData = stats?.statusDistribution.map((item) => ({
-    name: STATUS_LABELS[item.status] || item.status,
+    name: STATUS_LABELS_SHORT[item.status] || item.status,
     value: item.count,
     color: STATUS_COLORS[item.status] || "#6b7280",
   })) || [];

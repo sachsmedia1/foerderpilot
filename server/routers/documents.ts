@@ -17,7 +17,6 @@ import { TRPCError } from '@trpc/server';
 import { storagePut } from '../storage';
 import { invokeLLM } from '../_core/llm';
 import { validateTenantAccess, validateResourceOwnership } from '../_core/security';
-import { retryWithBackoff } from '../utils/retry';
 
 // Validation Schemas
 const documentUploadSchema = z.object({
@@ -91,32 +90,6 @@ export const documentsRouter = router({
       if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
 
-      // Validate file size (max 10 MB)
-      const fileBuffer = Buffer.from(input.fileData, 'base64');
-      const maxSizeBytes = 10 * 1024 * 1024; // 10 MB
-      if (fileBuffer.length > maxSizeBytes) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Datei ist zu groß. Maximale Größe: 10 MB',
-        });
-      }
-
-      // Validate MIME type
-      const allowedMimeTypes = [
-        'application/pdf',
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/heic',
-        'image/heif',
-      ];
-      if (!allowedMimeTypes.includes(input.mimeType.toLowerCase())) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Ungültiger Dateityp. Erlaubt: PDF, JPG, PNG, HEIC',
-        });
-      }
-
       // Verify participant belongs to tenant
       const participant = await db
         .select()
@@ -130,6 +103,9 @@ export const documentsRouter = router({
 
       // ✅ RLS: Validate resource ownership
       validateResourceOwnership(ctx, participant[0].tenantId, 'Participant');
+
+      // Decode base64 file data
+      const fileBuffer = Buffer.from(input.fileData, 'base64');
 
       // Generate unique file key
       const timestamp = Date.now();
@@ -191,12 +167,11 @@ export const documentsRouter = router({
         .where(eq(documents.id, input.documentId));
 
       try {
-        // Call GPT-4o-mini Vision for validation with retry logic
+        // Call GPT-4o-mini Vision for validation
         const validationPrompt = getValidationPrompt(document.documentType);
         
-        const response = await retryWithBackoff(
-          async () => await invokeLLM({
-            messages: [
+        const response = await invokeLLM({
+          messages: [
             {
               role: 'system',
               content: 'Du bist ein Experte für die Validierung von Dokumenten im KOMPASS-Förderungsprogramm. Prüfe das Dokument sorgfältig und gib eine strukturierte Bewertung ab.',
@@ -244,13 +219,7 @@ export const documentsRouter = router({
               },
             },
           },
-          }),
-          {
-            maxRetries: 3,
-            initialDelayMs: 1000,
-            maxDelayMs: 5000,
-          }
-        );
+        });
 
         const content = response.choices[0]?.message.content;
         const validationResult = JSON.parse(typeof content === 'string' ? content : '{}');

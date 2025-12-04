@@ -8,7 +8,6 @@ import { registerEmailAuthRoutes } from "./emailAuth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { startTokenCleanupSchedule } from "../utils/cleanupExpiredTokens";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -63,9 +62,6 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
-    
-    // Start token cleanup schedule
-    startTokenCleanupSchedule();
   });
 }
 
