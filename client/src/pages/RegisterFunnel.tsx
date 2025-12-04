@@ -433,7 +433,7 @@ export default function RegisterFunnel() {
                   <SelectContent>
                     {courses?.map((course: any) => (
                       <SelectItem key={course.id} value={course.id.toString()}>
-                        {course.title} - €{course.price}
+                        {course.name} - €{(course.priceNet / 100).toFixed(2)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -447,26 +447,27 @@ export default function RegisterFunnel() {
                     const course = courses.find((c: any) => c.id === selectedCourseId);
                     if (!course) return null;
 
+                    const priceInEuro = course.priceNet / 100;
                     const foerderprozent = foerdercheckErgebnis?.foerderprozent || 0;
-                    const foerderbetrag = Math.round((course.price * foerderprozent) / 100);
-                    const eigenanteil = course.price - foerderbetrag;
+                    const foerderbetrag = (priceInEuro * foerderprozent) / 100;
+                    const eigenanteil = priceInEuro - foerderbetrag;
 
                     return (
                       <>
-                        <h3 className="font-semibold text-lg">{course.title}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{course.description}</p>
+                        <h3 className="font-semibold text-lg">{course.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{course.shortDescription || 'Keine Beschreibung verfügbar'}</p>
                         <div className="mt-4 space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span>Kurspreis:</span>
-                            <span className="font-semibold">€{course.price}</span>
+                            <span className="font-semibold">€{priceInEuro.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-green-700">
                             <span>Förderung ({foerderprozent}%):</span>
-                            <span className="font-semibold">-€{foerderbetrag}</span>
+                            <span className="font-semibold">-€{foerderbetrag.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-lg font-bold border-t pt-2">
                             <span>Ihr Eigenanteil:</span>
-                            <span>€{eigenanteil}</span>
+                            <span>€{eigenanteil.toFixed(2)}</span>
                           </div>
                         </div>
                       </>

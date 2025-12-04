@@ -585,3 +585,11 @@
 - [x] Dauer-Einheit "Stunden" hinzugefügt
 - [x] Kurstermin-Datum anzeigen (Start- und Enddatum)
 - [ ] Nächster KOMPASS-Termin Hinweis hinzufügen (Schema-Feld fehlt noch)
+
+
+## Registrierungs-Funnel Bugs (URGENT)
+
+- [x] Kursauswahl-Dropdown zeigt "- €" statt Kursnamen (Frontend verwendete falsche Feldnamen: title/price statt name/priceNet)
+- [x] NaN-Werte bei Förderberechnung (Kurspreis-Konvertierung von Cents zu Euro fehlte)
+- [ ] Dropdown-Menü überlappt Content (z-index Problem / Layout-Issue) - Shadcn/ui Standard-Verhalten
+- [ ] Kurstermine nicht sichtbar in Kursauswahl (Backend liefert keine Kurstermine im getCourses Response)
