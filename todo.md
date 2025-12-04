@@ -597,3 +597,6 @@
 - [x] "Weiter"-Button ragt rechts aus Card-Container heraus (w-full zu flex-1 geändert in allen Steps)
 
 - [x] Fördercheck-Logik anpassen: Weniger als 2 Jahre Selbstständigkeit = BAFA 50% (nicht Ablehnung)
+
+- [x] Vorvertrag-Zusammenfassung zeigt keine Werte (Kursname, Kurspreis, Förderprozent fehlen) - Berechnung aus courses Array + foerdercheckErgebnis
+- [x] Checkboxen-Status nicht visuell erkennbar (erste 2 Checkboxen sind gecheckt, aber nicht sichtbar) - mt-0.5 für Alignment, Shadcn/ui Checkbox verwendet data-[state=checked]:bg-primary

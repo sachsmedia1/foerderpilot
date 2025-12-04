@@ -617,18 +617,32 @@ export default function RegisterFunnel() {
                 <p>
                   <strong>Name:</strong> {persoenlicheDaten.firstName} {persoenlicheDaten.lastName}
                 </p>
-                <p>
-                  <strong>Kurs:</strong> {selectedCourse?.title}
-                </p>
-                <p>
-                  <strong>Kurspreis:</strong> €{selectedCourse?.price}
-                </p>
-                <p>
-                  <strong>Förderung:</strong> €{selectedCourse?.foerderbetrag} ({selectedCourse?.foerderprozent}%)
-                </p>
-                <p className="text-lg font-bold">
-                  <strong>Ihr Eigenanteil:</strong> €{selectedCourse?.eigenanteil}
-                </p>
+                {(() => {
+                  const course = courses?.find((c: any) => c.id === selectedCourseId);
+                  if (!course || !foerdercheckErgebnis) return null;
+                  
+                  const priceInEuro = course.priceNet / 100;
+                  const foerderprozent = foerdercheckErgebnis.foerderprozent || 0;
+                  const foerderbetrag = (priceInEuro * foerderprozent) / 100;
+                  const eigenanteil = priceInEuro - foerderbetrag;
+                  
+                  return (
+                    <>
+                      <p>
+                        <strong>Kurs:</strong> {course.name}
+                      </p>
+                      <p>
+                        <strong>Kurspreis:</strong> €{priceInEuro.toFixed(2)}
+                      </p>
+                      <p>
+                        <strong>Förderung:</strong> €{foerderbetrag.toFixed(2)} ({foerderprozent}%)
+                      </p>
+                      <p className="text-lg font-bold">
+                        <strong>Ihr Eigenanteil:</strong> €{eigenanteil.toFixed(2)}
+                      </p>
+                    </>
+                  );
+                })()}
               </div>
 
               {/* Checkboxen */}
@@ -638,6 +652,7 @@ export default function RegisterFunnel() {
                     id="zuarbeit"
                     checked={checkboxes.zuarbeit}
                     onCheckedChange={(checked) => setCheckboxes({ ...checkboxes, zuarbeit: checked as boolean })}
+                    className="mt-0.5"
                   />
                   <Label htmlFor="zuarbeit" className="text-sm leading-relaxed cursor-pointer">
                     Ich verpflichte mich, alle angeforderten Dokumente innerhalb von 7 Kalendertagen nach dem
@@ -650,6 +665,7 @@ export default function RegisterFunnel() {
                     id="teilnahme"
                     checked={checkboxes.teilnahme}
                     onCheckedChange={(checked) => setCheckboxes({ ...checkboxes, teilnahme: checked as boolean })}
+                    className="mt-0.5"
                   />
                   <Label htmlFor="teilnahme" className="text-sm leading-relaxed cursor-pointer">
                     Ich nehme verbindlich am Starttermin teil. Bei Verzögerung (nicht von mir verschuldet): Teilnahme am
@@ -662,6 +678,7 @@ export default function RegisterFunnel() {
                     id="datenschutz"
                     checked={checkboxes.datenschutz}
                     onCheckedChange={(checked) => setCheckboxes({ ...checkboxes, datenschutz: checked as boolean })}
+                    className="mt-0.5"
                   />
                   <Label htmlFor="datenschutz" className="text-sm leading-relaxed cursor-pointer">
                     Ich willige in die Datenverarbeitung durch Sachs Consulting Ltd. und Entscheiderakademie GmbH ein.
@@ -673,6 +690,7 @@ export default function RegisterFunnel() {
                     id="agb"
                     checked={checkboxes.agb}
                     onCheckedChange={(checked) => setCheckboxes({ ...checkboxes, agb: checked as boolean })}
+                    className="mt-0.5"
                   />
                   <Label htmlFor="agb" className="text-sm leading-relaxed cursor-pointer">
                     Ich habe die AGB und Widerrufsbelehrung zur Kenntnis genommen und akzeptiere diese.
