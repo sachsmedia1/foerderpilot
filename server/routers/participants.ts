@@ -16,7 +16,7 @@ import { TRPCError } from "@trpc/server";
 import { validateTenantAccess, validateResourceOwnership } from "../_core/security";
 import { sendStatusChangeNotification, sendEmail } from "../utils/emailNotifications";
 import { generateWelcomeEmail } from "../utils/emailTemplates";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 export const participantsRouter = router({
