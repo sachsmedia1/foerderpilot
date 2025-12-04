@@ -23,7 +23,8 @@ import {
   X,
   LogOut,
   FileCheck,
-  FileText
+  FileText,
+  Kanban
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState, type ReactNode } from "react";
@@ -59,6 +60,11 @@ const navItems: NavItem[] = [
     title: "Teilnehmer",
     href: "/participants",
     icon: Users,
+  },
+  {
+    title: "Kanban Board",
+    href: "/participants/board",
+    icon: Kanban,
   },
   {
     title: "Dokumente",

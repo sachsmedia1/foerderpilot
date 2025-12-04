@@ -266,6 +266,44 @@ export const documentsRouter = router({
     }),
 
   /**
+   * Validierungsstatus manuell aktualisieren
+   */
+  updateValidationStatus: adminProcedure
+    .input(z.object({ 
+      id: z.number().int().positive(),
+      status: z.enum(['pending', 'validating', 'valid', 'invalid', 'manual_review'])
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+      // Get document to validate ownership
+      const [document] = await db
+        .select()
+        .from(documents)
+        .where(eq(documents.id, input.id))
+        .limit(1);
+
+      if (!document) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Document not found' });
+      }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, document.tenantId, 'Document');
+
+      await db
+        .update(documents)
+        .set({ 
+          validationStatus: input.status,
+          validatedAt: new Date()
+        })
+        .where(eq(documents.id, input.id));
+
+      return { success: true };
+    }),
+
+  /**
    * Dokument löschen
    */
   delete: adminProcedure
