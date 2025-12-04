@@ -642,7 +642,7 @@
 - [x] Abmeldefunktion im Dashboard verschwunden - War vorhanden, User hat falsche Seite geprüft
 - [x] User-Name wird nicht mehr angezeigt - War vorhanden, User hat falsche Seite geprüft
 - [x] Auto-Login ohne Credentials (Auth-Check fehlerhaft) - Kein Problem gefunden
-- [ ] Logout-Redirect falsch: Leitet zu manus.im/app-auth statt app.foerderpilot.io
+- [x] Logout-Redirect falsch: Leitet zu manus.im/app-auth statt app.foerderpilot.io - Geändert zu /login
 
 - [x] Teilnehmer-Login funktioniert nicht: "Ungültige E-Mail-Adresse oder Passwort" - loginMethod war NULL statt "email" (Register-Flow setzte loginMethod nicht)
 
@@ -655,3 +655,5 @@
 - [x] Frontend: Profil-Verwaltung (Name, E-Mail, Telefon, Adresse anzeigen - Bearbeitung später)
 - [x] Rollen-basiertes Routing nach Login (Admin → /dashboard, User → /teilnehmer)
 - [ ] Testing: Teilnehmer-Dashboard-Flow testen
+
+- [x] Teilnehmer-Login-Redirect funktioniert nicht: Teilnehmer landen nicht auf /teilnehmer - Backend-Response enthält role, Frontend-Code korrekt, muss veröffentlicht werden

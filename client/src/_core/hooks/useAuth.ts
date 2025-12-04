@@ -40,7 +40,7 @@ export function useAuth(options?: UseAuthOptions) {
       utils.auth.me.setData(undefined, undefined);
       await utils.auth.me.invalidate();
       // Redirect to login page
-      window.location.href = getLoginUrl();
+      window.location.href = "/login";
     }
   }, [logoutMutation, utils]);
 
