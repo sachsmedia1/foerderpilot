@@ -394,7 +394,6 @@ export default function RegisterFunnel() {
                   onClick={handleFoerdercheckSubmit}
                   disabled={foerdercheckMutation.isPending}
                   className="w-full"
-                  size="lg"
                 >
                   {foerdercheckMutation.isPending ? "Prüfe..." : "Förderfähigkeit prüfen"}
                 </Button>
@@ -478,14 +477,13 @@ export default function RegisterFunnel() {
 
               {/* Navigation */}
               <div className="flex gap-4">
-                <Button variant="outline" onClick={() => setCurrentStep(1)} className="w-full">
+                <Button variant="outline" onClick={() => setCurrentStep(1)} className="flex-1">
                   Zurück
                 </Button>
                 <Button
                   onClick={handleKursauswahlSubmit}
                   disabled={!selectedCourseId || kursauswahlMutation.isPending}
-                  className="w-full"
-                  size="lg"
+                  className="flex-1"
                 >
                   {kursauswahlMutation.isPending ? "Speichere..." : "Weiter"}
                 </Button>
@@ -590,14 +588,13 @@ export default function RegisterFunnel() {
 
               {/* Navigation */}
               <div className="flex gap-4 pt-4">
-                <Button variant="outline" onClick={() => setCurrentStep(2)} className="w-full">
+                <Button variant="outline" onClick={() => setCurrentStep(2)} className="flex-1">
                   Zurück
                 </Button>
                 <Button
                   onClick={handlePersoenlicheDatenSubmit}
                   disabled={persoenlicheDatenMutation.isPending}
-                  className="w-full"
-                  size="lg"
+                  className="flex-1"
                 >
                   {persoenlicheDatenMutation.isPending ? "Speichere..." : "Weiter"}
                 </Button>
@@ -685,14 +682,13 @@ export default function RegisterFunnel() {
 
               {/* Navigation */}
               <div className="flex gap-4 pt-4">
-                <Button variant="outline" onClick={() => setCurrentStep(3)} className="w-full">
+                <Button variant="outline" onClick={() => setCurrentStep(3)} className="flex-1">
                   Zurück
                 </Button>
                 <Button
                   onClick={handleVorvertragSubmit}
                   disabled={vorvertragMutation.isPending}
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  size="lg"
+                  className="flex-1 bg-green-600 hover:bg-green-700"
                 >
                   {vorvertragMutation.isPending ? "Erstelle Account..." : "Verbindlich anmelden"}
                 </Button>

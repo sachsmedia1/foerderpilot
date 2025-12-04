@@ -593,3 +593,5 @@
 - [x] NaN-Werte bei Förderberechnung (Kurspreis-Konvertierung von Cents zu Euro fehlte)
 - [ ] Dropdown-Menü überlappt Content (z-index Problem / Layout-Issue) - Shadcn/ui Standard-Verhalten
 - [ ] Kurstermine nicht sichtbar in Kursauswahl (Backend liefert keine Kurstermine im getCourses Response)
+
+- [x] "Weiter"-Button ragt rechts aus Card-Container heraus (w-full zu flex-1 geändert in allen Steps)
