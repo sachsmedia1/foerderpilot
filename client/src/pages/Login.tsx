@@ -55,8 +55,12 @@ export default function LoginPage() {
 
       toast.success("Erfolgreich angemeldet!");
       
-      // Reload page to trigger auth context update
-      window.location.href = "/";
+      // Role-based redirect
+      if (data.user?.role === 'admin') {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/teilnehmer";
+      }
     } catch (err) {
       setError("Verbindungsfehler. Bitte versuchen Sie es erneut.");
       setIsLoading(false);

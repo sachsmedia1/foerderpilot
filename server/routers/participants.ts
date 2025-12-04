@@ -8,7 +8,7 @@
  */
 
 import { z } from "zod";
-import { router, adminProcedure } from "../_core/trpc";
+import { router, adminProcedure, protectedProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { participants, courses } from "../../drizzle/schema";
 import { eq, and, like, or, desc } from "drizzle-orm";
@@ -530,4 +530,44 @@ export const participantsRouter = router({
 
       return { success: true };
     }),
+
+  /**
+   * Get current participant's data (for participant dashboard)
+   */
+  getMyData: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+    if (!ctx.user) throw new TRPCError({ code: "UNAUTHORIZED", message: "Not authenticated" });
+
+    // Find participant by userId
+    const [participant] = await db
+      .select({
+        id: participants.id,
+        firstName: participants.firstName,
+        lastName: participants.lastName,
+        email: participants.email,
+        phone: participants.phone,
+        dateOfBirth: participants.dateOfBirth,
+        street: participants.street,
+        zipCode: participants.zipCode,
+        city: participants.city,
+        country: participants.country,
+        status: participants.status,
+        courseId: participants.courseId,
+        courseName: courses.name,
+        courseDescription: courses.description,
+        coursePriceNet: courses.priceNet,
+        createdAt: participants.createdAt,
+      })
+      .from(participants)
+      .leftJoin(courses, eq(participants.courseId, courses.id))
+      .where(eq(participants.userId, ctx.user.id))
+      .limit(1);
+
+    if (!participant) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Teilnehmerdaten nicht gefunden" });
+    }
+
+    return participant;
+  }),
 });

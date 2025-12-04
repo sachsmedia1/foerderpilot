@@ -645,3 +645,13 @@
 - [ ] Logout-Redirect falsch: Leitet zu manus.im/app-auth statt app.foerderpilot.io
 
 - [x] Teilnehmer-Login funktioniert nicht: "Ungültige E-Mail-Adresse oder Passwort" - loginMethod war NULL statt "email" (Register-Flow setzte loginMethod nicht)
+
+
+## Teilnehmer-Dashboard
+
+- [x] Backend: getMyParticipantData Endpoint (Kurs, Termine, Status, Dokumente)
+- [x] Frontend: Teilnehmer-Dashboard-Page mit Kursübersicht
+- [x] Frontend: Dokumente-Bereich (Vorvertrag Download - Placeholder)
+- [x] Frontend: Profil-Verwaltung (Name, E-Mail, Telefon, Adresse anzeigen - Bearbeitung später)
+- [x] Rollen-basiertes Routing nach Login (Admin → /dashboard, User → /teilnehmer)
+- [ ] Testing: Teilnehmer-Dashboard-Flow testen
