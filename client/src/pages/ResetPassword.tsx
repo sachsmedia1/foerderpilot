@@ -22,8 +22,8 @@ import { Lock, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function ResetPasswordPage() {
   const [, navigate] = useLocation();
-  const [, params] = useRoute("/reset-password/:token");
-  const token = params?.token || "";
+  const searchParams = new URLSearchParams(window.location.search);
+  const token = searchParams.get("token") || "";
 
   const [formData, setFormData] = useState({
     newPassword: "",

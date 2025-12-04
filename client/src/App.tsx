@@ -82,7 +82,7 @@ function Router() {
       <Route path={"/register"} component={Register} />
       <Route path={"/anmeldung"} component={RegisterFunnel} />
       <Route path={"/forgot-password"} component={ForgotPassword} />
-      <Route path={"/reset-password/:token"} component={ResetPassword} />
+      <Route path={"/reset-password"} component={ResetPassword} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

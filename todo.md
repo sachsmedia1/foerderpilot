@@ -604,3 +604,5 @@
 - [x] Checkboxen zeigen visuell keinen checked-State (CSS/Theme-Problem) - Explizites bg-indigo-600 statt bg-primary, stroke-[3] für dickeres Checkmark
 
 - [x] SQL-Fehler beim Vorvertrag-Absenden: "insert into participants" zu viele default-Werte - userId fehlte (notNull field), unnötige Felder entfernt
+
+- [x] 404-Fehler nach Registrierung: /set-password Route existiert nicht - Route zu /reset-password geändert, Query-Parameter-Parsing hinzugefügt
