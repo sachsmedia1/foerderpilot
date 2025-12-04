@@ -1,0 +1,24 @@
+{
+  "query": "SELECT id, email, firstName, lastName, status FROM participants ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT id, email, firstName, lastName, status FROM participants ORDER BY id",
+  "rows": [
+    {
+      "id": "1",
+      "email": "sachs.stefan@icloud.com",
+      "firstName": "Max",
+      "lastName": "Muster",
+      "status": "documents_submitted"
+    },
+    {
+      "id": "240001",
+      "email": "sachs.stefan@icloud.com",
+      "firstName": "Marie",
+      "lastName": "Müller",
+      "status": "documents_approved"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tfirstName\tlastName\tstatus\n1\tsachs.stefan@icloud.com\tMax\tMuster\tdocuments_submitted\n240001\tsachs.stefan@icloud.com\tMarie\tMüller\tdocuments_approved\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

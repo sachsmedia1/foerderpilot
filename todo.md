@@ -606,3 +606,5 @@
 - [x] SQL-Fehler beim Vorvertrag-Absenden: "insert into participants" zu viele default-Werte - userId fehlte (notNull field), unnötige Felder entfernt
 
 - [x] 404-Fehler nach Registrierung: /set-password Route existiert nicht - Route zu /reset-password geändert, Query-Parameter-Parsing hinzugefügt
+
+- [x] E-Mail verwendet noch /set-password statt /reset-password - generateWelcomeEmail Parameter korrigiert (kurstitel statt kursname, starttermin hinzugefügt, eigenanteil entfernt)
