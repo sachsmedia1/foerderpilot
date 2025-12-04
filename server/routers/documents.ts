@@ -17,6 +17,7 @@ import { TRPCError } from '@trpc/server';
 import { storagePut } from '../storage';
 import { invokeLLM } from '../_core/llm';
 import { validateTenantAccess, validateResourceOwnership } from '../_core/security';
+import { sendDocumentUploadNotification, sendDocumentValidationNotification } from '../utils/emailNotifications';
 
 // Validation Schemas
 const documentUploadSchema = z.object({
@@ -127,6 +128,15 @@ export const documentsRouter = router({
         mimeType: input.mimeType,
         fileSize: fileBuffer.length,
         validationStatus: 'pending',
+      });
+
+      // Send document-upload notification email (async, don't wait)
+      sendDocumentUploadNotification(
+        input.participantId,
+        ctx.tenant.id,
+        input.documentType
+      ).catch((error) => {
+        console.error('[upload] Failed to send email notification:', error);
       });
 
       return {
@@ -299,6 +309,28 @@ export const documentsRouter = router({
           validatedAt: new Date()
         })
         .where(eq(documents.id, input.id));
+
+      // Send document-validation notification email for valid/invalid status (async, don't wait)
+      if (input.status === 'valid' || input.status === 'invalid') {
+        let validationResult;
+        if (document.validationResult) {
+          try {
+            validationResult = JSON.parse(document.validationResult);
+          } catch (e) {
+            validationResult = {};
+          }
+        }
+
+        sendDocumentValidationNotification(
+          document.participantId,
+          document.tenantId,
+          document.documentType,
+          input.status,
+          validationResult
+        ).catch((error) => {
+          console.error('[updateValidationStatus] Failed to send email notification:', error);
+        });
+      }
 
       return { success: true };
     }),

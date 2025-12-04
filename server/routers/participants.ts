@@ -14,6 +14,7 @@ import { participants, courses } from "../../drizzle/schema";
 import { eq, and, like, or, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { validateTenantAccess, validateResourceOwnership } from "../_core/security";
+import { sendStatusChangeNotification } from "../utils/emailNotifications";
 
 export const participantsRouter = router({
   /**
@@ -261,6 +262,8 @@ export const participantsRouter = router({
       // ✅ RLS: Validate resource ownership
       validateResourceOwnership(ctx, existing[0].tenantId, 'Participant');
 
+      const oldStatus = existing[0].status;
+
       await db
         .update(participants)
         .set({
@@ -268,6 +271,18 @@ export const participantsRouter = router({
           updatedAt: new Date(),
         })
         .where(eq(participants.id, input.id));
+
+      // Send status-change notification email (async, don't wait)
+      if (oldStatus !== input.status) {
+        sendStatusChangeNotification(
+          input.id,
+          existing[0].tenantId,
+          oldStatus,
+          input.status
+        ).catch((error) => {
+          console.error('[updateStatus] Failed to send email notification:', error);
+        });
+      }
 
       return { success: true, status: input.status };
     }),
