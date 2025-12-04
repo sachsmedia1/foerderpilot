@@ -2,6 +2,7 @@
 // Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
 
 import { ENV } from './_core/env';
+import { retryWithBackoff } from './utils/retry';
 
 type StorageConfig = { baseUrl: string; apiKey: string };
 
@@ -76,20 +77,31 @@ export async function storagePut(
   const key = normalizeKey(relKey);
   const uploadUrl = buildUploadUrl(baseUrl, key);
   const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
-  const response = await fetch(uploadUrl, {
-    method: "POST",
-    headers: buildAuthHeaders(apiKey),
-    body: formData,
-  });
+  
+  // Upload with retry logic (3x attempts)
+  return await retryWithBackoff(
+    async () => {
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        headers: buildAuthHeaders(apiKey),
+        body: formData,
+      });
 
-  if (!response.ok) {
-    const message = await response.text().catch(() => response.statusText);
-    throw new Error(
-      `Storage upload failed (${response.status} ${response.statusText}): ${message}`
-    );
-  }
-  const url = (await response.json()).url;
-  return { key, url };
+      if (!response.ok) {
+        const message = await response.text().catch(() => response.statusText);
+        throw new Error(
+          `Storage upload failed (${response.status} ${response.statusText}): ${message}`
+        );
+      }
+      const url = (await response.json()).url;
+      return { key, url };
+    },
+    {
+      maxRetries: 3,
+      initialDelayMs: 1000,
+      maxDelayMs: 5000,
+    }
+  );
 }
 
 export async function storageGet(relKey: string): Promise<{ key: string; url: string; }> {
