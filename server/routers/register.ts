@@ -494,6 +494,7 @@ export const registerRouter = router({
           phone: session.phone,
           role: "user",
           tenantId: session.tenantId,
+          loginMethod: "email",
           passwordHash: null, // Wird beim ersten Login gesetzt
           resetToken: resetToken,
           resetTokenExpiry: resetTokenExpiry,

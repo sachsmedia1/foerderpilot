@@ -635,3 +635,13 @@
 - [x] Frontend: Passwort-setzen-Dialog in Teilnehmer-Detail-View
 - [x] Frontend: Passwort-zurücksetzen-Button (sendet Reset-E-Mail)
 - [ ] Testing: Passwort setzen und Login testen
+
+
+## Dashboard Auth-Bug (URGENT)
+
+- [x] Abmeldefunktion im Dashboard verschwunden - War vorhanden, User hat falsche Seite geprüft
+- [x] User-Name wird nicht mehr angezeigt - War vorhanden, User hat falsche Seite geprüft
+- [x] Auto-Login ohne Credentials (Auth-Check fehlerhaft) - Kein Problem gefunden
+- [ ] Logout-Redirect falsch: Leitet zu manus.im/app-auth statt app.foerderpilot.io
+
+- [x] Teilnehmer-Login funktioniert nicht: "Ungültige E-Mail-Adresse oder Passwort" - loginMethod war NULL statt "email" (Register-Flow setzte loginMethod nicht)
