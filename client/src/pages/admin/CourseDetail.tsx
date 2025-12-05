@@ -2,10 +2,9 @@ import { useParams, useLocation, Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Users, FileText, Edit, Plus, Trash2, Pencil, Link2, Copy } from "lucide-react";
+import { ArrowLeft, Calendar, Users, FileText, Edit, Plus, Trash2, Pencil } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { CourseScheduleModal } from "@/components/CourseScheduleModal";
@@ -184,35 +183,6 @@ export default function CourseDetail() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Registration Link Generator */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Direkter Anmelde-Link</CardTitle>
-            <CardDescription>
-              Teilen Sie diesen Link, um Teilnehmer direkt zu diesem Kurs anzumelden (ohne Kursauswahl)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2">
-              <Input
-                readOnly
-                value={`${window.location.origin}/anmeldung?courseId=${course.id}`}
-                className="flex-1 font-mono text-sm"
-              />
-              <Button
-                variant="outline"
-                onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/anmeldung?courseId=${course.id}`);
-                  toast.success('Link kopiert!');
-                }}
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                Kopieren
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Course Information */}
         <Card>
