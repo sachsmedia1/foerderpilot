@@ -657,3 +657,39 @@
 - [ ] Testing: Teilnehmer-Dashboard-Flow testen
 
 - [x] Teilnehmer-Login-Redirect funktioniert nicht: Teilnehmer landen nicht auf /teilnehmer - Backend-Response enthält role, Frontend-Code korrekt, muss veröffentlicht werden
+
+
+## Sprint 1.7: Beta-Launch Features (Deadline: 10.12.2024)
+
+### Feature 1: E-Mail-Vorlagen im Admin-UI bearbeitbar (🔴 HOCH - 15h)
+- [x] Admin-Settings-Seite `/admin/settings/email-templates` erstellen
+- [x] Template-Liste mit allen E-Mail-Vorlagen anzeigen
+- [x] Bearbeiten-Dialog mit Formular (Betreff + Body)
+- [x] Platzhalter-Hilfe anzeigen ({{vorname}}, {{kurstitel}}, etc.)
+- [x] Vorschau-Funktion mit Test-Daten
+- [x] Speichern-Button persistiert Änderungen in DB
+- [x] Navigation & Routing in Admin-Sidebar
+
+### Feature 2: Course-specific Anmelde-Links (🔴 HOCH - 12h)
+- [x] URL-Parameter `?courseId` im Registrierungs-Funnel verarbeiten
+- [x] Backend: courseId in Session speichern (bereits vorhanden)
+- [x] Backend: Auto-Assignment bei Account-Erstellung (bereits vorhanden)
+- [x] Admin-UI: Link-Generator auf Kurs-Detail-Seite
+- [x] Copy-to-Clipboard Funktion
+- [x] UI-Anpassung im Funnel (Kursauswahl überspringen wenn courseId vorhanden)
+- [ ] Kurs-Info in Step 1 anzeigen (optional - kann später ergänzt werden)
+
+### Feature 3: Dokumenten-Wizard für Teilnehmer (🟡 MITTEL - 10h)
+- [x] Teilnehmer-Dashboard `/dashboard/documents` erstellt (bereits vorhanden)
+- [x] Dokument-Card mit Status-Icons (bereits vorhanden)
+- [x] Drag & Drop Upload-Komponente (bereits vorhanden)
+- [x] Progress Bar & Status-Updates (bereits vorhanden)
+- [x] Backend: getRequiredDocuments Endpoint (bereits vorhanden)
+- [x] Backend: Upload + AI-Validierung Integration (bereits vorhanden)
+- [x] E-Mail-Benachrichtigung bei Prüf-Ergebnis (bereits vorhanden)
+
+### Feature 4: Vorvertrag-Preview im Funnel (🟢 NIEDRIG - 3h)
+- [x] Backend: getVorvertragPreview Endpoint (bereits vorhanden)
+- [x] Frontend: Vorvertrag inline in Step 4 anzeigen (Zusammenfassung vorhanden)
+- [x] Checkbox "Ich akzeptiere" erforderlich vor Submit (bereits vorhanden)
+- [x] Scrollbarer Container für lange Texte (bereits vorhanden)

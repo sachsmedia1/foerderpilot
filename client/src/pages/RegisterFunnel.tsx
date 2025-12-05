@@ -20,6 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { useEffect } from "react";
 
 // UUID Generator
 function generateUUID() {
@@ -35,6 +36,20 @@ export default function RegisterFunnel() {
   const [currentStep, setCurrentStep] = useState(1);
   const [sessionId] = useState(() => generateUUID());
   const tenantId = 1; // TODO: Get from subdomain/URL
+
+  // Check for courseId in URL
+  const [preselectedCourseId, setPreselectedCourseId] = useState<number | null>(null);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const courseIdParam = params.get('courseId');
+    if (courseIdParam) {
+      const courseId = parseInt(courseIdParam, 10);
+      if (!isNaN(courseId)) {
+        setPreselectedCourseId(courseId);
+        setSelectedCourseId(courseId);
+      }
+    }
+  }, []);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // STEP 1: FÖRDERCHECK STATE
@@ -122,7 +137,12 @@ export default function RegisterFunnel() {
         // Nicht weitergehen
       } else {
         toast.success(result.message);
-        setCurrentStep(2);
+        // Skip step 2 if courseId is preselected
+        if (preselectedCourseId) {
+          setCurrentStep(3);
+        } else {
+          setCurrentStep(2);
+        }
       }
     } catch (error: any) {
       toast.error(error.message || "Fehler beim Fördercheck");
