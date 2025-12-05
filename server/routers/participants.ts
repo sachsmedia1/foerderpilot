@@ -534,6 +534,17 @@ export const participantsRouter = router({
   /**
    * Get current participant's data (for participant dashboard)
    */
+  /**
+   * Debug endpoint to check current user ID
+   */
+  debugUserId: protectedProcedure.query(async ({ ctx }) => {
+    return {
+      userId: ctx.user.id,
+      email: ctx.user.email,
+      name: ctx.user.name,
+    };
+  }),
+
   getMyData: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });

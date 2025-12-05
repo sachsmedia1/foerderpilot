@@ -26,7 +26,13 @@ import { useLocation } from "wouter";
 export default function ParticipantDashboard() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
-  const { data: participantData, isLoading } = trpc.participants.getMyData.useQuery();
+  const { data: debugData } = trpc.participants.debugUserId.useQuery();
+  const { data: participantData, isLoading, error } = trpc.participants.getMyData.useQuery();
+
+  // Debug logging
+  console.log('[ParticipantDashboard] Debug User ID:', debugData);
+  console.log('[ParticipantDashboard] Participant Data:', participantData);
+  console.log('[ParticipantDashboard] Error:', error);
 
   if (isLoading) {
     return (
