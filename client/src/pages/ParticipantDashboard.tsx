@@ -44,20 +44,27 @@ export default function ParticipantDashboard() {
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
         {/* Header */}
         <header className="bg-white border-b">
-          <div className="container py-4 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">FörderPilot</h1>
-              <p className="text-sm text-muted-foreground">Teilnehmer-Dashboard</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm font-medium">{user?.name}</p>
-                <p className="text-xs text-muted-foreground">{user?.email}</p>
+          <div className="container py-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex-shrink-0">
+                <h1 className="text-xl sm:text-2xl font-bold">FörderPilot</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">Teilnehmer-Dashboard</p>
               </div>
-              <Button variant="outline" size="sm" onClick={logout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Abmelden
-              </Button>
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="text-right hidden sm:block">
+                  <p className="text-sm font-medium">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground truncate max-w-[200px]">{user?.email}</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={logout} className="flex-shrink-0">
+                  <LogOut className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Abmelden</span>
+                </Button>
+              </div>
+            </div>
+            {/* Mobile: Show user info below header */}
+            <div className="sm:hidden mt-3 pt-3 border-t">
+              <p className="text-sm font-medium">{user?.name}</p>
+              <p className="text-xs text-muted-foreground break-all">{user?.email}</p>
             </div>
           </div>
         </header>
@@ -134,20 +141,27 @@ export default function ParticipantDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       {/* Header */}
       <header className="bg-white border-b">
-        <div className="container py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">FörderPilot</h1>
-            <p className="text-sm text-muted-foreground">Teilnehmer-Dashboard</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-medium">{user?.name}</p>
-              <p className="text-xs text-muted-foreground">{user?.email}</p>
+        <div className="container py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex-shrink-0">
+              <h1 className="text-xl sm:text-2xl font-bold">FörderPilot</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Teilnehmer-Dashboard</p>
             </div>
-            <Button variant="outline" size="sm" onClick={logout}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Abmelden
-            </Button>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-medium">{user?.name}</p>
+                <p className="text-xs text-muted-foreground truncate max-w-[200px]">{user?.email}</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={logout} className="flex-shrink-0">
+                <LogOut className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Abmelden</span>
+              </Button>
+            </div>
+          </div>
+          {/* Mobile: Show user info below header */}
+          <div className="sm:hidden mt-3 pt-3 border-t">
+            <p className="text-sm font-medium">{user?.name}</p>
+            <p className="text-xs text-muted-foreground break-all">{user?.email}</p>
           </div>
         </div>
       </header>

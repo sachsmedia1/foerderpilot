@@ -562,6 +562,7 @@ export const participantsRouter = router({
       .from(participants)
       .leftJoin(courses, eq(participants.courseId, courses.id))
       .where(eq(participants.userId, ctx.user.id))
+      .orderBy(desc(participants.courseId)) // Prefer participants with course assignment
       .limit(1);
 
     if (!participant) {
