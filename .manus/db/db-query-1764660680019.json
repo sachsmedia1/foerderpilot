@@ -1,9 +1,0 @@
-{
-  "query": "-- Lösche alle User außer Super Admin (role = 'super_admin')\nDELETE FROM users WHERE role != 'super_admin';",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute -- Lösche alle User außer Super Admin (role = 'super_admin')\nDELETE FROM users WHERE role != 'super_admin';",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 894
-}

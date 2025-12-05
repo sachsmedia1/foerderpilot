@@ -1,8 +1,0 @@
-{
-  "query": "UPDATE users SET role = 'super_admin' WHERE openId = 30001;",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute UPDATE users SET role = 'super_admin' WHERE openId = 30001;",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1292 (22007) at line 1: Truncated incorrect INTEGER value: 'super-admin-demo'"
-  ]
-}

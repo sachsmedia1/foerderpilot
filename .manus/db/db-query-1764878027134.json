@@ -1,9 +1,0 @@
-{
-  "query": "SELECT p.id, p.userId, p.firstName, p.lastName, p.email, u.id as userIdFromUsers\nFROM participants p \nLEFT JOIN users u ON p.email = u.email\nWHERE p.email = 's.sachs@sachs-media.com'\nLIMIT 5;",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT p.id, p.userId, p.firstName, p.lastName, p.email, u.id as userIdFromUsers\nFROM participants p \nLEFT JOIN users u ON p.email = u.email\nWHERE p.email = 's.sachs@sachs-media.com'\nLIMIT 5;",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 70
-}

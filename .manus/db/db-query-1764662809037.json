@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE IF NOT EXISTS vorvertraege (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  tenantId INT NOT NULL,\n  participantId INT NOT NULL,\n  status VARCHAR(50) NOT NULL DEFAULT 'pending',\n  signedAt TIMESTAMP NULL,\n  signatureData TEXT NULL,\n  ipAddress VARCHAR(50) NULL,\n  userAgent TEXT NULL,\n  contractVersion VARCHAR(50) DEFAULT '1.0',\n  contractText TEXT NULL,\n  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_vorvertraege_tenant (tenantId),\n  INDEX idx_vorvertraege_participant (participantId),\n  INDEX idx_vorvertraege_status (status)\n);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute CREATE TABLE IF NOT EXISTS vorvertraege (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  tenantId INT NOT NULL,\n  participantId INT NOT NULL,\n  status VARCHAR(50) NOT NULL DEFAULT 'pending',\n  signedAt TIMESTAMP NULL,\n  signatureData TEXT NULL,\n  ipAddress VARCHAR(50) NULL,\n  userAgent TEXT NULL,\n  contractVersion VARCHAR(50) DEFAULT '1.0',\n  contractText TEXT NULL,\n  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_vorvertraege_tenant (tenantId),\n  INDEX idx_vorvertraege_participant (participantId),\n  INDEX idx_vorvertraege_status (status)\n);",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 215
-}

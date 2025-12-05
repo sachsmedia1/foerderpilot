@@ -1,9 +1,0 @@
-{
-  "query": "CREATE INDEX idx_documents_tenant ON documents(tenantId);\nCREATE INDEX idx_documents_participant ON documents(participantId);\nCREATE INDEX idx_documents_status ON documents(validationStatus);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute CREATE INDEX idx_documents_tenant ON documents(tenantId);\nCREATE INDEX idx_documents_participant ON documents(participantId);\nCREATE INDEX idx_documents_status ON documents(validationStatus);",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1417
-}

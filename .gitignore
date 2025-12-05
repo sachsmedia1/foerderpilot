@@ -106,3 +106,20 @@ temp/
 *.sqlite
 *.sqlite3
 SPRINT_*.md
+
+# Manus-specific files
+.manus/
+
+# Secrets and credentials
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+.secrets/
+secrets/
+credentials/
+
+# Test files
+server/*.test.ts
+!server/auth.logout.test.ts
