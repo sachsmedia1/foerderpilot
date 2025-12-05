@@ -518,6 +518,47 @@ export default function RegisterFunnel() {
             <CardHeader>
               <CardTitle>Schritt 3: Ihre persönlichen Daten</CardTitle>
               <CardDescription>Bitte füllen Sie alle Felder aus</CardDescription>
+              
+              {/* Kurs-Info wenn über Direct-Link */}
+              {preselectedCourseId && courses && (
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  {(() => {
+                    const course = courses.find((c: any) => c.id === preselectedCourseId);
+                    if (!course || !foerdercheckErgebnis) return null;
+                    
+                    const priceInEuro = course.priceNet / 100;
+                    const foerderprozent = foerdercheckErgebnis.foerderprozent || 0;
+                    const foerderbetrag = (priceInEuro * foerderprozent) / 100;
+                    const eigenanteil = priceInEuro - foerderbetrag;
+                    
+                    return (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <span className="text-2xl">📚</span>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg">{course.name}</h3>
+                            <p className="text-sm text-gray-600 mt-1">{course.shortDescription || 'Keine Beschreibung verfügbar'}</p>
+                            <div className="mt-3 space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span>Kurspreis:</span>
+                                <span className="font-semibold">€{priceInEuro.toFixed(2)}</span>
+                              </div>
+                              <div className="flex justify-between text-green-700">
+                                <span>Förderung ({foerderprozent}%):</span>
+                                <span className="font-semibold">-€{foerderbetrag.toFixed(2)}</span>
+                              </div>
+                              <div className="flex justify-between text-lg font-bold border-t pt-1">
+                                <span>Ihr Eigenanteil:</span>
+                                <span>€{eigenanteil.toFixed(2)}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -608,7 +649,11 @@ export default function RegisterFunnel() {
 
               {/* Navigation */}
               <div className="flex gap-4 pt-4">
-                <Button variant="outline" onClick={() => setCurrentStep(2)} className="flex-1">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setCurrentStep(preselectedCourseId ? 1 : 2)} 
+                  className="flex-1"
+                >
                   Zurück
                 </Button>
                 <Button

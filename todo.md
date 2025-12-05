@@ -677,7 +677,7 @@
 - [x] Admin-UI: Link-Generator auf Kurs-Detail-Seite
 - [x] Copy-to-Clipboard Funktion
 - [x] UI-Anpassung im Funnel (Kursauswahl überspringen wenn courseId vorhanden)
-- [ ] Kurs-Info in Step 1 anzeigen (optional - kann später ergänzt werden)
+- [x] Kurs-Info in Step 3 anzeigen wenn courseId vorhanden (nach Fördercheck, vor persönlichen Daten)
 
 ### Feature 3: Dokumenten-Wizard für Teilnehmer (🟡 MITTEL - 10h)
 - [x] Teilnehmer-Dashboard `/dashboard/documents` erstellt (bereits vorhanden)
