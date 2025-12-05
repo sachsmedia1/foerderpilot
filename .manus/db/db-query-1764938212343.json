@@ -1,0 +1,19 @@
+{
+  "query": "SELECT id, email, openId, name, role, tenantId, loginMethod\nFROM users \nWHERE email = 's.sachs+kompass@sachs-media.com' OR openId = 's.sachs+kompass@sachs-media.com'\nLIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3Ljv7tUcUqkJWz2.a9fc2ac34f70 --database Q4zKBZCPW5Fmg3HtsHcjY8 --execute SELECT id, email, openId, name, role, tenantId, loginMethod\nFROM users \nWHERE email = 's.sachs+kompass@sachs-media.com' OR openId = 's.sachs+kompass@sachs-media.com'\nLIMIT 5;",
+  "rows": [
+    {
+      "id": "3210003",
+      "email": "s.sachs+kompass@sachs-media.com",
+      "openId": "s.sachs+kompass@sachs-media.com",
+      "name": "Stefan Sachs",
+      "role": "user",
+      "tenantId": "1",
+      "loginMethod": "email"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\topenId\tname\trole\ttenantId\tloginMethod\n3210003\ts.sachs+kompass@sachs-media.com\ts.sachs+kompass@sachs-media.com\tStefan Sachs\tuser\t1\temail\n",
+  "stderr": "",
+  "execution_time_ms": 210
+}

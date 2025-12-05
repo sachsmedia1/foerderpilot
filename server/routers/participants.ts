@@ -541,34 +541,31 @@ export const participantsRouter = router({
 
     // Find participant by userId
     const [participant] = await db
-      .select({
-        id: participants.id,
-        firstName: participants.firstName,
-        lastName: participants.lastName,
-        email: participants.email,
-        phone: participants.phone,
-        dateOfBirth: participants.dateOfBirth,
-        street: participants.street,
-        zipCode: participants.zipCode,
-        city: participants.city,
-        country: participants.country,
-        status: participants.status,
-        courseId: participants.courseId,
-        courseName: courses.name,
-        courseDescription: courses.description,
-        coursePriceNet: courses.priceNet,
-        createdAt: participants.createdAt,
-      })
+      .select()
       .from(participants)
-      .leftJoin(courses, eq(participants.courseId, courses.id))
       .where(eq(participants.userId, ctx.user.id))
-      .orderBy(desc(participants.courseId)) // Prefer participants with course assignment
       .limit(1);
 
     if (!participant) {
       throw new TRPCError({ code: "NOT_FOUND", message: "Teilnehmerdaten nicht gefunden" });
     }
 
-    return participant;
+    // Load course data separately if participant has a course
+    let courseData = null;
+    if (participant.courseId) {
+      const [course] = await db
+        .select()
+        .from(courses)
+        .where(eq(courses.id, participant.courseId))
+        .limit(1);
+      courseData = course;
+    }
+
+    return {
+      ...participant,
+      courseName: courseData?.name || null,
+      courseDescription: courseData?.description || null,
+      coursePriceNet: courseData?.priceNet || null,
+    };
   }),
 });
