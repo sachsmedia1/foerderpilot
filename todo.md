@@ -745,3 +745,19 @@
 **Geschätzter Aufwand:** 3-4 Stunden  
 **Deadline:** 07.12.2024  
 **Status:** ✅ ABGESCHLOSSEN
+
+
+---
+
+## 🐛 BUGFIX: Teilnehmer-Dokumenten-Seite
+
+**Problem:** `/teilnehmer/documents` zeigt "Teilnehmer nicht gefunden"
+
+### Zu beheben:
+- [x] Prüfe participants.getMyData Query
+- [x] Implementiere Fallback wenn kein Teilnehmer-Datensatz existiert
+- [x] Zeige bessere Fehlermeldung mit Anleitung
+
+**Lösung:** Error Handling in DocumentsDashboard verbessert - zeigt jetzt hilfreiche Anleitung statt generischer Fehlermeldung
+
+**Status:** ✅ Behoben

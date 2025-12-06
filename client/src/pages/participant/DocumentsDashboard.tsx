@@ -17,7 +17,7 @@ interface DocumentType {
 }
 
 export default function DocumentsDashboard() {
-  const { data: participantData } = trpc.participants.getMyData.useQuery();
+  const { data: participantData, isLoading: participantLoading, error: participantError } = trpc.participants.getMyData.useQuery();
   const { data: documentTypes } = trpc.documents.getDocumentTypes.useQuery();
   const { data: documents } = trpc.documents.list.useQuery(
     { participantId: participantData?.id || 0 },
@@ -28,7 +28,56 @@ export default function DocumentsDashboard() {
     { enabled: !!participantData?.id }
   );
 
-  if (!participantData || !documentTypes || !documents || !phaseStatus) {
+  // Loading state
+  if (participantLoading || !documentTypes) {
+    return (
+      <div className="p-6 max-w-5xl mx-auto">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-muted-foreground">Lade Dokumente...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state - Participant not found
+  if (participantError || !participantData) {
+    return (
+      <div className="p-6 max-w-5xl mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="w-6 h-6 text-orange-600" />
+              Teilnehmer nicht gefunden
+            </CardTitle>
+            <CardDescription>
+              Sie sind noch nicht als Teilnehmer registriert.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Um Dokumente hochladen zu können, müssen Sie zunächst von einem Bildungsträger als Teilnehmer angelegt werden.
+            </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm font-medium text-blue-900 mb-2">
+                Nächste Schritte:
+              </p>
+              <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                <li>Wenden Sie sich an Ihren Bildungsträger</li>
+                <li>Bitten Sie um Registrierung als Teilnehmer im System</li>
+                <li>Nach der Registrierung können Sie hier Ihre Dokumente hochladen</li>
+              </ol>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              <strong>Technische Info:</strong> Ihr Account ({participantError?.message || "Keine Teilnehmerdaten"}) ist noch keinem Teilnehmer-Datensatz zugeordnet.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Wait for all data
+  if (!documents || !phaseStatus) {
     return (
       <div className="p-6 max-w-5xl mx-auto">
         <div className="flex items-center justify-center h-64">
