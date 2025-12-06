@@ -224,13 +224,21 @@ export default function ParticipantDashboard() {
           {/* Dokumente */}
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                <CardTitle>Dokumente</CardTitle>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <CardTitle>Dokumente</CardTitle>
+                  </div>
+                  <CardDescription className="mt-1">
+                    Ihre Verträge und Bescheinigungen
+                  </CardDescription>
+                </div>
+                <Button onClick={() => navigate("/teilnehmer/documents")} size="sm">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Dokumente verwalten
+                </Button>
               </div>
-              <CardDescription>
-                Ihre Verträge und Bescheinigungen
-              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between p-3 border rounded-lg">

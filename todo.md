@@ -680,11 +680,12 @@
 
 ### Feature 3: Dokumenten-Wizard für Teilnehmer
 - [x] Backend: `documents.ts` Router (Upload, AI-Validierung, S3)
-- [ ] Frontend: `/dashboard/documents` Seite für Teilnehmer
-- [ ] Dokument-Cards mit Status-Icons (❌ Fehlt / ⏳ Prüfung / ✅ Gültig / ❌ Ungültig)
-- [ ] Drag & Drop Upload-Komponente
-- [ ] Progress Bar & Status-Updates
-- [ ] E-Mail-Benachrichtigung bei Prüf-Ergebnis
+- [x] Frontend: `/teilnehmer/documents` Seite für Teilnehmer
+- [x] Dokument-Cards mit Status-Icons (❌ Fehlt / ⏳ Prüfung / ✅ Gültig / ❌ Ungültig)
+- [x] Drag & Drop Upload-Komponente mit react-dropzone
+- [x] Progress Bar & Status-Updates
+- [x] Navigation von Teilnehmer-Dashboard zu Dokumenten-Bereich
+- [x] E-Mail-Benachrichtigung bei Prüf-Ergebnis (Backend bereits vorhanden)
 
 ### Feature 4: Vorvertrag-Preview im Funnel
 - [x] Backend: Vorvertrag-Generierung (bereits vorhanden)
