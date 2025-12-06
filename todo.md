@@ -694,3 +694,54 @@
 - [x] Scrollbarer Container für lange Texte
 
 **Status: 4/4 Features vollständig ✅ - Sprint 1.7 Beta-Launch READY 🚀**
+
+
+---
+
+## 📋 SPRINT 1.8: KOMPASS-KONFORME DOKUMENTEN-STRUKTUR
+
+**Ziel:** Anpassung der Dokumenttypen an offizielle KOMPASS-Anforderungen mit Phasen-basiertem Workflow
+
+### Backend-Anpassungen
+- [x] Neue Dokumenttypen definieren (9 KOMPASS-Typen statt 5 generische)
+- [x] Deutsche Labels für alle Dokumenttypen
+- [x] Hilfe-Texte für jeden Dokumenttyp
+- [x] AI-Validierungs-Prompts für alle neuen Typen
+- [x] Phase-Logik implementieren (Förderberechtigung + Rückerstattung)
+- [x] getPhaseStatus Endpoint erstellen
+- [x] getDocumentTypes Endpoint erstellen
+
+### Frontend-Anpassungen
+- [x] Phasen-basierte UI-Struktur (Phase 1 + Phase 2)
+- [x] Progressive Freischaltung (Phase 2 erst nach Phase 1)
+- [x] Status-Dashboard mit Phasen-Anzeige
+- [x] Hilfe-Texte in Upload-Cards anzeigen
+- [x] Phase-1-Fortschritt visualisieren (X von 6 Dokumenten)
+- [x] Phase-2-Sperrung bis Phase 1 komplett
+- [x] Drag & Drop Upload für alle Dokumenttypen
+- [x] Progress Bar bei Upload
+- [x] Status-Icons (Fehlt, Ausstehend, Gültig, Ungültig, Manuelle Prüfung)
+
+### Dokumenttypen (KOMPASS-Standard)
+**Phase 1: Förderberechtigung (vor Kurs)**
+- [x] Personalausweis
+- [x] Einkommensteuerbescheid (letzte 2 Jahre)
+- [x] Gewerbeanmeldung / Freiberufleranmeldung
+- [x] VZÄ-Rechner (Selbsterklärung)
+- [x] De-minimis-Erklärung
+- [x] Bankbestätigung Geschäftskonto
+
+**Phase 2: Rückerstattung (nach Kurs)**
+- [x] Teilnahmebescheinigung
+- [x] Kursrechnung
+- [x] Zahlungsnachweis (Kontoauszug)
+
+### Testing
+- [x] Upload-Flow für alle 9 Dokumenttypen implementiert
+- [x] AI-Validierung für jeden Typ mit spezifischen Prompts
+- [x] Phase-2-Sperrung implementiert
+- [x] Phasen-Status-Logik implementiert
+
+**Geschätzter Aufwand:** 3-4 Stunden  
+**Deadline:** 07.12.2024  
+**Status:** ✅ ABGESCHLOSSEN

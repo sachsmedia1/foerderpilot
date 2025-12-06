@@ -20,16 +20,73 @@ import { validateTenantAccess, validateResourceOwnership } from '../_core/securi
 import { sendDocumentUploadNotification, sendDocumentValidationNotification } from '../utils/emailNotifications';
 
 // Validation Schemas
+// KOMPASS-konforme Dokumenttypen
+const documentTypes = [
+  // Phase 1: Förderberechtigung (vor Kurs)
+  'personalausweis',
+  'einkommensteuerbescheid',
+  'gewerbeanmeldung',
+  'vzae_rechner',
+  'deminimis_erklaerung',
+  'bankbestaetigung',
+  
+  // Phase 2: Rückerstattung (nach Kurs)
+  'teilnahmebescheinigung',
+  'rechnung_kurs',
+  'zahlungsnachweis',
+  
+  // Fallback
+  'other'
+] as const;
+
+// Deutsche Labels für Dokumenttypen
+export const documentLabels: Record<typeof documentTypes[number], string> = {
+  personalausweis: 'Personalausweis',
+  einkommensteuerbescheid: 'Einkommensteuerbescheid (letzte 2 Jahre)',
+  gewerbeanmeldung: 'Gewerbeanmeldung / Freiberufleranmeldung',
+  vzae_rechner: 'VZÄ-Rechner (Selbsterklärung)',
+  deminimis_erklaerung: 'De-minimis-Erklärung',
+  bankbestaetigung: 'Bankbestätigung Geschäftskonto',
+  teilnahmebescheinigung: 'Teilnahmebescheinigung',
+  rechnung_kurs: 'Kursrechnung',
+  zahlungsnachweis: 'Zahlungsnachweis (Kontoauszug)',
+  other: 'Sonstiges Dokument'
+};
+
+// Hilfe-Texte für Dokumenttypen
+export const documentHelp: Record<typeof documentTypes[number], string> = {
+  personalausweis: 'Kopie beider Seiten Ihres gültigen Personalausweises oder Reisepasses',
+  einkommensteuerbescheid: 'Einkommensteuerbescheide der letzten 2 Jahre als Nachweis der Hauptberuflichkeit (>51% Einkommen aus Selbstständigkeit)',
+  gewerbeanmeldung: 'Gewerbeanmeldung oder Anmeldung als Freiberufler als Nachweis der mindestens 2-jährigen Selbstständigkeit',
+  vzae_rechner: 'Selbsterklärung über Vollzeitäquivalente (max. 1 VZÄ erlaubt) - wird über Z-EU-S Portal erstellt',
+  deminimis_erklaerung: 'Erklärung über erhaltene De-minimis-Beihilfen (max. €300.000 in 3 Jahren)',
+  bankbestaetigung: 'Bestätigung der Bank über Ihr Geschäftskonto',
+  teilnahmebescheinigung: 'Bescheinigung des Bildungsträgers über vollständige Kursteilnahme',
+  rechnung_kurs: 'Originalrechnung des Bildungsträgers für den absolvierten Kurs',
+  zahlungsnachweis: 'Kontoauszug als Nachweis der Kursgebührenzahlung',
+  other: 'Weitere relevante Dokumente'
+};
+
+// Phasen-Definitionen
+export const documentPhases = {
+  FOERDERBERECHTIGUNG: [
+    'personalausweis',
+    'einkommensteuerbescheid',
+    'gewerbeanmeldung',
+    'vzae_rechner',
+    'deminimis_erklaerung',
+    'bankbestaetigung'
+  ] as const,
+  RUECKERSTATTUNG: [
+    'teilnahmebescheinigung',
+    'rechnung_kurs',
+    'zahlungsnachweis'
+  ] as const
+};
+
 const documentUploadSchema = z.object({
   participantId: z.number().int().positive(),
-  documentType: z.enum([
-    'personalausweis',
-    'lebenslauf',
-    'zeugnisse',
-    'arbeitsvertrag',
-    'kuendigungsbestaetigung',
-    'other'
-  ]),
+  documentType: z.enum(documentTypes),
   filename: z.string().min(1),
   fileData: z.string(), // Base64-encoded file data
   mimeType: z.string(),
@@ -365,51 +422,202 @@ export const documentsRouter = router({
 
       return { success: true };
     }),
+
+  /**
+   * Phasen-Status für Teilnehmer abrufen
+   */
+  getPhaseStatus: protectedProcedure
+    .input(z.object({
+      participantId: z.number().int().positive()
+    }))
+    .query(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+      if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+
+      // Verify participant belongs to tenant
+      const participant = await db
+        .select()
+        .from(participants)
+        .where(eq(participants.id, input.participantId))
+        .limit(1);
+
+      if (participant.length === 0) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Participant not found' });
+      }
+
+      // ✅ RLS: Validate resource ownership
+      validateResourceOwnership(ctx, participant[0].tenantId, 'Participant');
+
+      // Get all documents for participant
+      const docs = await db
+        .select()
+        .from(documents)
+        .where(eq(documents.participantId, input.participantId));
+
+      // Check Phase 1 completion
+      const phase1Complete = documentPhases.FOERDERBERECHTIGUNG.every(type =>
+        docs.some(doc => doc.documentType === type && doc.validationStatus === 'valid')
+      );
+
+      const phase1Progress = documentPhases.FOERDERBERECHTIGUNG.filter(type =>
+        docs.some(doc => doc.documentType === type && doc.validationStatus === 'valid')
+      ).length;
+
+      // Check Phase 2 completion
+      const phase2Complete = documentPhases.RUECKERSTATTUNG.every(type =>
+        docs.some(doc => doc.documentType === type && doc.validationStatus === 'valid')
+      );
+
+      const phase2Progress = documentPhases.RUECKERSTATTUNG.filter(type =>
+        docs.some(doc => doc.documentType === type && doc.validationStatus === 'valid')
+      ).length;
+
+      return {
+        foerderberechtigung: {
+          complete: phase1Complete,
+          progress: phase1Progress,
+          total: documentPhases.FOERDERBERECHTIGUNG.length,
+          percentage: Math.round((phase1Progress / documentPhases.FOERDERBERECHTIGUNG.length) * 100)
+        },
+        rueckerstattung: {
+          available: phase1Complete, // Nur verfügbar wenn Phase 1 komplett
+          complete: phase2Complete,
+          progress: phase2Progress,
+          total: documentPhases.RUECKERSTATTUNG.length,
+          percentage: phase1Complete ? Math.round((phase2Progress / documentPhases.RUECKERSTATTUNG.length) * 100) : 0
+        }
+      };
+    }),
+
+  /**
+   * Dokumenttypen und Labels abrufen
+   */
+  getDocumentTypes: protectedProcedure
+    .query(async () => {
+      return {
+        types: documentTypes,
+        labels: documentLabels,
+        help: documentHelp,
+        phases: documentPhases
+      };
+    }),
 });
 
 /**
- * Helper: Get validation prompt for document type
+ * Helper: Get validation prompt for document type (KOMPASS-konform)
  */
 function getValidationPrompt(documentType: string): string {
   const prompts: Record<string, string> = {
     personalausweis: `
-Prüfe diesen Personalausweis auf folgende Kriterien:
-- Ist das Dokument lesbar und vollständig?
-- Sind alle Pflichtfelder (Name, Geburtsdatum, Ausweisnummer) erkennbar?
-- Ist das Dokument gültig (nicht abgelaufen)?
-- Gibt es Anzeichen für Fälschungen oder Manipulationen?
+Prüfe diesen Personalausweis/Reisepass:
+1. Ist das Dokument vollständig und gut lesbar?
+2. Sind Name, Geburtsdatum und Adresse klar erkennbar?
+3. Ist das Dokument noch gültig (Ablaufdatum)?
+4. Handelt es sich um ein offizielles deutsches Dokument?
+5. Sind beide Seiten vorhanden (falls Personalausweis)?
+
+Bewerte Gültigkeit, Vollständigkeit und Lesbarkeit.
     `,
-    lebenslauf: `
-Prüfe diesen Lebenslauf auf folgende Kriterien:
-- Ist das Dokument vollständig und strukturiert?
-- Enthält es persönliche Daten (Name, Kontakt)?
-- Sind Bildungs- und Berufserfahrung aufgeführt?
-- Ist das Dokument aktuell (nicht älter als 6 Monate)?
+    
+    einkommensteuerbescheid: `
+Prüfe diesen Einkommensteuerbescheid:
+1. Ist das Dokument vollständig lesbar und offiziell?
+2. Enthält es Steueridentifikationsnummer?
+3. Sind Einkünfte aus selbstständiger Tätigkeit ausgewiesen?
+4. Ist der Zeitraum der letzten 2 Jahre abgedeckt?
+5. Lässt sich Hauptberuflichkeit (>51% aus Selbstständigkeit) ableiten?
+6. Sind Name und Adresse mit anderen Dokumenten konsistent?
+
+Fokus auf Selbstständigkeits-Nachweis und Einkommensverteilung.
     `,
-    zeugnisse: `
-Prüfe diese Zeugnisse auf folgende Kriterien:
-- Sind die Dokumente lesbar und vollständig?
-- Sind Ausstellungsdatum und Institution erkennbar?
-- Gibt es Anzeichen für Fälschungen?
+    
+    gewerbeanmeldung: `
+Prüfe diese Gewerbeanmeldung/Freiberufleranmeldung:
+1. Ist das Dokument vollständig lesbar und offiziell?
+2. Ist das Anmeldedatum mindestens 2 Jahre alt?
+3. Sind Name und Adresse des Antragstellers klar erkennbar?
+4. Ist die Art der Tätigkeit/des Gewerbes angegeben?
+5. Handelt es sich um ein deutsches Dokument einer Behörde?
+
+Fokus auf 2-Jahres-Nachweis der Selbstständigkeit.
     `,
-    arbeitsvertrag: `
-Prüfe diesen Arbeitsvertrag auf folgende Kriterien:
-- Ist das Dokument vollständig?
-- Sind Arbeitgeber und Arbeitnehmer erkennbar?
-- Ist das Datum und die Unterschrift vorhanden?
+    
+    vzae_rechner: `
+Prüfe diese VZÄ-Rechner Selbsterklärung:
+1. Ist das Dokument vollständig ausgefüllt?
+2. Ist das Ergebnis ≤ 1,0 Vollzeitäquivalente?
+3. Sind alle Mitarbeiter/Beschäftigte erfasst?
+4. Ist das Dokument aktuell datiert?
+5. Ist es unterschrieben/bestätigt?
+
+Fokus auf Max. 1 VZÄ-Grenze.
     `,
-    kuendigungsbestaetigung: `
-Prüfe diese Kündigungsbestätigung auf folgende Kriterien:
-- Ist das Dokument vollständig?
-- Sind Arbeitgeber und Arbeitnehmer erkennbar?
-- Ist das Kündigungsdatum erkennbar?
-- Ist eine Unterschrift vorhanden?
+    
+    deminimis_erklaerung: `
+Prüfe diese De-minimis-Erklärung:
+1. Ist das Dokument vollständig ausgefüllt?
+2. Sind alle erhaltenen Beihilfen der letzten 3 Jahre aufgelistet?
+3. Ist die Gesamtsumme ≤ €300.000?
+4. Ist das Dokument aktuell datiert und unterschrieben?
+5. Sind die Angaben plausibel und vollständig?
+
+Fokus auf €300k-Grenze und Vollständigkeit.
     `,
+    
+    bankbestaetigung: `
+Prüfe diese Bankbestätigung:
+1. Ist es ein offizielles Bankdokument mit Briefkopf?
+2. Bestätigt es ein Geschäftskonto des Antragstellers?
+3. Sind IBAN und Kontoinhaber erkennbar?
+4. Ist das Dokument aktuell (nicht älter als 3 Monate)?
+5. Ist es von der Bank gestempelt/unterschrieben?
+
+Fokus auf Geschäftskonten-Nachweis.
+    `,
+    
+    teilnahmebescheinigung: `
+Prüfe diese Teilnahmebescheinigung:
+1. Ist es ein offizielles Dokument des Bildungsträgers?
+2. Ist der vollständige Kurstitel und -zeitraum angegeben?
+3. Wird vollständige Teilnahme bestätigt (nicht nur Anmeldung)?
+4. Sind Teilnehmername und Kursdauer erkennbar?
+5. Ist das Dokument gestempelt/unterschrieben?
+
+Fokus auf vollständige Kursteilnahme.
+    `,
+    
+    rechnung_kurs: `
+Prüfe diese Kursrechnung:
+1. Ist es eine ordnungsgemäße Rechnung mit Rechnungsnummer?
+2. Sind Bildungsträger und Rechnungsempfänger klar erkennbar?
+3. Ist der Kursbetrag (netto) ausgewiesen und ≤ €5.000?
+4. Ist das Rechnungsdatum nach Kursanmeldung?
+5. Ist die Rechnung noch unbezahlt oder bereits bezahlt?
+
+Fokus auf Kostennachweis für KOMPASS-Förderung.
+    `,
+    
+    zahlungsnachweis: `
+Prüfe diesen Zahlungsnachweis (Kontoauszug):
+1. Ist es ein offizieller Kontoauszug der Bank?
+2. Ist die Zahlung an den Bildungsträger erkennbar?
+3. Stimmt der Betrag mit der Kursrechnung überein?
+4. Ist das Zahlungsdatum nach der Rechnung?
+5. Ist der Kontoinhaber der Antragsteller?
+
+Fokus auf Zahlungsnachweis für Kursgebühren.
+    `,
+    
     other: `
-Prüfe dieses Dokument auf folgende Kriterien:
-- Ist das Dokument lesbar und vollständig?
-- Gibt es offensichtliche Probleme oder Mängel?
-    `,
+Prüfe dieses Dokument:
+1. Ist das Dokument vollständig lesbar?
+2. Handelt es sich um ein relevantes offizielles Dokument?
+3. Sind alle wichtigen Informationen erkennbar?
+4. Ist das Dokument aktuell und gültig?
+
+Allgemeine Dokumentenprüfung.
+    `
   };
 
   return prompts[documentType] || prompts.other;

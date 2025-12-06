@@ -4,29 +4,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, Clock, XCircle, AlertCircle, Upload, FileText } from "lucide-react";
+import { CheckCircle, Clock, XCircle, AlertCircle, Upload, FileText, Lock, Info } from "lucide-react";
 import { toast } from "sonner";
 import { useDropzone } from "react-dropzone";
+type DocumentStatus = "missing" | "pending" | "validating" | "valid" | "invalid" | "manual_review";
 
-type DocumentStatus = "missing" | "pending" | "valid" | "invalid";
-
-interface Document {
+interface DocumentType {
   type: string;
-  name: string;
-  description: string;
-  status: DocumentStatus;
-  uploadedAt?: Date;
-  validatedAt?: Date;
-  rejectionReason?: string;
+  label: string;
+  help: string;
+  phase: 1 | 2;
 }
 
 export default function DocumentsDashboard() {
-  const { data, isLoading } = trpc.documents.getRequiredDocuments.useQuery();
-  const utils = trpc.useUtils();
+  const { data: participantData } = trpc.participants.getMyData.useQuery();
+  const { data: documentTypes } = trpc.documents.getDocumentTypes.useQuery();
+  const { data: documents } = trpc.documents.list.useQuery(
+    { participantId: participantData?.id || 0 },
+    { enabled: !!participantData?.id }
+  );
+  const { data: phaseStatus } = trpc.documents.getPhaseStatus.useQuery(
+    { participantId: participantData?.id || 0 },
+    { enabled: !!participantData?.id }
+  );
 
-  if (isLoading) {
+  if (!participantData || !documentTypes || !documents || !phaseStatus) {
     return (
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="p-6 max-w-5xl mx-auto">
         <div className="flex items-center justify-center h-64">
           <div className="text-muted-foreground">Lade Dokumente...</div>
         </div>
@@ -34,123 +38,205 @@ export default function DocumentsDashboard() {
     );
   }
 
-  if (!data || !data.documents) {
-    return (
-      <div className="p-6 max-w-4xl mx-auto">
-        <div className="flex flex-col items-center justify-center h-64 gap-4">
-          <FileText className="w-12 h-12 text-muted-foreground" />
-          <div className="text-muted-foreground">Keine Dokumente gefunden</div>
-          <p className="text-sm text-center text-muted-foreground max-w-md">
-            Sie sind noch keinem Kurs zugeordnet. Bitte wenden Sie sich an Ihren Bildungsträger.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Build document type list with status
+  const phase1Docs: DocumentType[] = documentTypes.phases.FOERDERBERECHTIGUNG.map((type: string) => ({
+    type,
+    label: documentTypes.labels[type as keyof typeof documentTypes.labels],
+    help: documentTypes.help[type as keyof typeof documentTypes.help],
+    phase: 1 as const
+  }));
 
-  const { documents } = data;
+  const phase2Docs: DocumentType[] = documentTypes.phases.RUECKERSTATTUNG.map((type: string) => ({
+    type,
+    label: documentTypes.labels[type as keyof typeof documentTypes.labels],
+    help: documentTypes.help[type as keyof typeof documentTypes.help],
+    phase: 2 as const
+  }));
 
-  // Calculate progress
-  const totalDocs = documents.length;
-  const validDocs = documents.filter((d: Document) => d.status === "valid").length;
-  const progressPercent = totalDocs > 0 ? (validDocs / totalDocs) * 100 : 0;
+  const getDocumentStatus = (type: string): DocumentStatus => {
+    const doc = documents.find(d => d.documentType === type);
+    if (!doc) return "missing";
+    return doc.validationStatus as DocumentStatus;
+  };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
+    <div className="p-6 max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Meine Dokumente</h1>
         <p className="text-muted-foreground mt-2">
-          Laden Sie die erforderlichen Dokumente hoch. Unsere KI prüft sie automatisch.
+          Laden Sie die erforderlichen KOMPASS-Dokumente hoch. Unsere KI prüft sie automatisch.
         </p>
       </div>
 
-      {/* Progress Card */}
+      {/* Phase 1: Förderberechtigung */}
       <Card>
         <CardHeader>
-          <CardTitle>Fortschritt</CardTitle>
-          <CardDescription>
-            {validDocs} von {totalDocs} Dokumenten gültig
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <span>Phase 1: Förderberechtigung</span>
+                {phaseStatus.foerderberechtigung.complete && (
+                  <Badge variant="default" className="bg-green-600">
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Komplett
+                  </Badge>
+                )}
+              </CardTitle>
+              <CardDescription className="mt-1">
+                Dokumente zur Prüfung Ihrer Förderberechtigung (vor Kursbeginn)
+              </CardDescription>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-primary">
+                {phaseStatus.foerderberechtigung.progress}/{phaseStatus.foerderberechtigung.total}
+              </div>
+              <div className="text-sm text-muted-foreground">Dokumente</div>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
-          <Progress value={progressPercent} className="h-3" />
-          <p className="text-sm text-muted-foreground mt-2">
-            {progressPercent === 100
-              ? "🎉 Alle Dokumente vollständig!"
-              : `Noch ${totalDocs - validDocs} Dokument(e) erforderlich`}
-          </p>
+        <CardContent className="space-y-4">
+          <Progress value={phaseStatus.foerderberechtigung.percentage} className="h-2" />
+          
+          <div className="grid gap-3">
+            {phase1Docs.map((docType) => (
+              <DocumentCard
+                key={docType.type}
+                documentType={docType}
+                status={getDocumentStatus(docType.type)}
+                participantId={participantData.id}
+                document={documents.find(d => d.documentType === docType.type)}
+              />
+            ))}
+          </div>
         </CardContent>
       </Card>
 
-      {/* Document Cards */}
-      <div className="grid gap-4">
-        {documents.map((doc: Document) => (
-          <DocumentCard key={doc.type} document={doc} onUploadSuccess={() => utils.documents.getRequiredDocuments.invalidate()} />
-        ))}
-      </div>
+      {/* Phase 2: Rückerstattung */}
+      <Card className={!phaseStatus.rueckerstattung.available ? "opacity-60" : ""}>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <span>Phase 2: Rückerstattung</span>
+                {!phaseStatus.rueckerstattung.available && (
+                  <Badge variant="secondary">
+                    <Lock className="w-3 h-3 mr-1" />
+                    Gesperrt
+                  </Badge>
+                )}
+                {phaseStatus.rueckerstattung.available && phaseStatus.rueckerstattung.complete && (
+                  <Badge variant="default" className="bg-green-600">
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Komplett
+                  </Badge>
+                )}
+              </CardTitle>
+              <CardDescription className="mt-1">
+                {phaseStatus.rueckerstattung.available
+                  ? "Dokumente für die Rückerstattung (nach Kursabschluss)"
+                  : "Wird freigeschaltet nach Abschluss von Phase 1"}
+              </CardDescription>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-primary">
+                {phaseStatus.rueckerstattung.progress}/{phaseStatus.rueckerstattung.total}
+              </div>
+              <div className="text-sm text-muted-foreground">Dokumente</div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Progress value={phaseStatus.rueckerstattung.percentage} className="h-2" />
+          
+          <div className="grid gap-3">
+            {phase2Docs.map((docType) => (
+              <DocumentCard
+                key={docType.type}
+                documentType={docType}
+                status={getDocumentStatus(docType.type)}
+                participantId={participantData.id}
+                document={documents.find(d => d.documentType === docType.type)}
+                disabled={!phaseStatus.rueckerstattung.available}
+              />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
-function DocumentCard({ document, onUploadSuccess }: { document: Document; onUploadSuccess: () => void }) {
+interface DocumentCardProps {
+  documentType: DocumentType;
+  status: DocumentStatus;
+  participantId: number;
+  document?: any;
+  disabled?: boolean;
+}
+
+function DocumentCard({ documentType, status, participantId, document, disabled = false }: DocumentCardProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const utils = trpc.useUtils();
 
   const uploadMutation = trpc.documents.upload.useMutation({
     onSuccess: () => {
-      toast.success("Dokument hochgeladen! Wird geprüft...");
+      toast.success(`${documentType.label} erfolgreich hochgeladen`);
+      utils.documents.list.invalidate();
+      utils.documents.getPhaseStatus.invalidate();
       setUploading(false);
       setUploadProgress(0);
-      onUploadSuccess();
     },
     onError: (error) => {
-      toast.error(`Fehler: ${error.message}`);
+      toast.error(`Upload fehlgeschlagen: ${error.message}`);
       setUploading(false);
       setUploadProgress(0);
     },
   });
 
   const onDrop = async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) {
-      toast.error("Keine Datei ausgewählt");
+    if (acceptedFiles.length === 0 || disabled) return;
+
+    const file = acceptedFiles[0];
+    
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Datei zu groß (max. 10MB)");
       return;
     }
 
-    const file = acceptedFiles[0];
-
-    // File size limit: 10MB
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Datei zu groß (max. 10MB)");
+    // Validate file type
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png", "image/heic", "image/heif"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Nur PDF, JPG, PNG und HEIC/HEIF erlaubt");
       return;
     }
 
     setUploading(true);
     setUploadProgress(30);
 
-    // Convert file to base64
+    // Convert to base64
     const reader = new FileReader();
     reader.onload = async () => {
-      const base64 = reader.result as string;
+      const base64 = reader.result?.toString().split(",")[1];
+      if (!base64) {
+        toast.error("Fehler beim Lesen der Datei");
+        setUploading(false);
+        return;
+      }
+
       setUploadProgress(60);
 
-      try {
-        await uploadMutation.mutateAsync({
-          documentType: document.type,
-          fileName: file.name,
-          fileData: base64,
-          mimeType: file.type,
-        });
-        setUploadProgress(100);
-      } catch (error) {
-        console.error("Upload error:", error);
-      }
-    };
+      uploadMutation.mutate({
+        participantId,
+        documentType: documentType.type,
+        filename: file.name,
+        fileData: base64,
+        mimeType: file.type,
+      });
 
-    reader.onerror = () => {
-      toast.error("Fehler beim Lesen der Datei");
-      setUploading(false);
-      setUploadProgress(0);
+      setUploadProgress(100);
     };
 
     reader.readAsDataURL(file);
@@ -159,108 +245,115 @@ function DocumentCard({ document, onUploadSuccess }: { document: Document; onUpl
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".png", ".jpg", ".jpeg"],
       "application/pdf": [".pdf"],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/heic": [".heic"],
+      "image/heif": [".heif"],
     },
     maxFiles: 1,
-    disabled: uploading,
+    disabled: disabled || uploading,
   });
 
-  const { status } = document;
-
-  // Status Icon & Color
   const getStatusIcon = () => {
     switch (status) {
       case "valid":
-        return <CheckCircle className="w-6 h-6 text-green-500" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
       case "pending":
-        return <Clock className="w-6 h-6 text-yellow-500" />;
+      case "validating":
+        return <Clock className="w-5 h-5 text-yellow-600" />;
       case "invalid":
-        return <XCircle className="w-6 h-6 text-red-500" />;
-      case "missing":
+        return <XCircle className="w-5 h-5 text-red-600" />;
+      case "manual_review":
+        return <AlertCircle className="w-5 h-5 text-orange-600" />;
       default:
-        return <AlertCircle className="w-6 h-6 text-gray-400" />;
+        return <FileText className="w-5 h-5 text-gray-400" />;
     }
   };
 
   const getStatusBadge = () => {
     switch (status) {
       case "valid":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Gültig ✓</Badge>;
+        return <Badge className="bg-green-600">✓ Gültig</Badge>;
       case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Wird geprüft...</Badge>;
+        return <Badge variant="secondary">⏳ Ausstehend</Badge>;
+      case "validating":
+        return <Badge variant="secondary">⏳ Wird geprüft</Badge>;
       case "invalid":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Ungültig ✗</Badge>;
-      case "missing":
+        return <Badge variant="destructive">✗ Ungültig</Badge>;
+      case "manual_review":
+        return <Badge className="bg-orange-600">⚠ Manuelle Prüfung</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">Fehlt</Badge>;
+        return <Badge variant="outline">❌ Fehlt</Badge>;
     }
   };
 
-  const showUploadButton = status === "missing" || status === "invalid";
-
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between gap-4">
-          {/* Left: Icon + Info */}
-          <div className="flex items-start gap-4 flex-1">
-            {getStatusIcon()}
-            <div className="flex-1">
-              <h3 className="font-semibold text-lg">{document.name}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{document.description}</p>
+    <Card className={disabled ? "opacity-50" : ""}>
+      <CardContent className="p-4">
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0 mt-1">{getStatusIcon()}</div>
+          
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <h3 className="font-medium">{documentType.label}</h3>
+              {getStatusBadge()}
+            </div>
+            
+            <div className="flex items-start gap-2 text-sm text-muted-foreground mb-3">
+              <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <p>{documentType.help}</p>
+            </div>
 
-              {/* Status Badge */}
-              <div className="mt-2">{getStatusBadge()}</div>
-
-              {/* Rejection Reason */}
-              {status === "invalid" && document.rejectionReason && (
-                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
-                  <p className="text-sm text-red-800">
-                    <strong>Ablehnungsgrund:</strong> {document.rejectionReason}
-                  </p>
-                </div>
-              )}
-
-              {/* Upload Date */}
-              {document.uploadedAt && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  Hochgeladen: {new Date(document.uploadedAt).toLocaleDateString("de-DE")}
+            {status === "missing" && !disabled && (
+              <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
+                  isDragActive
+                    ? "border-primary bg-primary/5"
+                    : "border-gray-300 hover:border-primary hover:bg-gray-50"
+                }`}
+              >
+                <input {...getInputProps()} />
+                <Upload className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">
+                  {isDragActive ? "Datei hier ablegen..." : "Klicken oder Datei hierher ziehen"}
                 </p>
-              )}
-            </div>
-          </div>
+                <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG, HEIC/HEIF (max. 10MB)</p>
+              </div>
+            )}
 
-          {/* Right: Upload Button or Drag & Drop */}
-          {showUploadButton && (
-            <div className="w-64">
-              {uploading ? (
-                <div className="space-y-2">
-                  <Progress value={uploadProgress} className="h-2" />
-                  <p className="text-xs text-center text-muted-foreground">Wird hochgeladen...</p>
-                </div>
-              ) : (
-                <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
-                    isDragActive
-                      ? "border-primary bg-primary/5"
-                      : "border-gray-300 hover:border-primary hover:bg-gray-50"
-                  }`}
-                >
-                  <input {...getInputProps()} />
-                  <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm font-medium">
-                    {isDragActive ? "Datei hier ablegen" : "Datei hochladen"}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Drag & Drop oder klicken
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (max. 10MB)</p>
-                </div>
-              )}
-            </div>
-          )}
+            {uploading && (
+              <div className="space-y-2">
+                <Progress value={uploadProgress} className="h-2" />
+                <p className="text-sm text-muted-foreground">Wird hochgeladen... {uploadProgress}%</p>
+              </div>
+            )}
+
+            {document && status !== "missing" && (
+              <div className="text-sm text-muted-foreground">
+                <p>Hochgeladen: {new Date(document.createdAt).toLocaleDateString("de-DE")}</p>
+                {document.validatedAt && (
+                  <p>Geprüft: {new Date(document.validatedAt).toLocaleDateString("de-DE")}</p>
+                )}
+                {status === "invalid" && document.validationResult && (
+                  <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-800">
+                    <p className="font-medium">Ablehnungsgrund:</p>
+                    <p className="text-xs mt-1">
+                      {JSON.parse(document.validationResult).issues?.join(", ") || "Dokument entspricht nicht den Anforderungen"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {disabled && status === "missing" && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Lock className="w-4 h-4" />
+                <span>Erst verfügbar nach Abschluss von Phase 1</span>
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
