@@ -123,3 +123,4 @@ credentials/
 # Test files
 server/*.test.ts
 !server/auth.logout.test.ts
+.github-config
