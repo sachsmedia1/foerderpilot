@@ -657,3 +657,39 @@
 - [ ] Testing: Teilnehmer-Dashboard-Flow testen
 
 - [x] Teilnehmer-Login-Redirect funktioniert nicht: Teilnehmer landen nicht auf /teilnehmer - Backend-Response enthält role, Frontend-Code korrekt, muss veröffentlicht werden
+
+
+## Sprint 1.7: Briefing-Abgleich (MANUS_BRIEFING_SPRINT_1.7_UMSETZUNG_JETZT.md)
+
+### Feature 1: E-Mail-Vorlagen im Admin-UI
+- [x] Backend: `emailTemplates.ts` Router (list, getById, update, preview)
+- [x] Frontend: `/admin/settings/email-templates` Seite
+- [x] Bearbeiten-Dialog mit Formular (Betreff + Body)
+- [x] Platzhalter-Hilfe angezeigt
+- [x] Vorschau-Funktion mit Test-Daten
+- [x] Speichern-Button persistiert Änderungen
+- [x] Navigation & Routing in Admin-Sidebar
+
+### Feature 2: Course-specific Anmelde-Links
+- [x] Backend: courseId in Session speichern (bereits vorhanden)
+- [x] Backend: Auto-Assignment bei Account-Erstellung (bereits vorhanden)
+- [x] Frontend: URL-Parameter `?courseId` auslesen
+- [x] Frontend: Kursauswahl überspringen wenn courseId vorhanden
+- [x] Frontend: Kurs-Info in Step 3 anzeigen
+- [x] Admin-UI: Link-Generator auf Kurs-Detail-Seite mit QR-Code
+
+### Feature 3: Dokumenten-Wizard für Teilnehmer
+- [x] Backend: `documents.ts` Router (Upload, AI-Validierung, S3)
+- [ ] Frontend: `/dashboard/documents` Seite für Teilnehmer
+- [ ] Dokument-Cards mit Status-Icons (❌ Fehlt / ⏳ Prüfung / ✅ Gültig / ❌ Ungültig)
+- [ ] Drag & Drop Upload-Komponente
+- [ ] Progress Bar & Status-Updates
+- [ ] E-Mail-Benachrichtigung bei Prüf-Ergebnis
+
+### Feature 4: Vorvertrag-Preview im Funnel
+- [x] Backend: Vorvertrag-Generierung (bereits vorhanden)
+- [x] Frontend: Vorvertrag inline in Step 4 anzeigen (Zusammenfassung vorhanden)
+- [x] Checkbox "Ich akzeptiere" erforderlich vor Submit
+- [x] Scrollbarer Container für lange Texte
+
+**Status: 3/4 Features vollständig, Feature 3 zu 50% implementiert**

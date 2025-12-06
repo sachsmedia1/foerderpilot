@@ -4,7 +4,7 @@ import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Users, FileText, Edit, Plus, Trash2, Pencil } from "lucide-react";
+import { ArrowLeft, Calendar, Users, FileText, Edit, Plus, Trash2, Pencil, Copy, Check, Link2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { CourseScheduleModal } from "@/components/CourseScheduleModal";
@@ -31,6 +31,7 @@ export default function CourseDetail() {
   const [editingScheduleId, setEditingScheduleId] = useState<number | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingScheduleId, setDeletingScheduleId] = useState<number | undefined>();
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const { data, isLoading } = trpc.courses.getDetail.useQuery({ id: courseId });
 
@@ -183,6 +184,60 @@ export default function CourseDetail() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Course Registration Link */}
+        <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Link2 className="w-5 h-5" />
+              Direktlink für Kursanmeldung
+            </CardTitle>
+            <CardDescription>
+              Teilen Sie diesen Link in Newslettern oder auf Social Media. Teilnehmer werden automatisch diesem Kurs zugeordnet.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={`${window.location.origin}/register?courseId=${courseId}`}
+                className="flex-1 px-3 py-2 border rounded-md bg-white font-mono text-sm"
+              />
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/register?courseId=${courseId}`);
+                  setLinkCopied(true);
+                  toast.success("Link kopiert!");
+                  setTimeout(() => setLinkCopied(false), 2000);
+                }}
+                variant="outline"
+              >
+                {linkCopied ? (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Kopiert!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4 mr-2" />
+                    Kopieren
+                  </>
+                )}
+              </Button>
+            </div>
+            
+            {/* QR Code */}
+            <div className="flex flex-col items-center gap-2 p-4 bg-white rounded-md border">
+              <p className="text-xs text-muted-foreground">Oder als QR-Code:</p>
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`${window.location.origin}/register?courseId=${courseId}`)}`}
+                alt="QR Code für Kursanmeldung"
+                className="w-32 h-32"
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Course Information */}
         <Card>
