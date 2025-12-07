@@ -1054,3 +1054,20 @@
 - **NICHT für Beta-Launch nötig** - kann später implementiert werden
 
 **Status:** 🟡 GEPLANT für nach Beta-Launch
+
+
+---
+
+## 🎨 UX-Verbesserungen RegisterFunnel (07.12.2024)
+
+**Schritt 1: Fördercheck-Formular**
+- [x] Frage 5 (Selbstständigkeit seit): Kein Datum vorausgewählt (State-Init bereits leer: "")
+- [x] Frage 6 (De-minimis-Beihilfen): Hinweisfeld mit "€" erweitern
+- [x] Frage 7 (KOMPASS-Gutscheine): Dropdown-Text ändern "Kontingent ausgeschöpft" → "Bereits 2"
+
+**Schritt 2: Kursauswahl**
+- [x] Wenn Kurs über Direktlink vorausgewählt: Kursauswahl-Dropdown ausblenden
+- [x] Nur Kurs-Details + Hinweis anzeigen (User kann Kurs nicht mehr ändern)
+- [x] Hinweis: "Dieser Kurs wurde für Sie vorausgewählt"
+
+**Status:** 🔴 TODO

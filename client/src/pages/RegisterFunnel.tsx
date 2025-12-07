@@ -360,7 +360,7 @@ export default function RegisterFunnel() {
                 <Label htmlFor="deminimis" className="text-base font-semibold">
                   6. Haben Sie in den letzten 3 Jahren De-minimis-Beihilfen erhalten?
                 </Label>
-                <p className="text-sm text-gray-600 mt-1">Summe aller erhaltenen Förderungen (z.B. KOMPASS, BAFA, etc.)</p>
+                <p className="text-sm text-gray-600 mt-1">Summe aller erhaltenen Förderungen in € (z.B. KOMPASS, BAFA, etc.)</p>
                 <Input
                   id="deminimis"
                   type="number"
@@ -386,7 +386,7 @@ export default function RegisterFunnel() {
                   <SelectContent>
                     <SelectItem value="0">0 (Erstantrag)</SelectItem>
                     <SelectItem value="1">1 (Zweitantrag)</SelectItem>
-                    <SelectItem value="2">2 (Kontingent ausgeschöpft)</SelectItem>
+                    <SelectItem value="2">Bereits 2</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -429,7 +429,7 @@ export default function RegisterFunnel() {
               {courseIdFromUrl && selectedCourseId === courseIdFromUrl && (
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-900">
-                    ℹ️ Dieser Kurs wurde für Sie vorausgewählt. Sie können ihn bei Bedarf ändern.
+                    ℹ️ Dieser Kurs wurde für Sie vorausgewählt.
                   </p>
                 </div>
               )}
@@ -445,24 +445,27 @@ export default function RegisterFunnel() {
               )}
             </CardHeader>
             <CardContent className="space-y-6">
-              <div>
-                <Label htmlFor="course">Kurs auswählen</Label>
-                <Select
-                  value={selectedCourseId?.toString() || ""}
-                  onValueChange={(v) => setSelectedCourseId(parseInt(v))}
-                >
-                  <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="Bitte wählen Sie einen Kurs" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {courses?.map((course: any) => (
-                      <SelectItem key={course.id} value={course.id.toString()}>
-                        {course.name} - €{(course.priceNet / 100).toFixed(2)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Kursauswahl-Dropdown nur anzeigen wenn NICHT über Direktlink vorselektiert */}
+              {!(courseIdFromUrl && selectedCourseId === courseIdFromUrl) && (
+                <div>
+                  <Label htmlFor="course">Kurs auswählen</Label>
+                  <Select
+                    value={selectedCourseId?.toString() || ""}
+                    onValueChange={(v) => setSelectedCourseId(parseInt(v))}
+                  >
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Bitte wählen Sie einen Kurs" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courses?.map((course: any) => (
+                        <SelectItem key={course.id} value={course.id.toString()}>
+                          {course.name} - €{(course.priceNet / 100).toFixed(2)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {/* Kurs-Details */}
               {selectedCourseId && courses && (
