@@ -550,14 +550,45 @@ export const participantsRouter = router({
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
     if (!ctx.user) throw new TRPCError({ code: "UNAUTHORIZED", message: "Not authenticated" });
 
+    console.log('[getMyData] Looking for participant with userId:', ctx.user.id);
+    console.log('[getMyData] User details:', { id: ctx.user.id, email: ctx.user.email, openId: ctx.user.openId });
+
     // Find participant by userId
-    const [participant] = await db
+    let [participant] = await db
       .select()
       .from(participants)
       .where(eq(participants.userId, ctx.user.id))
       .limit(1);
 
+    console.log('[getMyData] Participant by userId found:', !!participant);
+
+    // Fallback: Try to find by email if userId doesn't work
+    if (!participant && ctx.user.email) {
+      console.log('[getMyData] Trying fallback: search by email:', ctx.user.email);
+      [participant] = await db
+        .select()
+        .from(participants)
+        .where(eq(participants.email, ctx.user.email))
+        .limit(1);
+      console.log('[getMyData] Participant by email found:', !!participant);
+      
+      // If found by email, update the userId to fix the link
+      if (participant) {
+        console.log('[getMyData] Fixing userId link: updating participant.userId from', participant.userId, 'to', ctx.user.id);
+        await db
+          .update(participants)
+          .set({ userId: ctx.user.id })
+          .where(eq(participants.id, participant.id));
+        participant.userId = ctx.user.id; // Update in memory
+      }
+    }
+
+    if (participant) {
+      console.log('[getMyData] Final participant details:', { id: participant.id, userId: participant.userId, email: participant.email });
+    }
+
     if (!participant) {
+      console.log('[getMyData] ERROR: No participant found for user:', { id: ctx.user.id, email: ctx.user.email });
       throw new TRPCError({ code: "NOT_FOUND", message: "Teilnehmerdaten nicht gefunden" });
     }
 
@@ -577,6 +608,45 @@ export const participantsRouter = router({
       courseName: courseData?.name || null,
       courseDescription: courseData?.description || null,
       coursePriceNet: courseData?.priceNet || null,
+    };
+  }),
+
+  // DEBUG: Check current user ID and find participant
+  debugUserInfo: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+    
+    // Find participant by userId
+    const participantByUserId = await db
+      .select()
+      .from(participants)
+      .where(eq(participants.userId, ctx.user.id))
+      .limit(1);
+    
+    // Find participant by email
+    const participantByEmail = await db
+      .select()
+      .from(participants)
+      .where(eq(participants.email, ctx.user.email))
+      .limit(1);
+    
+    // Find participant by openId
+    const participantByOpenId = await db
+      .select()
+      .from(participants)
+      .where(eq(participants.email, ctx.user.openId))
+      .limit(1);
+    
+    return {
+      currentUser: {
+        id: ctx.user.id,
+        email: ctx.user.email,
+        openId: ctx.user.openId,
+        name: ctx.user.name,
+      },
+      participantByUserId: participantByUserId[0] || null,
+      participantByEmail: participantByEmail[0] || null,
+      participantByOpenId: participantByOpenId[0] || null,
     };
   }),
 });

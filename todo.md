@@ -761,3 +761,18 @@
 **Lösung:** Error Handling in DocumentsDashboard verbessert - zeigt jetzt hilfreiche Anleitung statt generischer Fehlermeldung
 
 **Status:** ✅ Behoben
+
+
+---
+
+## 🐛 BUGFIX: Teilnehmer-Verknüpfung repariert
+
+**Problem:** User `s.sachs@sachs-media.com` konnte nicht auf `/teilnehmer/documents` zugreifen
+
+### Behobene Issues:
+- [x] Teilnehmer-Datensatz für User ID 1530083 erstellt
+- [x] Tenant-ID auf 1 (FörderPilot App) korrigiert
+- [x] Fallback-Logik in getMyData: Suche nach E-Mail wenn userId nicht funktioniert
+- [x] Auto-Repair: userId-Verknüpfung wird automatisch repariert wenn Teilnehmer per E-Mail gefunden wird
+
+**Status:** ✅ Behoben (wartet auf Publish)

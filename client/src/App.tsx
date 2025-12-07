@@ -33,6 +33,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import ParticipantDashboard from "@/pages/ParticipantDashboard";
 import DocumentsDashboard from "@/pages/participant/DocumentsDashboard";
+import DebugUserInfo from "@/pages/DebugUserInfo";
 import { useAuth } from "./_core/hooks/useAuth";
 
 function Router() {
@@ -85,6 +86,7 @@ function Router() {
       <Route path={"/anmeldung"} component={RegisterFunnel} />
       <Route path={"/teilnehmer"} component={ParticipantDashboard} />
       <Route path={"/teilnehmer/documents"} component={DocumentsDashboard} />
+      <Route path={"/debug/user-info"} component={DebugUserInfo} />
       <Route path={"/forgot-password"} component={ForgotPassword} />
       <Route path={"/reset-password"} component={ResetPassword} />
       <Route path={"/404"} component={NotFound} />
