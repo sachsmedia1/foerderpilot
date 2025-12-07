@@ -637,4 +637,38 @@ export const registerRouter = router({
 
       return courseList;
     }),
+
+  // ============================================================================
+  // HELPER: GET COURSE BY ID (für Direktlinks - tenantId ableiten)
+  // ============================================================================
+
+  getCourseById: publicProcedure
+    .input(
+      z.object({
+        courseId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+
+      const courseData = await db
+        .select()
+        .from(courses)
+        .where(and(
+          eq(courses.id, input.courseId),
+          eq(courses.isActive, true),
+          eq(courses.isPublished, true)
+        ))
+        .limit(1);
+
+      if (courseData.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Kurs nicht gefunden.",
+        });
+      }
+
+      return courseData[0];
+    }),
 });

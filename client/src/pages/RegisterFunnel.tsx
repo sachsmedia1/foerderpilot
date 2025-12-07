@@ -43,7 +43,7 @@ export default function RegisterFunnel() {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [sessionId] = useState(() => generateUUID());
-  const tenantId = 1; // TODO: Get from subdomain/URL
+  const [tenantId, setTenantId] = useState<number>(1); // Default: FörderPilot App
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // STEP 1: FÖRDERCHECK STATE
@@ -101,6 +101,18 @@ export default function RegisterFunnel() {
   const vorvertragMutation = trpc.register.vorvertragBestaetigen.useMutation();
 
   const { data: courses } = trpc.register.getCourses.useQuery({ tenantId });
+
+  // Lade tenantId aus courseId wenn Direktlink (z.B. /anmeldung?courseId=450001)
+  const { data: courseFromUrl } = trpc.register.getCourseById.useQuery(
+    { courseId: courseIdFromUrl! },
+    { enabled: !!courseIdFromUrl }
+  );
+
+  useEffect(() => {
+    if (courseFromUrl) {
+      setTenantId(courseFromUrl.tenantId);
+    }
+  }, [courseFromUrl]);
 
   // Auto-select Kurs wenn courseId in URL (z.B. /anmeldung?courseId=450001)
   useEffect(() => {
