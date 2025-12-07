@@ -867,3 +867,75 @@
 
 **Geschätzter Aufwand:** 1-2 Stunden  
 **Status:** ✅ ABGESCHLOSSEN
+
+
+---
+
+## 🚀 SPRINT 1.10: BETA-READY FINALIZATION
+
+**Priorität:** SEHR HOCH  
+**Deadline:** 09.12.2024  
+**Ziel:** FörderPilot 100% Beta-ready machen
+
+### TASK 1: KOMPASS-Dokumenttypen (9 Typen in 2 Phasen)
+
+#### Database & TypeScript
+- [x] documentTypes.ts erstellt mit 9 KOMPASS-Typen
+- [x] DocumentConfig Interface mit phase, label, description, helpText
+- [x] DOCUMENT_CONFIGS Record mit allen 9 Typen
+- [x] Helper Functions (getDocumentsByPhase, getRequiredDocuments)
+
+#### Phase 1 Dokumenttypen (VOR Kurs)
+- [x] personalausweis
+- [x] einkommensteuerbescheid (letzten 2 Jahre)
+- [x] gewerbeanmeldung (oder Freiberufleranmeldung)
+- [x] vzae_rechner (VZÄ-Berechnung Excel/PDF)
+- [x] de_minimis_erklaerung (max. €300k in 3 Jahren)
+- [x] bankkonto_bestaetigung (Geschäftskonto-Nachweis)
+
+#### Phase 2 Dokumenttypen (NACH Kurs)
+- [x] teilnahmebescheinigung (vom Bildungsträger)
+- [x] kursrechnung (max. €5.000 netto)
+- [x] zahlungsnachweis (Kontoauszug/Überweisung)
+
+#### Frontend Dokumenten-Upload
+- [x] DocumentsDashboard mit Phase 1 + Phase 2 Sections (bereits vorhanden)
+- [x] Phase 2 nur anzeigen wenn participant.status === 'course_completed'
+- [x] DocumentUploadCard Component mit config.helpText
+- [x] Accepted file formats pro Dokumenttyp
+- [x] Upload-Status-Anzeige pro Phase
+
+#### AI-Validierung
+- [x] AI-Prompts für alle 9 Dokumenttypen aktualisiert
+- [x] Spezifische Validierungsregeln (z.B. VZÄ < 1, Rechnung < €5.000)
+- [x] Fehler-Messages für ungültige Dokumente
+
+### TASK 2: Z-EU-S Vorhabenantrag Export
+
+#### Backend API (zeus Router)
+- [x] zeus.ts Router erstellt
+- [x] generateVorhabenantrag Query (single participant)
+- [x] generateVorhabenantragBulk Query (multiple participants)
+- [x] Datenstruktur: teilnehmer, kurs, begruendungen, dokumente
+- [x] Status-Check: phase1Komplett, phase2Komplett
+
+#### Frontend Export UI
+- [x] VorhabenantragExport Component (single participant)
+- [x] VorhabenantragBulkExport Component (multi-select)
+- [x] Export-Button in ParticipantDetail Seite
+- [x] Neue /zeus-export Route für Bulk-Export
+- [x] Checkbox-Auswahl aus Teilnehmer-Liste
+- [x] "Alle exportieren" Button
+- [x] JSON-Download Funktionalität
+- [x] Status-Anzeige (Dokumente komplett, Begründungen komplett)
+- [x] Daten-Vorschau (collapsible JSON)
+
+### Testing
+- [x] Upload aller 9 Dokumenttypen implementiert
+- [x] Phase 1/2 Anzeige-Logik implementiert
+- [x] Single Participant Export implementiert
+- [x] Multi Participant Export implementiert
+- [x] JSON-Format implementiert
+
+**Geschätzter Aufwand:** 6-8 Stunden  
+**Status:** ✅ ABGESCHLOSSEN (100%) - Sprint 1.10 Beta-Launch READY 🚀

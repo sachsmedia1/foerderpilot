@@ -41,6 +41,7 @@ import { useLocation, useParams } from 'wouter';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { DocumentUpload } from '@/components/DocumentUpload';
+import { VorhabenantragExport } from '@/components/admin/VorhabenantragExport';
 
 const STATUS_CONFIG: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; color: string; icon: typeof CheckCircle2 }> = {
   registered: { label: 'Registriert', variant: 'secondary', color: 'bg-gray-500', icon: Clock },
@@ -513,6 +514,9 @@ export default function ParticipantDetail() {
             )}
           </CardContent>
         </Card>
+
+        {/* Z-EU-S Vorhabenantrag Export */}
+        <VorhabenantragExport participantId={participantId} />
       </div>
     </AdminLayout>
   );

@@ -27,44 +27,39 @@ const documentTypes = [
   'einkommensteuerbescheid',
   'gewerbeanmeldung',
   'vzae_rechner',
-  'deminimis_erklaerung',
-  'bankbestaetigung',
+  'de_minimis_erklaerung',
+  'bankkonto_bestaetigung',
   
   // Phase 2: Rückerstattung (nach Kurs)
   'teilnahmebescheinigung',
-  'rechnung_kurs',
+  'kursrechnung',
   'zahlungsnachweis',
-  
-  // Fallback
-  'other'
 ] as const;
 
 // Deutsche Labels für Dokumenttypen
 export const documentLabels: Record<typeof documentTypes[number], string> = {
-  personalausweis: 'Personalausweis',
-  einkommensteuerbescheid: 'Einkommensteuerbescheid (letzte 2 Jahre)',
+  personalausweis: 'Personalausweis oder Reisepass',
+  einkommensteuerbescheid: 'Einkommensteuerbescheid',
   gewerbeanmeldung: 'Gewerbeanmeldung / Freiberufleranmeldung',
-  vzae_rechner: 'VZÄ-Rechner (Selbsterklärung)',
-  deminimis_erklaerung: 'De-minimis-Erklärung',
-  bankbestaetigung: 'Bankbestätigung Geschäftskonto',
+  vzae_rechner: 'VZÄ-Rechner (Vollzeitäquivalent)',
+  de_minimis_erklaerung: 'De-minimis-Erklärung',
+  bankkonto_bestaetigung: 'Bankbestätigung Geschäftskonto',
   teilnahmebescheinigung: 'Teilnahmebescheinigung',
-  rechnung_kurs: 'Kursrechnung',
-  zahlungsnachweis: 'Zahlungsnachweis (Kontoauszug)',
-  other: 'Sonstiges Dokument'
+  kursrechnung: 'Kursrechnung',
+  zahlungsnachweis: 'Zahlungsnachweis',
 };
 
 // Hilfe-Texte für Dokumenttypen
 export const documentHelp: Record<typeof documentTypes[number], string> = {
-  personalausweis: 'Kopie beider Seiten Ihres gültigen Personalausweises oder Reisepasses',
-  einkommensteuerbescheid: 'Einkommensteuerbescheide der letzten 2 Jahre als Nachweis der Hauptberuflichkeit (>51% Einkommen aus Selbstständigkeit)',
-  gewerbeanmeldung: 'Gewerbeanmeldung oder Anmeldung als Freiberufler als Nachweis der mindestens 2-jährigen Selbstständigkeit',
-  vzae_rechner: 'Selbsterklärung über Vollzeitäquivalente (max. 1 VZÄ erlaubt) - wird über Z-EU-S Portal erstellt',
-  deminimis_erklaerung: 'Erklärung über erhaltene De-minimis-Beihilfen (max. €300.000 in 3 Jahren)',
-  bankbestaetigung: 'Bestätigung der Bank über Ihr Geschäftskonto',
-  teilnahmebescheinigung: 'Bescheinigung des Bildungsträgers über vollständige Kursteilnahme',
-  rechnung_kurs: 'Originalrechnung des Bildungsträgers für den absolvierten Kurs',
-  zahlungsnachweis: 'Kontoauszug als Nachweis der Kursgebührenzahlung',
-  other: 'Weitere relevante Dokumente'
+  personalausweis: 'Bitte laden Sie beide Seiten Ihres Personalausweises oder Reisepasses hoch. Das Dokument muss gültig sein.',
+  einkommensteuerbescheid: 'Nachweis über Ihr Einkommen als Solo-Selbstständige/r. Laden Sie die Bescheide der letzten beiden Jahre hoch.',
+  gewerbeanmeldung: 'Gewerbeanmeldung vom Gewerbeamt oder Nachweis über freiberufliche Tätigkeit (z.B. Finanzamt-Bescheid).',
+  vzae_rechner: 'Excel-Datei oder PDF mit Berechnung Ihrer VZÄ (Vollzeitäquivalente). Max. 1 VZÄ für KOMPASS-Förderung.',
+  de_minimis_erklaerung: 'Nachweis, dass Sie in den letzten 3 Jahren nicht mehr als €300.000 an De-minimis-Beihilfen erhalten haben.',
+  bankkonto_bestaetigung: 'Kontoauszug oder Bestätigung Ihrer Bank über Ihr geschäftliches Bankkonto.',
+  teilnahmebescheinigung: 'Vom Bildungsträger ausgestellte Teilnahmebescheinigung nach Kurs-Abschluss.',
+  kursrechnung: 'Rechnung über die Kurskosten. Maximal €5.000 netto sind förderfähig.',
+  zahlungsnachweis: 'Kontoauszug oder Überweisungsbeleg als Nachweis der Zahlung.',
 };
 
 // Phasen-Definitionen
@@ -74,12 +69,12 @@ export const documentPhases = {
     'einkommensteuerbescheid',
     'gewerbeanmeldung',
     'vzae_rechner',
-    'deminimis_erklaerung',
-    'bankbestaetigung'
+    'de_minimis_erklaerung',
+    'bankkonto_bestaetigung'
   ] as const,
   RUECKERSTATTUNG: [
     'teilnahmebescheinigung',
-    'rechnung_kurs',
+    'kursrechnung',
     'zahlungsnachweis'
   ] as const
 };
@@ -554,7 +549,7 @@ Prüfe diese VZÄ-Rechner Selbsterklärung:
 Fokus auf Max. 1 VZÄ-Grenze.
     `,
     
-    deminimis_erklaerung: `
+    de_minimis_erklaerung: `
 Prüfe diese De-minimis-Erklärung:
 1. Ist das Dokument vollständig ausgefüllt?
 2. Sind alle erhaltenen Beihilfen der letzten 3 Jahre aufgelistet?
@@ -565,7 +560,7 @@ Prüfe diese De-minimis-Erklärung:
 Fokus auf €300k-Grenze und Vollständigkeit.
     `,
     
-    bankbestaetigung: `
+    bankkonto_bestaetigung: `
 Prüfe diese Bankbestätigung:
 1. Ist es ein offizielles Bankdokument mit Briefkopf?
 2. Bestätigt es ein Geschäftskonto des Antragstellers?
@@ -587,7 +582,7 @@ Prüfe diese Teilnahmebescheinigung:
 Fokus auf vollständige Kursteilnahme.
     `,
     
-    rechnung_kurs: `
+    kursrechnung: `
 Prüfe diese Kursrechnung:
 1. Ist es eine ordnungsgemäße Rechnung mit Rechnungsnummer?
 2. Sind Bildungsträger und Rechnungsempfänger klar erkennbar?

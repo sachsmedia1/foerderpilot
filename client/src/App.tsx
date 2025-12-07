@@ -26,6 +26,7 @@ import Settings from "@/pages/admin/Settings";
 import EmailTest from "@/pages/admin/EmailTest";
 import EmailTemplatesSettings from "@/pages/admin/EmailTemplatesSettings";
 import WorkflowTemplates from "@/pages/admin/WorkflowTemplates";
+import VorhabenantragBulkExport from "@/pages/admin/VorhabenantragBulkExport";
 
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -80,6 +81,7 @@ function Router() {
       <Route path={"/sammeltermine/:id/edit"} component={SammeltermineForm} />      <Route path={"/settings"} component={Settings} />
       <Route path={"/settings/email-templates"} component={EmailTemplatesSettings} />
       <Route path={"/settings/workflows"} component={WorkflowTemplates} />
+      <Route path={"/zeus-export"} component={VorhabenantragBulkExport} />
       <Route path={"/superadmin"} component={SuperAdmin} />
       <Route path={"/superadmin/tenants/new"} component={TenantForm} />
       <Route path={"/superadmin/tenants/:id"} component={TenantDetail} />
