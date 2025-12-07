@@ -955,3 +955,18 @@
 - [x] Fallback wenn keine Templates vorhanden
 
 **Status:** ✅ Behoben
+
+
+---
+
+## 🐛 BUGFIX: SelectItem Error in CourseForm
+
+**Problem:** SelectItem mit disabled und festen Values verursacht Fehler
+**Ursache:** Radix UI erlaubt keine disabled SelectItems mit Values
+**Lösung:** Ersetze disabled SelectItems durch conditional rendering mit Text-Anzeige
+
+- [x] CourseForm.tsx angepasst
+- [x] Loading/Error States außerhalb von SelectContent angezeigt
+- [x] Conditional Rendering statt disabled SelectItems
+
+**Status:** ✅ Behoben

@@ -426,29 +426,29 @@ export default function CourseForm() {
             <CardContent>
               <div>
                 <Label htmlFor="workflowTemplate">Workflow-Template</Label>
-                <Select value={workflowTemplateId} onValueChange={setWorkflowTemplateId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Standard-Template verwenden" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Standard-Template (System)</SelectItem>
-                    {templatesQuery.isLoading && (
-                      <SelectItem value="loading" disabled>
-                        Lade Templates...
-                      </SelectItem>
-                    )}
-                    {templatesQuery.error && (
-                      <SelectItem value="error" disabled>
-                        Fehler beim Laden
-                      </SelectItem>
-                    )}
-                    {templatesQuery.data?.map((template) => (
-                      <SelectItem key={template.id} value={template.id!.toString()}>
-                        {template.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {templatesQuery.isLoading ? (
+                  <div className="text-sm text-muted-foreground py-2">
+                    Lade Templates...
+                  </div>
+                ) : templatesQuery.error ? (
+                  <div className="text-sm text-destructive py-2">
+                    Fehler beim Laden der Templates. Standard-Template wird verwendet.
+                  </div>
+                ) : (
+                  <Select value={workflowTemplateId} onValueChange={setWorkflowTemplateId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Standard-Template verwenden" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Standard-Template (System)</SelectItem>
+                      {templatesQuery.data?.map((template) => (
+                        <SelectItem key={template.id} value={template.id!.toString()}>
+                          {template.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
                 <p className="text-sm text-muted-foreground mt-2">
                   Falls kein Template ausgewählt ist, wird das Standard-Template verwendet.
                 </p>
