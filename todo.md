@@ -1004,3 +1004,53 @@
 - [x] value={scheduleType || "weeks"} statt value={scheduleType}
 
 **Status:** ✅ Behoben
+
+
+---
+
+## 🚀 Sprint 1.10.1: KRITISCHE FIXES (Beta-Launch Vorbereitung)
+
+**Deadline:** 08.12.2024  
+**Aufwand:** 20 Minuten  
+**Priorität:** HOCH - BLOCKER für Beta-Launch
+
+### FIX 1: Kurs-Direktlink-Routing (20min)
+
+**Problem:** Marketing-Links mit `?courseId=450001` funktionieren nicht
+- `/register?courseId=450001` zeigt alte Account-Registrierung statt Fördercheck-Funnel
+- Query-Parameter gehen verloren
+- Kurs wird nicht vorselektiert
+
+**Lösung:**
+- [x] Register.tsx als Redirect-Component erstellen
+- [x] Redirect von `/register` zu `/anmeldung` (Query-Parameter behalten)
+- [x] RegisterFunnel.tsx: courseId aus URL-Parameter lesen
+- [x] RegisterFunnel.tsx: selectedCourseId mit courseIdFromUrl initialisieren
+- [x] RegisterFunnel.tsx: Auto-Preselect Effect hinzufügen
+- [x] RegisterFunnel.tsx: UI-Hinweis für vorselektierten Kurs
+- [ ] Testing: Redirect funktioniert
+- [ ] Testing: courseId wird korrekt vorselektiert
+- [ ] Testing: Funktioniert auch ohne courseId-Parameter
+- [ ] Checkpoint erstellen und pushen
+
+**Akzeptanz-Kriterien:**
+- `/register?courseId=450001` redirected zu `/anmeldung?courseId=450001`
+- Kurs 450001 wird in Step 2 automatisch vorselektiert
+- Blauer Info-Hinweis: "Dieser Kurs wurde für Sie vorausgewählt"
+- User kann Kurs trotzdem manuell ändern
+- Funktioniert auch OHNE courseId-Parameter
+
+**Status:** 🔴 TODO - BLOCKER
+
+---
+
+## 🟡 Sprint 1.11: FEATURE-REQUEST (NACH Beta)
+
+**Onboarding-Fragen-Editor** (12-16h)
+- Admin-UI zum Bearbeiten von Fördercheck-Fragen
+- Ergebnis-Texte editierbar machen
+- Vorvertrag-Checkboxen editierbar machen
+- Multi-Tenant Support
+- **NICHT für Beta-Launch nötig** - kann später implementiert werden
+
+**Status:** 🟡 GEPLANT für nach Beta-Launch

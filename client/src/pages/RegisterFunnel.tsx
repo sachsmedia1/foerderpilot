@@ -8,7 +8,7 @@
  * 4. Vorvertrag-Bestätigung (4 Checkboxen)
  */
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 
 // UUID Generator
 function generateUUID() {
@@ -32,6 +32,15 @@ function generateUUID() {
 
 export default function RegisterFunnel() {
   const [, setLocation] = useLocation();
+  const searchParams = useSearch();
+  
+  // courseId aus URL-Parameter lesen (z.B. /anmeldung?courseId=450001)
+  const courseIdFromUrl = useMemo(() => {
+    const params = new URLSearchParams(searchParams);
+    const id = params.get('courseId');
+    return id ? parseInt(id) : null;
+  }, [searchParams]);
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [sessionId] = useState(() => generateUUID());
   const tenantId = 1; // TODO: Get from subdomain/URL
@@ -55,7 +64,7 @@ export default function RegisterFunnel() {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // STEP 2: KURSAUSWAHL STATE
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(courseIdFromUrl);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -92,6 +101,13 @@ export default function RegisterFunnel() {
   const vorvertragMutation = trpc.register.vorvertragBestaetigen.useMutation();
 
   const { data: courses } = trpc.register.getCourses.useQuery({ tenantId });
+
+  // Auto-select Kurs wenn courseId in URL (z.B. /anmeldung?courseId=450001)
+  useEffect(() => {
+    if (courseIdFromUrl && currentStep === 2 && !selectedCourseId) {
+      setSelectedCourseId(courseIdFromUrl);
+    }
+  }, [courseIdFromUrl, currentStep, selectedCourseId]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // STEP 1: FÖRDERCHECK SUBMIT
@@ -408,6 +424,15 @@ export default function RegisterFunnel() {
             <CardHeader>
               <CardTitle>Schritt 2: Kursauswahl</CardTitle>
               <CardDescription>Wählen Sie Ihren Wunschkurs aus</CardDescription>
+              
+              {/* Info wenn Kurs vorselektiert */}
+              {courseIdFromUrl && selectedCourseId === courseIdFromUrl && (
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-900">
+                    ℹ️ Dieser Kurs wurde für Sie vorausgewählt. Sie können ihn bei Bedarf ändern.
+                  </p>
+                </div>
+              )}
               
               {/* Fördercheck-Ergebnis */}
               {foerdercheckErgebnis && (
