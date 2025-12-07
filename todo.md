@@ -987,3 +987,20 @@
 - [x] Return null für ungültige Templates
 
 **Status:** ✅ Behoben
+
+
+---
+
+## 🐛 BUGFIX: Echter Select Error in CourseForm (nicht Template-Dropdown)
+
+**Problem:** Fehler tritt immer noch auf trotz Template-Dropdown Fix
+**Ursache:** Es gibt andere Select-Komponenten in CourseForm die Probleme verursachen
+**Lösung:** Alle Select-Komponenten in CourseForm analysieren und fixen
+
+- [x] Alle Select-Komponenten in CourseForm gefunden (2 Stück)
+- [x] scheduleType Select identifiziert als Fehlerquelle
+- [x] Placeholder zu SelectValue hinzugefügt
+- [x] Default-Value "weeks" als Fallback hinzugefügt
+- [x] value={scheduleType || "weeks"} statt value={scheduleType}
+
+**Status:** ✅ Behoben

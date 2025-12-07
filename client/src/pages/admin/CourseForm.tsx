@@ -249,9 +249,9 @@ export default function CourseForm() {
 
                 <div>
                   <Label htmlFor="scheduleType">Zeitplan-Typ *</Label>
-                  <Select value={scheduleType} onValueChange={(value: any) => setScheduleType(value)}>
+                  <Select value={scheduleType || "weeks"} onValueChange={(value: any) => setScheduleType(value)}>
                     <SelectTrigger>
-                      <SelectValue />
+                      <SelectValue placeholder="Zeitplan-Typ wählen" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="weeks">Wochen</SelectItem>
