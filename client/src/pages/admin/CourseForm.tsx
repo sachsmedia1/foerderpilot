@@ -441,11 +441,16 @@ export default function CourseForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">Standard-Template (System)</SelectItem>
-                      {templatesQuery.data?.map((template) => (
-                        <SelectItem key={template.id} value={template.id!.toString()}>
-                          {template.name}
-                        </SelectItem>
-                      ))}
+                      {Array.isArray(templatesQuery.data) && templatesQuery.data.map((template) => {
+                        if (!template || typeof template.id === 'undefined' || !template.name) {
+                          return null;
+                        }
+                        return (
+                          <SelectItem key={template.id} value={String(template.id)}>
+                            {template.name}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 )}

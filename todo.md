@@ -970,3 +970,20 @@
 - [x] Conditional Rendering statt disabled SelectItems
 
 **Status:** ✅ Behoben
+
+
+---
+
+## 🐛 BUGFIX: Delayed Error in CourseForm (1 Sekunde nach Load)
+
+**Problem:** Seite lädt, dann Fehler 1 Sekunde später wenn templatesQuery Ergebnis zurückgibt
+**Ursache:** templatesQuery.data könnte undefined sein oder Query wirft Error
+**Lösung:** Robustere Null-Checks und Error-Handling
+
+- [x] templatesQuery Error-Handling verbessert
+- [x] Array.isArray() Check für templatesQuery.data hinzugefügt
+- [x] Null-Checks für template, template.id und template.name
+- [x] String() Conversion statt template.id!.toString()
+- [x] Return null für ungültige Templates
+
+**Status:** ✅ Behoben
