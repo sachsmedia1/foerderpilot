@@ -494,7 +494,7 @@ export const registerRouter = router({
           phone: session.phone,
           role: "user",
           tenantId: session.tenantId,
-          loginMethod: "email",
+          loginMethod: null, // Wird beim Passwort-Setzen auf "email" gesetzt
           passwordHash: null, // Wird beim ersten Login gesetzt
           resetToken: resetToken,
           resetTokenExpiry: resetTokenExpiry,
@@ -563,7 +563,7 @@ export const registerRouter = router({
         kurspreis: course.priceNet / 100,
         foerderbetrag: (course.priceNet * course.subsidyPercentage) / 10000,
         vorvertragText,
-        passwordResetLink: `https://app.foerderpilot.io/reset-password?token=${resetToken}`,
+        passwordResetLink: `https://app.foerderpilot.io/set-password?token=${resetToken}`,
         tenantName: tenant.companyName || tenant.name,
       });
 

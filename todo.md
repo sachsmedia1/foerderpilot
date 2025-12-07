@@ -1114,3 +1114,28 @@
 - [x] resetToken löschen nach erfolgreicher Passwort-Setzung
 
 **Status:** ✅ DONE
+
+
+---
+
+## 🐛 CRITICAL: Teilnehmer-Dashboard Zugriffsprobleme (07.12.2024)
+
+**Problem 1: "Teilnehmer nicht gefunden"**
+- Teilnehmer loggt sich ein (sachs.stefan@icloud.com)
+- Route /teilnehmer/documents zeigt "Teilnehmer nicht gefunden"
+- User existiert in `users` Tabelle, aber nicht in `participants` Tabelle
+- Registrierungs-Flow erstellt nur User, aber keinen Participant-Eintrag
+
+**Problem 2: Admin-Menü für Teilnehmer sichtbar**
+- Teilnehmer sieht komplettes Admin-Menü (Dashboard, Kurse, Sammeltermine, Teilnehmer, Kanban Board, Dokumente, Validierung, Einstellungen)
+- Teilnehmer sollte nur sein eigenes Dashboard sehen
+- DashboardLayout zeigt Menü basierend auf Route, nicht auf User-Rolle
+
+**Lösung:**
+- [x] Registrierungs-Flow: Participant-Eintrag wird bereits erstellt (register.ts Zeile 503-519)
+- [x] loginMethod = null statt "email" (wird beim Passwort-Setzen aktiviert)
+- [x] Email-Link zu /set-password statt /reset-password
+- [x] AdminLayout: Redirect für role="user" zu /teilnehmer (AdminLayout.tsx Zeile 94-97)
+- [x] Teilnehmer können Admin-Seiten nicht mehr sehen
+
+**Status:** ✅ DONE

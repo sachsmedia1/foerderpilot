@@ -87,8 +87,14 @@ const navItems: NavItem[] = [
 export function AdminLayout({ children }: AdminLayoutProps) {
   const { user, tenant, logout } = useAuth();
   const branding = useBranding();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Redirect Teilnehmer zu ihrem Dashboard
+  if (user && user.role === "user") {
+    setLocation("/teilnehmer");
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background">
