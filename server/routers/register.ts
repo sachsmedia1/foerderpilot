@@ -671,4 +671,39 @@ export const registerRouter = router({
 
       return courseData[0];
     }),
+
+  // ============================================================================
+  // HELPER: GET TENANT PUBLIC INFO (für Vorvertrag-Text)
+  // ============================================================================
+
+  getTenantPublicInfo: publicProcedure
+    .input(
+      z.object({
+        tenantId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+
+      const { tenants } = await import('../../drizzle/schema');
+      const tenantData = await db
+        .select({
+          companyName: tenants.companyName,
+          agbUrl: tenants.agbUrl,
+          widerrufsbelehrungUrl: tenants.widerrufsbelehrungUrl,
+        })
+        .from(tenants)
+        .where(eq(tenants.id, input.tenantId))
+        .limit(1);
+
+      if (tenantData.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Bildungsträger nicht gefunden.",
+        });
+      }
+
+      return tenantData[0];
+    }),
 });

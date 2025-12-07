@@ -101,6 +101,7 @@ export default function RegisterFunnel() {
   const vorvertragMutation = trpc.register.vorvertragBestaetigen.useMutation();
 
   const { data: courses } = trpc.register.getCourses.useQuery({ tenantId });
+  const { data: tenantInfo } = trpc.register.getTenantPublicInfo.useQuery({ tenantId });
 
   // Lade tenantId aus courseId wenn Direktlink (z.B. /anmeldung?courseId=450001)
   const { data: courseFromUrl } = trpc.register.getCourseById.useQuery(
@@ -723,7 +724,7 @@ export default function RegisterFunnel() {
                     className="mt-0.5"
                   />
                   <Label htmlFor="datenschutz" className="text-sm leading-relaxed cursor-pointer">
-                    Ich willige in die Datenverarbeitung durch Sachs Consulting Ltd. und Entscheiderakademie GmbH ein.
+                    Ich willige in die Datenverarbeitung durch {tenantInfo?.companyName || "den Bildungsträger"} ein.
                   </Label>
                 </div>
 
@@ -735,7 +736,23 @@ export default function RegisterFunnel() {
                     className="mt-0.5"
                   />
                   <Label htmlFor="agb" className="text-sm leading-relaxed cursor-pointer">
-                    Ich habe die AGB und Widerrufsbelehrung zur Kenntnis genommen und akzeptiere diese.
+                    Ich habe die{" "}
+                    {tenantInfo?.agbUrl ? (
+                      <a href={tenantInfo.agbUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        AGB
+                      </a>
+                    ) : (
+                      "AGB"
+                    )}
+                    {" "}und{" "}
+                    {tenantInfo?.widerrufsbelehrungUrl ? (
+                      <a href={tenantInfo.widerrufsbelehrungUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        Widerrufsbelehrung
+                      </a>
+                    ) : (
+                      "Widerrufsbelehrung"
+                    )}
+                    {" "}zur Kenntnis genommen und akzeptiere diese.
                   </Label>
                 </div>
               </div>

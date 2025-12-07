@@ -52,6 +52,8 @@ export const tenants = mysqlTable("tenants", {
   // Rechtliches
   impressumHtml: text("impressumHtml"),
   privacyPolicyUrl: varchar("privacyPolicyUrl", { length: 500 }),
+  agbUrl: varchar("agbUrl", { length: 500 }),
+  widerrufsbelehrungUrl: varchar("widerrufsbelehrungUrl", { length: 500 }),
   
   // Meta
   isActive: boolean("isActive").default(true).notNull(),

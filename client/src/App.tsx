@@ -33,6 +33,7 @@ import Register from "@/pages/Register";
 import RegisterFunnel from "@/pages/RegisterFunnel";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
+import SetPassword from "@/pages/SetPassword";
 import ParticipantDashboard from "@/pages/ParticipantDashboard";
 import DocumentsDashboard from "@/pages/participant/DocumentsDashboard";
 import BegruendungsWizard from "@/pages/participant/BegruendungsWizard";
@@ -95,6 +96,7 @@ function Router() {
       <Route path={"/debug/user-info"} component={DebugUserInfo} />
       <Route path={"/forgot-password"} component={ForgotPassword} />
       <Route path={"/reset-password"} component={ResetPassword} />
+      <Route path={"/set-password"} component={SetPassword} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

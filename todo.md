@@ -1071,3 +1071,27 @@
 - [x] Hinweis: "Dieser Kurs wurde für Sie vorausgewählt"
 
 **Status:** 🔴 TODO
+
+
+---
+
+## 🔧 Vorvertrag & Set-Password Fixes (07.12.2024)
+
+**Vorvertrag Step 4: Dynamischer Bildungsträger-Name**
+- [x] "Ich willige in die Datenverarbeitung durch {Bildungsträger-Firmenname} ..." → Variable aus Tenant-Daten
+- [x] Tenant-Name aus Backend laden (via tenantId)
+- [x] Text dynamisch rendern
+
+**AGB & Widerrufsbelehrung Links**
+- [x] Tenant-Settings: agbUrl und widerrufsbelehrungUrl Felder hinzugefügt (DB Schema + SQL)
+- [ ] Tenant-Settings UI: Input-Felder für AGB/Widerrufsbelehrung URLs (TODO: Admin UI)
+- [x] RegisterFunnel Step 4: "AGB" und "Widerrufsbelehrung" als klickbare Links rendern
+- [x] Links aus Tenant-Settings laden (getTenantPublicInfo Procedure)
+
+**404 Fix: /set-password Route**
+- [x] SetPassword.tsx Page erstellt
+- [x] Route in App.tsx registriert
+- [x] Token-Validierung implementiert
+- [x] Passwort-Set-Formular
+
+**Status:** ✅ DONE (Admin UI für AGB/Widerrufsbelehrung URLs kann später hinzugefügt werden)
