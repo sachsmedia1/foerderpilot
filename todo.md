@@ -1095,3 +1095,22 @@
 - [x] Passwort-Set-Formular
 
 **Status:** ✅ DONE (Admin UI für AGB/Widerrufsbelehrung URLs kann später hinzugefügt werden)
+
+
+---
+
+## 🐛 CRITICAL BUG: /api/auth/set-password Backend fehlt (07.12.2024)
+
+**Problem:** "Verbindungsfehler" auf SetPassword-Page
+- Frontend sendet POST zu /api/auth/set-password
+- Backend-Endpoint existiert nicht
+- User kann Passwort nicht setzen → Account-Erstellung blockiert
+
+**Lösung:**
+- [x] /api/auth/set-password Endpoint implementiert (emailAuth.ts Zeile 362-421)
+- [x] Token-Validierung (resetToken aus users Tabelle)
+- [x] Passwort hashen (bcrypt)
+- [x] User-Status aktivieren (loginMethod = "email")
+- [x] resetToken löschen nach erfolgreicher Passwort-Setzung
+
+**Status:** ✅ DONE

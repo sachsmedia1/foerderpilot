@@ -355,4 +355,68 @@ export function registerEmailAuthRoutes(app: Express) {
       res.status(500).json({ error: "Zurücksetzen fehlgeschlagen" });
     }
   });
+
+  /**
+   * POST /api/auth/set-password - Erstes Passwort setzen (nach Registrierung)
+   */
+  app.post("/api/auth/set-password", async (req: Request, res: Response) => {
+    try {
+      const { token, newPassword }: ResetPasswordBody = req.body;
+
+      if (!token || !newPassword) {
+        res.status(400).json({ error: "Token und neues Passwort sind erforderlich" });
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        res.status(400).json({ error: "Passwort muss mindestens 8 Zeichen lang sein" });
+        return;
+      }
+
+      const db = await getDb();
+      if (!db) {
+        res.status(500).json({ error: "Database not available" });
+        return;
+      }
+
+      // Finde User mit Token (auch Teilnehmer ohne loginMethod)
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.resetToken, token))
+        .limit(1);
+
+      if (!user || !user.resetTokenExpiry) {
+        res.status(400).json({ error: "Ungültiger oder abgelaufener Token" });
+        return;
+      }
+
+      // Prüfe Ablauf
+      if (new Date() > user.resetTokenExpiry) {
+        res.status(400).json({ error: "Token ist abgelaufen" });
+        return;
+      }
+
+      // Hash neues Passwort
+      const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+      // Update Passwort + aktiviere Account
+      await db.update(users)
+        .set({
+          passwordHash,
+          loginMethod: "email",
+          resetToken: null,
+          resetTokenExpiry: null,
+        })
+        .where(eq(users.id, user.id));
+
+      res.json({
+        success: true,
+        message: "Passwort wurde gesetzt",
+      });
+    } catch (error) {
+      console.error("[EmailAuth] Set password failed:", error);
+      res.status(500).json({ error: "Passwort-Erstellung fehlgeschlagen" });
+    }
+  });
 }
