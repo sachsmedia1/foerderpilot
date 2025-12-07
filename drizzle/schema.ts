@@ -134,6 +134,9 @@ export const courses = mysqlTable("courses", {
   offerTemplateUrl: varchar("offerTemplateUrl", { length: 500 }),
   syllabusUrl: varchar("syllabusUrl", { length: 500 }),
   
+  // Workflow Template (für Begründungs-Wizard)
+  workflowTemplateId: int("workflowTemplateId"), // Optional: Kurs-spezifisches Template
+  
   // Meta
   isActive: boolean("isActive").default(true).notNull(),
   isPublished: boolean("isPublished").default(false).notNull(),
@@ -445,3 +448,108 @@ export type InsertVorvertragTemplate = typeof vorvertragTemplates.$inferInsert;
 // Indexes für Vorvertrag Templates
 export const vorvertragTemplatesByTenantId = index("idx_vorvertragTemplates_tenant").on(vorvertragTemplates.tenantId);
 export const vorvertragTemplatesByActive = index("idx_vorvertragTemplates_active").on(vorvertragTemplates.tenantId, vorvertragTemplates.isActive);
+
+
+// ============================================================================
+// WORKFLOW TEMPLATES (Begründungs-Wizard System)
+// ============================================================================
+
+/**
+ * Workflow Templates - Kurs-spezifische Begründungsfragen
+ * 
+ * Ermöglicht unterschiedliche Fragen-Sets für verschiedene Kurstypen:
+ * - Social Media Marketing → "Durch die zunehmende Digitalisierung..."
+ * - Excel Grundlagen → "Zur effizienteren Datenanalyse..."
+ * - Führungskräfte-Training → "Für bessere Mitarbeiterführung..."
+ */
+export const workflowTemplates = mysqlTable("workflowTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenantId").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  
+  // Template Info
+  name: varchar("name", { length: 255 }).notNull(), // "KOMPASS Standard", "Social Media Workflow"
+  description: text("description"),
+  type: varchar("type", { length: 20 }).notNull().default("client"), // 'system', 'client', 'course'
+  isActive: boolean("isActive").default(true),
+  
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow(),
+});
+
+export type WorkflowTemplate = typeof workflowTemplates.$inferSelect;
+export type InsertWorkflowTemplate = typeof workflowTemplates.$inferInsert;
+
+/**
+ * Workflow Questions - Einzelne Fragen innerhalb eines Templates
+ * 
+ * Jede Frage hat:
+ * - Titel & Beschreibung für UI
+ * - AI-Prompt für Text-Generierung
+ * - Hilfe-Text für Teilnehmer
+ * - Anforderungen (Min/Max Sätze)
+ */
+export const workflowQuestions = mysqlTable("workflowQuestions", {
+  id: int("id").autoincrement().primaryKey(),
+  templateId: int("templateId").notNull().references(() => workflowTemplates.id, { onDelete: "cascade" }),
+  
+  // Fragen-Details
+  questionNumber: int("questionNumber").notNull(), // 1, 2, 3, 4, 5
+  title: varchar("title", { length: 500 }).notNull(),
+  description: text("description"),
+  aiPrompt: text("aiPrompt").notNull(), // Prompt für AI Text-Generierung
+  helpText: text("helpText"), // Hilfe für Teilnehmer
+  
+  // Anforderungen
+  requiredSentencesMin: int("requiredSentencesMin").default(6),
+  requiredSentencesMax: int("requiredSentencesMax").default(10),
+  
+  // UI
+  icon: varchar("icon", { length: 50 }), // "building", "target", "lightbulb"
+  sortOrder: int("sortOrder").default(0),
+  
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow(),
+});
+
+export type WorkflowQuestion = typeof workflowQuestions.$inferSelect;
+export type InsertWorkflowQuestion = typeof workflowQuestions.$inferInsert;
+
+/**
+ * Participant Workflow Answers - Antworten der Teilnehmer
+ * 
+ * Speichert:
+ * - Original User-Input (Voice/Text)
+ * - AI-generierten Text
+ * - Final editierten Text
+ * - Input-Methode (voice/text)
+ */
+export const participantWorkflowAnswers = mysqlTable("participantWorkflowAnswers", {
+  id: int("id").autoincrement().primaryKey(),
+  participantId: int("participantId").notNull().references(() => participants.id, { onDelete: "cascade" }),
+  questionId: int("questionId").notNull().references(() => workflowQuestions.id, { onDelete: "cascade" }),
+  
+  // Input & Output
+  userInput: text("userInput"), // Original Voice/Text vom Teilnehmer
+  aiGeneratedText: text("aiGeneratedText"), // AI-generierter Text
+  finalText: text("finalText"), // Vom User editierter finaler Text
+  
+  // Metadata
+  inputMethod: varchar("inputMethod", { length: 10 }).notNull(), // 'voice', 'text'
+  voiceFileUrl: varchar("voiceFileUrl", { length: 500 }), // Optional: Voice Recording URL
+  
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow(),
+});
+
+export type ParticipantWorkflowAnswer = typeof participantWorkflowAnswers.$inferSelect;
+export type InsertParticipantWorkflowAnswer = typeof participantWorkflowAnswers.$inferInsert;
+
+// Indexes für Workflow System
+export const workflowTemplatesByTenantId = index("idx_workflowTemplates_tenant").on(workflowTemplates.tenantId);
+export const workflowTemplatesByType = index("idx_workflowTemplates_type").on(workflowTemplates.type);
+export const workflowQuestionsByTemplateId = index("idx_workflowQuestions_template").on(workflowQuestions.templateId);
+export const workflowQuestionsByTemplateSorted = index("idx_workflowQuestions_template_sort").on(workflowQuestions.templateId, workflowQuestions.sortOrder);
+export const participantWorkflowAnswersByParticipantId = index("idx_participantWorkflowAnswers_participant").on(participantWorkflowAnswers.participantId);
+export const participantWorkflowAnswersByQuestionId = index("idx_participantWorkflowAnswers_question").on(participantWorkflowAnswers.questionId);

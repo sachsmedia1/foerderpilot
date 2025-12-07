@@ -776,3 +776,75 @@
 - [x] Auto-Repair: userId-Verknüpfung wird automatisch repariert wenn Teilnehmer per E-Mail gefunden wird
 
 **Status:** ✅ Behoben (wartet auf Publish)
+
+
+---
+
+## 🚀 SPRINT 1.9: KOMPASS Begründungs-Wizard + Kurs-Template-System
+
+**Priorität:** SEHR HOCH  
+**Deadline:** 10.12.2024  
+**Feature:** Interactive Workflow System mit Kurs-spezifischen Templates
+
+### Database Schema
+- [x] workflowTemplates Tabelle erstellen (id, tenantId, name, description, type, isActive)
+- [x] workflowQuestions Tabelle erstellen (id, templateId, questionNumber, title, description, aiPrompt, helpText, icon, sortOrder)
+- [x] courses Tabelle erweitern mit workflowTemplateId
+- [x] participantWorkflowAnswers Tabelle erstellen (id, participantId, questionId, userInput, aiGeneratedText, finalText, inputMethod, voiceFileUrl)
+- [x] Indizes für Performance erstellen
+- [x] Migration mit `pnpm db:push` ausführen
+
+### Backend APIs (tRPC)
+- [x] workflow.getTemplates Query (mit Tenant-Filterung)
+- [x] workflow.getTemplateById Query
+- [x] workflow.saveTemplate Mutation
+- [x] workflow.deleteTemplate Mutation
+- [x] workflow.getTemplateForParticipant Query (mit Course-Fallback-Logik)
+- [x] workflow.processUserInput Mutation (Voice → Text → AI)
+- [x] workflow.saveFinalAnswer Mutation
+- [x] workflow.getParticipantAnswers Query
+
+### Admin UI
+- [x] /settings/workflows Route erstellen
+- [x] WorkflowTemplatesPage Component (Liste + Editor)
+- [x] WorkflowEditor Component (Template-Grunddaten + Fragen)
+- [x] QuestionEditor Component (Einzelfrage mit AI-Prompt)
+- [ ] Drag & Drop für Fragen-Sortierung (vorbereitet)
+- [ ] Course Editor erweitern mit Template-Zuweisung Dropdown
+
+### Participant UI
+- [ ] BegruendungsWizard Component erstellen
+- [ ] Progress Bar (X von 5 Fragen)
+- [ ] Input Method Toggle (Text / Voice)
+- [ ] Text-Input mit Textarea
+- [ ] Voice Recording mit MediaRecorder API
+- [ ] AI-Text-Anzeige mit Edit-Funktion
+- [ ] Satz-Zähler (6-10 Sätze Empfehlung)
+- [ ] Navigation (Zurück / Speichern & Weiter)
+- [ ] Integration in Teilnehmer-Dashboard
+
+### AI Integration
+- [ ] Voice Transcription mit Whisper API
+- [ ] AI Text Generation mit GPT-4
+- [ ] Kurs-spezifische Prompts (Social Media vs Excel vs Führung)
+- [ ] 3. Person Singular Formulierung
+- [ ] 8-10 Sätze pro Antwort
+
+### System Templates
+- [ ] KOMPASS Standard Template erstellen (5 Fragen)
+- [ ] Frage 1: Aktuelle berufliche Tätigkeit
+- [ ] Frage 2: Warum diese Weiterbildung
+- [ ] Frage 3: Nutzen für berufliche Tätigkeit
+- [ ] Frage 4: Konkrete Anwendung
+- [ ] Frage 5: Langfristige Ziele
+
+### Testing
+- [ ] Template CRUD Operations testen
+- [ ] Course-Template-Zuordnung testen
+- [ ] Voice Recording + Transcription testen
+- [ ] AI Text Generation testen
+- [ ] Wizard-Navigation testen
+- [ ] Antworten-Speicherung testen
+
+**Geschätzter Aufwand:** 14-18 Stunden (3-4 Tage)  
+**Status:** 🔄 In Arbeit (60% - Backend + Admin UI fertig)
