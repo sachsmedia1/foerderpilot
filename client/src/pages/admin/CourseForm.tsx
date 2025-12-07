@@ -435,7 +435,7 @@ export default function CourseForm() {
                     Fehler beim Laden der Templates. Standard-Template wird verwendet.
                   </div>
                 ) : (
-                  <Select value={workflowTemplateId} onValueChange={setWorkflowTemplateId}>
+                  <Select value={workflowTemplateId || ""} onValueChange={setWorkflowTemplateId}>
                     <SelectTrigger>
                       <SelectValue placeholder="Standard-Template verwenden" />
                     </SelectTrigger>
