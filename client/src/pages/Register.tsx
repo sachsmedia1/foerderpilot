@@ -15,7 +15,9 @@ export default function Register() {
 
   useEffect(() => {
     // Redirect mit Query-Parametern (z.B. ?courseId=450001)
-    setLocation(`/anmeldung${searchParams}`);
+    // useSearch() gibt Query-String OHNE "?" zurück (z.B. "courseId=450001")
+    const targetUrl = searchParams ? `/anmeldung?${searchParams}` : '/anmeldung';
+    setLocation(targetUrl);
   }, [searchParams, setLocation]);
 
   return (
