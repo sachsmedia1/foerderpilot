@@ -939,3 +939,19 @@
 
 **Geschätzter Aufwand:** 6-8 Stunden  
 **Status:** ✅ ABGESCHLOSSEN (100%) - Sprint 1.10 Beta-Launch READY 🚀
+
+
+---
+
+## 🐛 BUGFIX: CourseForm Fehler bei /courses/new
+
+**Problem:** JavaScript-Fehler auf der Kurs-Erstellungsseite
+**Ursache:** Workflow-Template-Dropdown hat kein Error-Handling
+**Lösung:** Error-Handling und Loading-State für templatesQuery hinzufügen
+
+- [x] CourseForm.tsx geprüft
+- [x] Error-Handling für templatesQuery hinzugefügt
+- [x] Loading-State für Template-Dropdown
+- [x] Fallback wenn keine Templates vorhanden
+
+**Status:** ✅ Behoben

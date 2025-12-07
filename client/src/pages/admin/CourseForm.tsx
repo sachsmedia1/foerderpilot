@@ -432,6 +432,16 @@ export default function CourseForm() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">Standard-Template (System)</SelectItem>
+                    {templatesQuery.isLoading && (
+                      <SelectItem value="loading" disabled>
+                        Lade Templates...
+                      </SelectItem>
+                    )}
+                    {templatesQuery.error && (
+                      <SelectItem value="error" disabled>
+                        Fehler beim Laden
+                      </SelectItem>
+                    )}
                     {templatesQuery.data?.map((template) => (
                       <SelectItem key={template.id} value={template.id!.toString()}>
                         {template.name}
