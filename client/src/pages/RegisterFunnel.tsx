@@ -109,6 +109,16 @@ export default function RegisterFunnel() {
     }
   }, [courseIdFromUrl, currentStep, selectedCourseId]);
 
+  // Setze selectedCourse wenn selectedCourseId sich ändert (für Direktlinks)
+  useEffect(() => {
+    if (selectedCourseId && courses) {
+      const course = courses.find((c: any) => c.id === selectedCourseId);
+      if (course) {
+        setSelectedCourse(course);
+      }
+    }
+  }, [selectedCourseId, courses]);
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // STEP 1: FÖRDERCHECK SUBMIT
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -425,14 +435,6 @@ export default function RegisterFunnel() {
               <CardTitle>Schritt 2: Kursauswahl</CardTitle>
               <CardDescription>Wählen Sie Ihren Wunschkurs aus</CardDescription>
               
-              {/* Info wenn Kurs vorselektiert */}
-              {courseIdFromUrl && selectedCourseId === courseIdFromUrl && (
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-900">
-                    ℹ️ Dieser Kurs wurde für Sie vorausgewählt.
-                  </p>
-                </div>
-              )}
               
               {/* Fördercheck-Ergebnis */}
               {foerdercheckErgebnis && (
