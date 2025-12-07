@@ -136,7 +136,7 @@ export default function CourseForm() {
       trainerQualifications: trainerQualifications || undefined,
       maxParticipants: maxParticipants ? parseInt(maxParticipants) : undefined,
       isPublished,
-      workflowTemplateId: workflowTemplateId ? parseInt(workflowTemplateId) : undefined,
+      workflowTemplateId: workflowTemplateId && workflowTemplateId !== "0" ? parseInt(workflowTemplateId) : undefined,
     };
 
     if (isEditMode) {
@@ -435,12 +435,12 @@ export default function CourseForm() {
                     Fehler beim Laden der Templates. Standard-Template wird verwendet.
                   </div>
                 ) : (
-                  <Select value={workflowTemplateId || ""} onValueChange={setWorkflowTemplateId}>
+                  <Select value={workflowTemplateId || "0"} onValueChange={setWorkflowTemplateId}>
                     <SelectTrigger>
                       <SelectValue placeholder="Standard-Template verwenden" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Standard-Template (System)</SelectItem>
+                      <SelectItem value="0">Standard-Template (System)</SelectItem>
                       {Array.isArray(templatesQuery.data) && templatesQuery.data.map((template) => {
                         if (!template || typeof template.id === 'undefined' || !template.name) {
                           return null;
