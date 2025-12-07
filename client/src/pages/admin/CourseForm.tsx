@@ -53,12 +53,16 @@ export default function CourseForm() {
   const [trainerQualifications, setTrainerQualifications] = useState("");
   const [maxParticipants, setMaxParticipants] = useState("");
   const [isPublished, setIsPublished] = useState(false);
+  const [workflowTemplateId, setWorkflowTemplateId] = useState<string>("");
 
   // Load existing course data in edit mode
   const courseQuery = trpc.courses.getById.useQuery(
     { id: courseId! },
     { enabled: isEditMode }
   );
+
+  // Load workflow templates
+  const templatesQuery = trpc.workflow.getTemplates.useQuery();
 
   useEffect(() => {
     if (courseQuery.data) {
@@ -82,6 +86,7 @@ export default function CourseForm() {
       setTrainerQualifications(course.trainerQualifications || "");
       setMaxParticipants(course.maxParticipants?.toString() || "");
       setIsPublished(course.isPublished);
+      setWorkflowTemplateId(course.workflowTemplateId?.toString() || "");
     }
   }, [courseQuery.data]);
 
@@ -131,6 +136,7 @@ export default function CourseForm() {
       trainerQualifications: trainerQualifications || undefined,
       maxParticipants: maxParticipants ? parseInt(maxParticipants) : undefined,
       isPublished,
+      workflowTemplateId: workflowTemplateId ? parseInt(workflowTemplateId) : undefined,
     };
 
     if (isEditMode) {
@@ -405,6 +411,37 @@ export default function CourseForm() {
                   onChange={(e) => setMaxParticipants(e.target.value)}
                   min="1"
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Workflow Template */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Begründungs-Workflow</CardTitle>
+              <CardDescription>
+                Wählen Sie ein Template für die Begründungsfragen
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div>
+                <Label htmlFor="workflowTemplate">Workflow-Template</Label>
+                <Select value={workflowTemplateId} onValueChange={setWorkflowTemplateId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Standard-Template verwenden" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Standard-Template (System)</SelectItem>
+                    {templatesQuery.data?.map((template) => (
+                      <SelectItem key={template.id} value={template.id!.toString()}>
+                        {template.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Falls kein Template ausgewählt ist, wird das Standard-Template verwendet.
+                </p>
               </div>
             </CardContent>
           </Card>

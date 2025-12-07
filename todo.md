@@ -848,3 +848,22 @@
 
 **Geschätzter Aufwand:** 14-18 Stunden (3-4 Tage)  
 **Status:** ✅ ABGESCHLOSSEN (100%) - Sprint 1.9 Beta-Launch READY 🚀
+
+
+---
+
+## 🔧 FEATURE: Course Template Assignment
+
+**Priorität:** HOCH  
+**Deadline:** 07.12.2024  
+**Feature:** Kurs-spezifische Workflow-Template-Zuweisung
+
+### Implementation
+- [x] Course Editor UI erweitern mit Template-Dropdown
+- [x] Template-Liste in Course Editor laden (getTemplates Query)
+- [x] workflowTemplateId in saveCourse Mutation speichern (create + update)
+- [x] Schema-Validierung für workflowTemplateId
+- [ ] Template-Anzeige in Course-Liste (optional - geplant für später)
+
+**Geschätzter Aufwand:** 1-2 Stunden  
+**Status:** ✅ ABGESCHLOSSEN

@@ -40,6 +40,7 @@ const courseCreateSchema = z.object({
   trainerQualifications: z.string().optional(),
   maxParticipants: z.number().int().positive().optional(),
   isPublished: z.boolean().default(false),
+  workflowTemplateId: z.number().int().positive().optional(),
 });
 
 const courseUpdateSchema = courseCreateSchema.partial().extend({
@@ -243,6 +244,7 @@ export const coursesRouter = router({
         trainerQualifications: input.trainerQualifications || null,
         maxParticipants: input.maxParticipants || null,
         isPublished: input.isPublished,
+        workflowTemplateId: input.workflowTemplateId || null,
         isActive: true,
       }).$returningId();
 
