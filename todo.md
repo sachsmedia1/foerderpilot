@@ -1179,3 +1179,31 @@
 - [ ] Teste als Teilnehmer ob Dokumente-Seite lädt (TODO: User muss als Teilnehmer einloggen)
 
 **Status:** ✅ DONE (Code-Fix komplett, Testing ausstehend)
+
+
+---
+
+## Sprint 1.10.1 FIX 3: Begründungs-Wizard für Teilnehmer
+
+**Ziel:** Teilnehmer können KOMPASS-Begründungstext erstellen (Voice/Text Input + AI Generation)
+
+**Problem:** Begründungs-Wizard existiert bereits aus Sprint 1.9, aber Navigation fehlte
+
+**Lösung:**
+- [x] Prüfe bestehende Workflow-Backend-Endpoints (workflow.getTemplateForParticipant, workflow.processUserInput, etc.)
+- [x] BegruendungsWizard Component existiert bereits (/client/src/pages/participant/BegruendungsWizard.tsx)
+- [x] Multi-Step-Form mit Progress Bar (5 KOMPASS-Fragen) bereits implementiert
+- [x] Voice Recording (MediaRecorder API) bereits implementiert
+- [x] AI Text Generation (Whisper + GPT-4) bereits implementiert
+- [x] Navigation von Teilnehmer-Dashboard hinzugefügt (neue Card mit "Begründung erstellen" Button)
+- [x] Icons hinzugefügt (MessageSquare, Sparkles)
+- [x] Info-Box mit Beschreibung des KI-Assistenten
+- [ ] Teste kompletten Flow als Teilnehmer (User muss einloggen und testen)
+
+**Implementierte Features:**
+- Neue Card im Teilnehmer-Dashboard mit Gradient-Design (Indigo/Purple)
+- Button navigiert zu `/teilnehmer/:id/begruendung`
+- Info-Text erklärt Voice & Text Input + KI-Unterstützung
+- Feature-Badges: "5 Fragen" + "Voice & Text"
+
+**Status:** ✅ DONE (Code komplett, Testing ausstehend)

@@ -20,7 +20,9 @@ import {
   Phone, 
   MapPin,
   Download,
-  LogOut
+  LogOut,
+  MessageSquare,
+  Sparkles
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -260,6 +262,57 @@ function ParticipantDashboardContent() {
                 <p className="text-sm text-muted-foreground text-center">
                   Weitere Dokumente werden hier angezeigt, sobald verfügbar
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Begründung */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-primary" />
+                    <CardTitle>Begründung</CardTitle>
+                  </div>
+                  <CardDescription className="mt-1">
+                    KOMPASS Förderantrag Begründung
+                  </CardDescription>
+                </div>
+                <Button 
+                  onClick={() => navigate(`/teilnehmer/${participantData.id}/begruendung`)} 
+                  size="sm"
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Begründung erstellen
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="p-4 border rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="h-5 w-5 text-indigo-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-sm mb-1">KI-gestützte Begründung</p>
+                    <p className="text-xs text-muted-foreground">
+                      Erstellen Sie Ihre KOMPASS-Begründung mit Hilfe unseres intelligenten Assistenten. 
+                      Sprechen Sie einfach Ihre Antworten ein oder tippen Sie sie - die KI hilft Ihnen dabei, 
+                      professionelle Texte zu formulieren.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="h-2 w-2 rounded-full bg-indigo-600" />
+                  <span>5 Fragen</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="h-2 w-2 rounded-full bg-purple-600" />
+                  <span>Voice & Text</span>
+                </div>
               </div>
             </CardContent>
           </Card>
