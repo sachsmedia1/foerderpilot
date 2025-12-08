@@ -198,6 +198,70 @@ export const workflowRouter = router({
       return { success: true };
     }),
 
+  /**
+   * Duplicate template (copy system template to client template)
+   */
+  duplicateTemplate: adminProcedure
+    .input(z.object({
+      templateId: z.number(),
+      newName: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+
+      // Get source template with questions
+      const [sourceTemplate] = await db
+        .select()
+        .from(workflowTemplates)
+        .where(eq(workflowTemplates.id, input.templateId))
+        .limit(1);
+
+      if (!sourceTemplate) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Template not found" });
+      }
+
+      const sourceQuestions = await db
+        .select()
+        .from(workflowQuestions)
+        .where(eq(workflowQuestions.templateId, input.templateId))
+        .orderBy(workflowQuestions.sortOrder);
+
+      // Create new template (copy)
+      const newName = input.newName || `${sourceTemplate.name} (Kopie)`;
+      const [newTemplateResult] = await db
+        .insert(workflowTemplates)
+        .values({
+          tenantId: ctx.tenant!.id, // Assign to current tenant
+          name: newName,
+          description: sourceTemplate.description,
+          type: 'client', // Always create as client template
+          isActive: true,
+        });
+
+      const newTemplateId = Number(newTemplateResult.insertId);
+
+      // Copy questions
+      if (sourceQuestions.length > 0) {
+        await db.insert(workflowQuestions).values(
+          sourceQuestions.map(q => ({
+            templateId: newTemplateId,
+            questionNumber: q.questionNumber,
+            title: q.title,
+            description: q.description,
+            aiPrompt: q.aiPrompt,
+            helpText: q.helpText,
+            requiredSentencesMin: q.requiredSentencesMin,
+            requiredSentencesMax: q.requiredSentencesMax,
+            icon: q.icon,
+            sortOrder: q.sortOrder,
+          }))
+        );
+      }
+
+      return { id: newTemplateId, name: newName };
+    }),
+
   // ============================================================================
   // PARTICIPANT WORKFLOW
   // ============================================================================

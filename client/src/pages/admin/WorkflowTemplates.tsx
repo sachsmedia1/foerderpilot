@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
+import { AdminLayout } from '@/components/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Settings, Trash2, Edit } from 'lucide-react';
+import { Plus, Settings, Trash2, Edit, Copy } from 'lucide-react';
 import { WorkflowEditor } from '@/components/admin/WorkflowEditor';
 import { toast } from 'sonner';
 
@@ -13,6 +14,7 @@ export default function WorkflowTemplates() {
 
   const { data: templates, isLoading, refetch } = trpc.workflow.getTemplates.useQuery();
   const deleteTemplate = trpc.workflow.deleteTemplate.useMutation();
+  const duplicateTemplate = trpc.workflow.duplicateTemplate.useMutation();
 
   const handleDelete = async (templateId: number) => {
     if (!confirm('Template wirklich löschen? Alle zugehörigen Fragen und Antworten werden ebenfalls gelöscht.')) {
@@ -47,18 +49,37 @@ export default function WorkflowTemplates() {
     });
   };
 
+  const handleDuplicate = async (templateId: number, templateName: string) => {
+    try {
+      const result = await duplicateTemplate.mutateAsync({ templateId });
+      toast({
+        title: 'Template dupliziert',
+        description: `"${result.name}" wurde erstellt.`,
+      });
+      refetch();
+      setSelectedTemplateId(result.id);
+    } catch (error) {
+      toast({
+        title: 'Fehler',
+        description: 'Template konnte nicht dupliziert werden.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="p-6">
+      <AdminLayout>
         <div className="flex items-center justify-center h-64">
           <div className="text-muted-foreground">Lade Templates...</div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <AdminLayout>
+      <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Workflow Templates</h1>
@@ -87,6 +108,7 @@ export default function WorkflowTemplates() {
                 isSelected={selectedTemplateId === template.id}
                 onSelect={() => setSelectedTemplateId(template.id)}
                 onDelete={handleDelete}
+                onDuplicate={handleDuplicate}
               />
             ))}
           </div>
@@ -135,7 +157,8 @@ export default function WorkflowTemplates() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }
 
@@ -150,9 +173,10 @@ interface TemplateCardProps {
   isSelected: boolean;
   onSelect: () => void;
   onDelete: (id: number) => void;
+  onDuplicate?: (id: number, name: string) => void;
 }
 
-function TemplateCard({ template, isSelected, onSelect, onDelete }: TemplateCardProps) {
+function TemplateCard({ template, isSelected, onSelect, onDelete, onDuplicate }: TemplateCardProps) {
   return (
     <Card
       className={`cursor-pointer transition-all hover:shadow-md ${
@@ -185,16 +209,31 @@ function TemplateCard({ template, isSelected, onSelect, onDelete }: TemplateCard
             {template.type === 'system' ? 'System' : 'Client'}
           </Badge>
           <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect();
-              }}
-            >
-              <Edit className="w-3 h-3" />
-            </Button>
+            {template.type === 'system' && onDuplicate && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDuplicate(template.id, template.name);
+                }}
+                title="Template duplizieren"
+              >
+                <Copy className="w-3 h-3" />
+              </Button>
+            )}
+            {template.type !== 'system' && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect();
+                }}
+              >
+                <Edit className="w-3 h-3" />
+              </Button>
+            )}
             {template.type !== 'system' && (
               <Button
                 size="sm"

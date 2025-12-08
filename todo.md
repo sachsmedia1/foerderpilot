@@ -1255,3 +1255,26 @@
 - [ ] User-Test: Spracheingabe im Wizard testen (Chrome empfohlen)
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.10.1 FIX 6: WorkflowTemplates Seite Layout + Standard-Template
+
+**Ziel:** WorkflowTemplates Seite in AdminLayout integrieren und Standard KOMPASS-Template bereitstellen
+
+**Probleme:**
+1. `/settings/workflows` Seite hat kein AdminLayout (keine Sidebar, kein Header)
+2. Keine System-Templates vorhanden ("Keine System-Templates vorhanden")
+3. Standard KOMPASS-Template fehlt als Vorlage zum Duplizieren
+
+**Lösung:**
+- [x] WorkflowTemplates.tsx mit AdminLayout wrappen
+- [x] Standard KOMPASS-Template existiert bereits in Datenbank (ID: 1, 5 Fragen)
+- [x] Template als "system" Type markiert (tenantId: null)
+- [x] "Duplizieren"-Button (Copy-Icon) für System-Templates hinzugefügt
+- [x] workflow.duplicateTemplate Mutation erstellt (kopiert Template + Fragen)
+- [x] UI: System-Templates nur Duplizieren-Button, Client-Templates Edit + Delete
+- [ ] User-Test: Template duplizieren und bearbeiten
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)
