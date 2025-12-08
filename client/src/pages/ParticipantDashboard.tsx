@@ -31,6 +31,12 @@ function ParticipantDashboardContent() {
   const [, navigate] = useLocation();
   const { data: debugData } = trpc.participants.debugUserId.useQuery();
   const { data: participantData, isLoading, error } = trpc.participants.getMyData.useQuery();
+  
+  // Load workflow progress
+  const { data: workflowAnswers } = trpc.workflow.getParticipantAnswers.useQuery(
+    { participantId: participantData?.id || 0 },
+    { enabled: !!participantData?.id }
+  );
 
   // Debug logging
   console.log('[ParticipantDashboard] Debug User ID:', debugData);
@@ -176,7 +182,7 @@ function ParticipantDashboardContent() {
       </header>
 
       <div className="container py-8">
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-3">
           {/* Kursübersicht */}
           <Card>
             <CardHeader>
@@ -267,7 +273,7 @@ function ParticipantDashboardContent() {
           </Card>
 
           {/* Begründung */}
-          <Card>
+          <Card className="lg:col-span-3">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -279,39 +285,59 @@ function ParticipantDashboardContent() {
                     KOMPASS Förderantrag Begründung
                   </CardDescription>
                 </div>
-                <Button 
-                  onClick={() => navigate(`/teilnehmer/${participantData.id}/begruendung`)} 
-                  size="sm"
-                  className="bg-indigo-600 hover:bg-indigo-700"
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Begründung erstellen
-                </Button>
+                <div className="flex items-center gap-3">
+                  {workflowAnswers && workflowAnswers.length > 0 && (
+                    <Badge variant="secondary" className="text-sm">
+                      {workflowAnswers.length} von 5 Fragen beantwortet
+                    </Badge>
+                  )}
+                  <Button 
+                    onClick={() => navigate(`/teilnehmer/${participantData.id}/begruendung`)} 
+                    size="sm"
+                    className="bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    {workflowAnswers && workflowAnswers.length > 0 ? "Begründung fortsetzen" : "Begründung erstellen"}
+                  </Button>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="p-4 border rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50">
-                <div className="flex items-start gap-3">
-                  <Sparkles className="h-5 w-5 text-indigo-600 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-sm mb-1">KI-gestützte Begründung</p>
-                    <p className="text-xs text-muted-foreground">
-                      Erstellen Sie Ihre KOMPASS-Begründung mit Hilfe unseres intelligenten Assistenten. 
-                      Sprechen Sie einfach Ihre Antworten ein oder tippen Sie sie - die KI hilft Ihnen dabei, 
-                      professionelle Texte zu formulieren.
-                    </p>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-4 border rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50">
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="h-5 w-5 text-indigo-600 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm mb-1">KI-gestützte Begründung</p>
+                      <p className="text-xs text-muted-foreground">
+                        Erstellen Sie Ihre KOMPASS-Begründung mit Hilfe unseres intelligenten Assistenten. 
+                        Sprechen Sie einfach Ihre Antworten ein oder tippen Sie sie - die KI hilft Ihnen dabei, 
+                        professionelle Texte zu formulieren.
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <div className="h-2 w-2 rounded-full bg-indigo-600" />
-                  <span>5 Fragen</span>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <div className="h-2 w-2 rounded-full bg-purple-600" />
-                  <span>Voice & Text</span>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="h-2 w-2 rounded-full bg-indigo-600" />
+                    <span className="text-muted-foreground">5 Fragen zum Kurs und Ihrer beruflichen Situation</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="h-2 w-2 rounded-full bg-purple-600" />
+                    <span className="text-muted-foreground">Voice Recording oder Text-Eingabe möglich</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="h-2 w-2 rounded-full bg-pink-600" />
+                    <span className="text-muted-foreground">KI generiert professionelle Formulierungen</span>
+                  </div>
+                  {workflowAnswers && workflowAnswers.length > 0 && (
+                    <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm font-medium text-green-800">
+                        ✓ Sie haben bereits {workflowAnswers.length} von 5 Fragen beantwortet
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>

@@ -1207,3 +1207,27 @@
 - Feature-Badges: "5 Fragen" + "Voice & Text"
 
 **Status:** ✅ DONE (Code komplett, Testing ausstehend)
+
+
+---
+
+## Sprint 1.10.1 FIX 4: Begründungs-Wizard UX-Verbesserungen
+
+**Ziel:** Bessere Integration des Wizards im Teilnehmer-Dashboard und Admin-Zugriff auf Vorlagen
+
+**Probleme:**
+1. Begründungs-Card nicht optimal im Dashboard-Grid integriert
+2. Admin-Bereich: Workflow-Vorlagen-Editor nicht in Navigation sichtbar
+3. Teilnehmer-Dashboard: Wizard-Fortschritt wird nicht angezeigt
+
+**Lösung:**
+- [x] Prüfe Admin-Navigation: Workflow-Vorlagen Tab in /settings hinzugefügt
+- [x] Prüfe Route: /settings/workflows existiert und funktioniert
+- [x] Verbessere Dashboard-Layout: Grid von md:grid-cols-2 zu lg:grid-cols-3, Begründungs-Card lg:col-span-3
+- [x] Wizard-Fortschritt anzeigen: workflow.getParticipantAnswers Query hinzugefügt
+- [x] Fortschritts-Badge in Begründungs-Card ("X von 5 Fragen beantwortet")
+- [x] Conditional Rendering: "Begründung erstellen" vs "Begründung fortsetzen"
+- [x] Success-Box wenn Fragen bereits beantwortet (grüner Hintergrund)
+- [x] Detaillierte Feature-Liste (3 Bullet Points: Fragen, Voice/Text, KI-Formulierung)
+
+**Status:** ✅ DONE
