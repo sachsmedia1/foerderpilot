@@ -74,7 +74,6 @@ function Router() {
       <Route path={"/participants/new"} component={ParticipantForm} />
       <Route path={"/participants/:id/view"} component={ParticipantDetail} />
       <Route path={"/participants/:id/edit"} component={ParticipantForm} />
-      <Route path={"/teilnehmer/:id"} component={ParticipantDetail} />
         <Route path="/validation" component={ValidationDashboard} />
         <Route path="/email-test" component={EmailTest} />
       <Route path={"/sammeltermine"} component={Sammeltermine} />
@@ -91,8 +90,9 @@ function Router() {
       <Route path={"/register"} component={Register} />
       <Route path={"/anmeldung"} component={RegisterFunnel} />
       <Route path="/teilnehmer/documents" component={DocumentsDashboard} />
-      <Route path={"/teilnehmer"} component={ParticipantDashboard} />
       <Route path="/teilnehmer/:id/begruendung" component={BegruendungsWizard} />
+      <Route path={"/teilnehmer/:id"} component={ParticipantDetail} />
+      <Route path={"/teilnehmer"} component={ParticipantDashboard} />
       <Route path={"/debug/user-info"} component={DebugUserInfo} />
       <Route path={"/forgot-password"} component={ForgotPassword} />
       <Route path={"/reset-password"} component={ResetPassword} />
