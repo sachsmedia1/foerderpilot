@@ -11,7 +11,7 @@ import {
 } from "../../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { invokeLLM } from "../_core/llm";
-import { transcribeAudio } from "../_core/voiceTranscription";
+import { transcribeAudioDirect } from "../_core/voiceTranscription";
 
 export const workflowRouter = router({
   // ============================================================================
@@ -324,25 +324,29 @@ export const workflowRouter = router({
           // Convert base64 to buffer
           const audioBuffer = Buffer.from(input.content.split(',')[1] || input.content, 'base64');
           
-          // Save to temp file
-          const tempPath = `/tmp/voice_${Date.now()}.wav`;
-          require('fs').writeFileSync(tempPath, audioBuffer);
+          // Transcribe directly from buffer
+          const transcription = await transcribeAudioDirect(
+            audioBuffer,
+            'audio/wav',
+            { language: 'de' }
+          );
 
-          // Transcribe
-          const transcription = await transcribeAudio({
-            audioUrl: tempPath,
-            language: 'de',
-          });
+          // Check for transcription error
+          if ('error' in transcription) {
+            console.error('[processUserInput] Voice transcription error:', transcription);
+            throw new TRPCError({ 
+              code: "INTERNAL_SERVER_ERROR", 
+              message: transcription.error,
+              cause: transcription
+            });
+          }
 
           userText = transcription.text;
-
-          // Clean up
-          require('fs').unlinkSync(tempPath);
         } catch (error) {
           console.error('[processUserInput] Voice transcription error:', error);
           throw new TRPCError({ 
             code: "INTERNAL_SERVER_ERROR", 
-            message: "Voice transcription failed" 
+            message: error instanceof Error ? error.message : "Voice transcription failed" 
           });
         }
       }

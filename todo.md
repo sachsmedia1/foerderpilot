@@ -1231,3 +1231,27 @@
 - [x] Detaillierte Feature-Liste (3 Bullet Points: Fragen, Voice/Text, KI-Formulierung)
 
 **Status:** ✅ DONE
+
+
+---
+
+## Sprint 1.10.1 FIX 5: Voice Recording im Begründungs-Wizard funktioniert nicht
+
+**Ziel:** Spracheingabe im Begründungs-Wizard reparieren
+
+**Problem:** User berichtet, dass Voice Recording nicht funktioniert (Button reagiert nicht oder Transcription schlägt fehl)
+
+**Root Cause:**
+- [x] Backend Transcription verwendete falschen Ansatz (temp-Dateien + URL statt direkter Buffer)
+- [x] `transcribeAudio()` erwartet URL, bekam aber lokalen Dateipfad `/tmp/voice_*.wav`
+- [x] `fetch('/tmp/...')` schlägt fehl, weil kein HTTP-Endpoint
+
+**Lösung:**
+- [x] Neue Funktion `transcribeAudioDirect()` erstellt in voiceTranscription.ts
+- [x] Nimmt Buffer direkt entgegen (kein Dateisystem-Umweg)
+- [x] Sendet Audio direkt an Whisper API via FormData
+- [x] workflow.ts aktualisiert: verwendet jetzt transcribeAudioDirect()
+- [x] Keine temp-Dateien mehr, besseres Error Handling
+- [ ] User-Test: Spracheingabe im Wizard testen (Chrome empfohlen)
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)
