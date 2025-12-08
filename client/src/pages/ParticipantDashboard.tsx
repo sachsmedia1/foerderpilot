@@ -6,6 +6,7 @@
 
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { ParticipantLayout } from "@/components/ParticipantLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +24,7 @@ import {
 } from "lucide-react";
 import { useLocation } from "wouter";
 
-export default function ParticipantDashboard() {
+function ParticipantDashboardContent() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
   const { data: debugData } = trpc.participants.debugUserId.useQuery();
@@ -36,7 +37,7 @@ export default function ParticipantDashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Lade Dashboard...</p>
@@ -47,7 +48,7 @@ export default function ParticipantDashboard() {
 
   if (!participantData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen">
         {/* Header */}
         <header className="bg-white border-b">
           <div className="container py-4">
@@ -339,5 +340,14 @@ export default function ParticipantDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+export default function ParticipantDashboard() {
+  return (
+    <ParticipantLayout>
+      <ParticipantDashboardContent />
+    </ParticipantLayout>
   );
 }
