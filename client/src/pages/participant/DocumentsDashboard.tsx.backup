@@ -32,11 +32,13 @@ function DocumentsDashboardContent() {
   // Loading state
   if (participantLoading || !documentTypes) {
     return (
-      <div className="p-6 max-w-5xl mx-auto">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-muted-foreground">Lade Dokumente...</div>
+      <ParticipantLayout>
+        <div className="p-6 max-w-5xl mx-auto">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-muted-foreground">Lade Dokumente...</div>
+          </div>
         </div>
-      </div>
+      </ParticipantLayout>
     );
   }
 
@@ -80,11 +82,13 @@ function DocumentsDashboardContent() {
   // Wait for all data
   if (!documents || !phaseStatus) {
     return (
-      <div className="p-6 max-w-5xl mx-auto">
+      <ParticipantLayout>
+        <div className="p-6 max-w-5xl mx-auto">
         <div className="flex items-center justify-center h-64">
           <div className="text-muted-foreground">Lade Dokumente...</div>
         </div>
       </div>
+      </ParticipantLayout>
     );
   }
 
@@ -110,7 +114,8 @@ function DocumentsDashboardContent() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <ParticipantLayout>
+      <div className="p-6 max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Meine Dokumente</h1>
@@ -214,6 +219,7 @@ function DocumentsDashboardContent() {
         </CardContent>
       </Card>
     </div>
+    </ParticipantLayout>
   );
 }
 
@@ -407,14 +413,12 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
         </div>
       </CardContent>
     </Card>
+    </div>
+    </ParticipantLayout>
   );
 }
 
 
 export default function DocumentsDashboard() {
-  return (
-    <ParticipantLayout>
-      <DocumentsDashboardContent />
-    </ParticipantLayout>
-  );
+  return <DocumentsDashboardContent />;
 }

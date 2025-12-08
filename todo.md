@@ -1139,3 +1139,25 @@
 - [x] Teilnehmer können Admin-Seiten nicht mehr sehen
 
 **Status:** ✅ DONE
+
+
+---
+
+## 🐛 BUG: /teilnehmer/documents Redirect-Loop (07.12.2025)
+
+**Problem:**
+- Teilnehmer öffnet /teilnehmer/documents
+- Seite redirectet automatisch zu /teilnehmer
+- DocumentsDashboard ist nicht erreichbar für Teilnehmer
+
+**Ursache:**
+- DocumentsDashboard verwendet wahrscheinlich AdminLayout
+- AdminLayout redirectet alle role="user" zu /teilnehmer
+- Teilnehmer-spezifische Seiten sollten kein AdminLayout verwenden
+
+**Lösung:**
+- [ ] Prüfe welches Layout DocumentsDashboard verwendet
+- [ ] Ersetze AdminLayout durch ParticipantLayout oder DashboardLayout
+- [ ] Teste /teilnehmer/documents Zugriff für Teilnehmer
+
+**Status:** 🔴 TODO
