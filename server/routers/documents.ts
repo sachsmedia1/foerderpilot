@@ -100,13 +100,15 @@ const validateDocumentSchema = z.object({
 export const documentsRouter = router({
   /**
    * Liste aller Dokumente (mit Filterung)
+   * Admins sehen alle Dokumente, Teilnehmer nur ihre eigenen
    */
-  list: adminProcedure
+  list: protectedProcedure
     .input(documentFilterSchema.optional())
     .query(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
       if (!ctx.tenant) throw new TRPCError({ code: 'FORBIDDEN', message: 'No tenant context' });
+      if (!ctx.user) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Not authenticated' });
 
       // ✅ RLS: Validate tenant access
       validateTenantAccess(ctx, ctx.tenant.id);
@@ -114,7 +116,26 @@ export const documentsRouter = router({
       // Build WHERE conditions
       const conditions = [eq(documents.tenantId, ctx.tenant.id)];
       
-      if (input?.participantId) {
+      // ✅ Permission Check: Teilnehmer dürfen nur ihre eigenen Dokumente sehen
+      if (ctx.user.role === 'user') {
+        // Find participant by userId
+        const [participant] = await db
+          .select({ id: participants.id })
+          .from(participants)
+          .where(and(
+            eq(participants.userId, ctx.user.id),
+            eq(participants.tenantId, ctx.tenant.id)
+          ))
+          .limit(1);
+        
+        if (!participant) {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Teilnehmerdaten nicht gefunden' });
+        }
+        
+        // Force participantId filter for non-admin users
+        conditions.push(eq(documents.participantId, participant.id));
+      } else if (input?.participantId) {
+        // Admins can filter by participantId
         conditions.push(eq(documents.participantId, input.participantId));
       }
       if (input?.documentType) {
@@ -443,6 +464,13 @@ export const documentsRouter = router({
 
       // ✅ RLS: Validate resource ownership
       validateResourceOwnership(ctx, participant[0].tenantId, 'Participant');
+
+      // ✅ Permission Check: Teilnehmer dürfen nur ihren eigenen Status sehen
+      if (ctx.user && ctx.user.role === 'user') {
+        if (participant[0].userId !== ctx.user.id) {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Sie dürfen nur Ihren eigenen Status sehen' });
+        }
+      }
 
       // Get all documents for participant
       const docs = await db

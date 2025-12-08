@@ -1161,3 +1161,21 @@
 - [ ] Teste /teilnehmer/documents Zugriff für Teilnehmer
 
 **Status:** 🔴 TODO
+
+
+---
+
+## 🐛 CRITICAL: Documents Permission Error (403/10002)
+
+**Problem:** Teilnehmer können Dokumente-Seite nicht laden - Backend wirft "You do not have required permission (10002)" Fehler.
+
+**Ursache:** Documents-Procedures verwenden wahrscheinlich `adminProcedure` statt `protectedProcedure`.
+
+**Lösung:**
+- [x] Finde alle documents.* Procedures im Backend (4 Procedures gefunden)
+- [x] Ändere `documents.list` von `adminProcedure` zu `protectedProcedure`
+- [x] Füge Permission-Check zu `documents.list` hinzu (Teilnehmer sehen nur eigene Dokumente)
+- [x] Füge Permission-Check zu `documents.getPhaseStatus` hinzu (Teilnehmer sehen nur eigenen Status)
+- [ ] Teste als Teilnehmer ob Dokumente-Seite lädt (TODO: User muss als Teilnehmer einloggen)
+
+**Status:** ✅ DONE (Code-Fix komplett, Testing ausstehend)
