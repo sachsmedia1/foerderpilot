@@ -1338,3 +1338,42 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] User-Test: Sammeltermin erstellen ohne Einreichungsfrist auszufüllen
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.11: CONVERSATIONAL FUNNEL REDESIGN
+
+**Ziel:** Fördercheck-Funnel in modernen Conversational Funnel umbauen (Typeform-Style)
+
+**Key Features:**
+- 1 Frage pro Screen (statt 7 auf einmal)
+- Framer Motion Animationen
+- localStorage Persistence (Felder bleiben bei Reload)
+- Animierte Progress Bar
+- Trust-Signale (🔒 Sicher, ⏱️ ~2 Min)
+- Mobile-First Design
+- Instant Feedback (✅ Checkmark nach Antwort)
+
+**Erwartete Conversion-Rate:** +30-50%
+
+**Test-URL:** https://app.foerderpilot.io/anmeldung-neu
+**Alte Version:** https://app.foerderpilot.io/anmeldung (Fallback)
+
+**Tasks:**
+- [x] Analysiere bestehende RegisterFunnel.tsx (Backup-Verständnis)
+- [x] Erstelle useFunnelState Hook (client/src/hooks/useFunnelState.ts)
+- [x] Erstelle FunnelQuestion Component (client/src/components/funnel/FunnelQuestion.tsx)
+- [x] Erstelle FunnelResult Component (client/src/components/funnel/FunnelResult.tsx)
+- [x] Erstelle RegisterFunnelConversational.tsx (neue Datei, alte bleibt)
+- [x] Füge Route /anmeldung-neu zu App.tsx hinzu
+- [x] Framer Motion Animationen integriert
+- [x] localStorage Persistence via useFunnelState Hook
+- [ ] Teste Fördercheck-Flow (7 Fragen einzeln) - User-Test
+- [ ] Teste localStorage Persistence (Reload) - User-Test
+- [ ] Teste Kursauswahl + Persönliche Daten - User-Test
+- [ ] Teste Vorvertrag-Bestätigung - User-Test
+- [ ] Teste Mobile Responsiveness - User-Test
+- [ ] Wenn erfolgreich: Ersetze /anmeldung Route mit Conversational Version
+
+**Status:** ✅ CODE DONE (User-Testing ausstehend)

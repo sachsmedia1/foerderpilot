@@ -31,6 +31,7 @@ import VorhabenantragBulkExport from "@/pages/admin/VorhabenantragBulkExport";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import RegisterFunnel from "@/pages/RegisterFunnel";
+import RegisterFunnelConversational from "@/pages/RegisterFunnelConversational";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import SetPassword from "@/pages/SetPassword";
@@ -89,6 +90,7 @@ function Router() {
       <Route path={"/login"} component={Login} />
       <Route path={"/register"} component={Register} />
       <Route path={"/anmeldung"} component={RegisterFunnel} />
+      <Route path={"/anmeldung-neu"} component={RegisterFunnelConversational} />
       <Route path="/teilnehmer/documents" component={DocumentsDashboard} />
       <Route path="/teilnehmer/:id/begruendung" component={BegruendungsWizard} />
       <Route path={"/teilnehmer/:id"} component={ParticipantDetail} />
