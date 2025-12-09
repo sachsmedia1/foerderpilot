@@ -1467,3 +1467,20 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] User-Test: /anmeldung-neu mit Consistent Flow
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.11.5: Route-Ersetzung
+
+**Ziel:** Alte /anmeldung Route mit neuer Conversational Version ersetzen
+
+**Tasks:**
+- [x] App.tsx: Ersetze RegisterFunnel Import mit RegisterFunnelConversational
+- [x] App.tsx: Entferne /anmeldung-neu Route (nicht mehr nötig)
+- [x] Lösche RegisterFunnel.tsx (alte Version)
+- [x] Lösche RegisterFunnel.tsx.backup
+- [x] Lösche RegisterFunnelConversational.tsx.backup
+- [ ] User-Test: /anmeldung Route mit Conversational Flow
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)
