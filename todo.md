@@ -1304,3 +1304,37 @@
 - [ ] User-Test: Teilnehmer-Detailansicht mit Antworten prüfen
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.10.1 FIX 8: SQL-Fehler bei Sammeltermin-Erstellung
+
+**Ziel:** Behebe Datumsfehler bei Sammeltermin-Erstellung
+
+**Problem:** SQL-Insert schlägt fehl mit falschen Datumswerten:
+- `submissionDeadline` hat Wert `0002-01-11 21:45:32.000` (Jahr 0002 statt 2026)
+- Einreichungsfrist-Berechnung produziert ungültiges Datum
+
+**Fehlermeldung:**
+```
+Failed query: insert into `sammeltermine` values (default, ?, ?, ?, ?, ?, ?, default, default)
+params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,scheduled,
+```
+
+**Root Cause:**
+- [x] `submissionDate` war leer, aber Code versuchte trotzdem Date zu erstellen
+- [x] `new Date("T23:59")` → Invalid Date → `0002-01-11 21:45:32.000`
+- [x] Auto-Berechnung funktionierte nur wenn `submissionDate` leer UND `date` gesetzt
+
+**Lösung:**
+- [x] Finde sammeltermine.create Mutation (sammeltermins.ts)
+- [x] Prüfe submissionDeadline Berechnung in SammeltermineForm.tsx
+- [x] Behebe Date-Parsing: Fallback wenn submissionDate leer
+- [x] Auto-Berechnung: 1 Tag vor Termin um 23:59 Uhr
+- [x] Validierung: isNaN() check für beide Dates
+- [x] UI: Entferne required-Attribut von Einreichungsfrist-Feldern
+- [x] Hint-Text: "Standardmäßig 1 Tag vor dem Termin um 23:59 Uhr"
+- [ ] User-Test: Sammeltermin erstellen ohne Einreichungsfrist auszufüllen
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)

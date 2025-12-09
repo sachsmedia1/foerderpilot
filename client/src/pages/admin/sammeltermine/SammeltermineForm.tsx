@@ -111,14 +111,29 @@ export default function SammelterminForm() {
       return;
     }
 
-    if (!date || !submissionDate) {
+    if (!date) {
       toast.error("Bitte füllen Sie alle Pflichtfelder aus");
       return;
     }
 
     // Combine date and time
     const terminDateTime = new Date(`${date}T${time}`);
-    const submissionDateTime = new Date(`${submissionDate}T${submissionTime}`);
+    
+    // If submissionDate is empty, calculate it (1 day before termin at 23:59)
+    let submissionDateTime: Date;
+    if (!submissionDate) {
+      submissionDateTime = new Date(terminDateTime);
+      submissionDateTime.setDate(submissionDateTime.getDate() - 1);
+      submissionDateTime.setHours(23, 59, 0, 0);
+    } else {
+      submissionDateTime = new Date(`${submissionDate}T${submissionTime}`);
+    }
+    
+    // Validate dates
+    if (isNaN(terminDateTime.getTime()) || isNaN(submissionDateTime.getTime())) {
+      toast.error("Ungültiges Datum");
+      return;
+    }
 
     const data = {
       courseId,
@@ -224,26 +239,24 @@ export default function SammelterminForm() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="submissionDate">Einreichungsfrist (Datum) *</Label>
+                  <Label htmlFor="submissionDate">Einreichungsfrist (Datum)</Label>
                   <Input
                     id="submissionDate"
                     type="date"
                     value={submissionDate}
                     onChange={(e) => setSubmissionDate(e.target.value)}
-                    required
                   />
                   <p className="text-sm text-muted-foreground">
-                    Standardmäßig 1 Tag vor dem Termin
+                    Standardmäßig 1 Tag vor dem Termin um 23:59 Uhr
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="submissionTime">Einreichungsfrist (Uhrzeit) *</Label>
+                  <Label htmlFor="submissionTime">Einreichungsfrist (Uhrzeit)</Label>
                   <Input
                     id="submissionTime"
                     type="time"
                     value={submissionTime}
                     onChange={(e) => setSubmissionTime(e.target.value)}
-                    required
                   />
                 </div>
               </div>
