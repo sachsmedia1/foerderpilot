@@ -30,7 +30,8 @@ import {
   Clock,
   AlertCircle,
   Key,
-  Send
+  Send,
+  MessageSquare
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -80,6 +81,10 @@ export default function ParticipantDetail() {
   const { data: courseSchedule } = trpc.courseSchedules.getById.useQuery(
     { id: participant?.courseScheduleId! },
     { enabled: !!participant?.courseScheduleId }
+  );
+  const { data: workflowAnswers } = trpc.workflow.getParticipantAnswers.useQuery(
+    { participantId },
+    { enabled: !!participantId }
   );
 
   const updateStatusMutation = trpc.participants.updateStatus.useMutation({
@@ -510,6 +515,86 @@ export default function ParticipantDetail() {
             ) : (
               <div className="text-center py-6 text-muted-foreground">
                 Noch keine Dokumente hochgeladen
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Workflow Answers (Begründungs-Fragen) */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Begründungs-Antworten
+            </CardTitle>
+            <CardDescription>
+              KOMPASS-Begründungsfragen und Antworten des Teilnehmers
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {workflowAnswers && workflowAnswers.length > 0 ? (
+              <div className="space-y-6">
+                {workflowAnswers.map((answer) => (
+                  <div key={answer.id} className="border rounded-lg p-4 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-base">
+                          {answer.questionNumber}. {answer.questionTitle}
+                        </h4>
+                        {answer.questionDescription && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {answer.questionDescription}
+                          </p>
+                        )}
+                      </div>
+                      <Badge variant="outline" className="ml-2">
+                        {answer.inputMethod === 'voice' ? 'Sprache' : 'Text'}
+                      </Badge>
+                    </div>
+                    
+                    <Separator />
+                    
+                    {/* User Input (Original) */}
+                    {answer.userInput && (
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Benutzer-Eingabe:</p>
+                        <p className="text-sm bg-muted/50 p-3 rounded">{answer.userInput}</p>
+                      </div>
+                    )}
+                    
+                    {/* AI Generated Text */}
+                    {answer.aiGeneratedText && answer.aiGeneratedText !== answer.finalText && (
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">KI-Vorschlag:</p>
+                        <p className="text-sm bg-blue-50 dark:bg-blue-950/20 p-3 rounded">
+                          {answer.aiGeneratedText}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Final Text (Edited by user) */}
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Finale Antwort:</p>
+                      <p className="text-sm bg-green-50 dark:bg-green-950/20 p-3 rounded font-medium">
+                        {answer.finalText || answer.aiGeneratedText || answer.userInput}
+                      </p>
+                    </div>
+                    
+                    {/* Metadata */}
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
+                      <span>Erstellt: {format(new Date(answer.createdAt), 'dd.MM.yyyy HH:mm', { locale: de })}</span>
+                      {answer.updatedAt && answer.updatedAt !== answer.createdAt && (
+                        <span>Aktualisiert: {format(new Date(answer.updatedAt), 'dd.MM.yyyy HH:mm', { locale: de })}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>Noch keine Begründungs-Antworten vorhanden</p>
+                <p className="text-sm mt-1">Der Teilnehmer hat noch keine Fragen beantwortet.</p>
               </div>
             )}
           </CardContent>

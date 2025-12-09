@@ -10,8 +10,66 @@
 import { router, superAdminProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { getDb, getAllTenants, getTenantById, getUsersByTenantId } from "../db";
-import { tenants, users } from "../../drizzle/schema";
+import { tenants, users, workflowTemplates, workflowQuestions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+import type { MySql2Database } from "drizzle-orm/mysql2";
+
+/**
+ * Helper: Duplicate KOMPASS Standard template for new tenant
+ */
+async function duplicateSystemTemplateForTenant(db: MySql2Database<any>, tenantId: number) {
+  // Find KOMPASS Standard template
+  const [standardTemplate] = await db
+    .select()
+    .from(workflowTemplates)
+    .where(eq(workflowTemplates.name, 'KOMPASS Standard'))
+    .limit(1);
+
+  if (!standardTemplate) {
+    console.warn('[duplicateSystemTemplateForTenant] KOMPASS Standard template not found');
+    return;
+  }
+
+  // Get questions
+  const questions = await db
+    .select()
+    .from(workflowQuestions)
+    .where(eq(workflowQuestions.templateId, standardTemplate.id))
+    .orderBy(workflowQuestions.sortOrder);
+
+  // Create tenant copy
+  const [newTemplate] = await db
+    .insert(workflowTemplates)
+    .values({
+      tenantId,
+      name: standardTemplate.name,
+      description: standardTemplate.description,
+      type: 'client',
+      isActive: true,
+    });
+
+  const newTemplateId = Number(newTemplate.insertId);
+
+  // Copy questions
+  if (questions.length > 0) {
+    await db.insert(workflowQuestions).values(
+      questions.map(q => ({
+        templateId: newTemplateId,
+        questionNumber: q.questionNumber,
+        title: q.title,
+        description: q.description,
+        aiPrompt: q.aiPrompt,
+        helpText: q.helpText,
+        requiredSentencesMin: q.requiredSentencesMin,
+        requiredSentencesMax: q.requiredSentencesMax,
+        icon: q.icon,
+        sortOrder: q.sortOrder,
+      }))
+    );
+  }
+
+  console.log(`[duplicateSystemTemplateForTenant] Created template ${newTemplateId} for tenant ${tenantId}`);
+}
 
 export const superadminRouter = router({
   // ============================================================================
@@ -94,6 +152,14 @@ export const superadminRouter = router({
           isActive: true,
         })
         .$returningId();
+
+      // Auto-duplicate KOMPASS Standard template for new tenant
+      try {
+        await duplicateSystemTemplateForTenant(db, tenant.id);
+      } catch (error) {
+        console.error('[createTenant] Failed to duplicate standard template:', error);
+        // Don't fail tenant creation if template duplication fails
+      }
 
       return tenant;
     }),

@@ -1278,3 +1278,29 @@
 - [ ] User-Test: Template duplizieren und bearbeiten
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.10.1 FIX 7: Auto-Duplizierung Standard-Template + Workflow-Antworten in Teilnehmer-Detailansicht
+
+**Ziel:** Standard KOMPASS-Template automatisch für neue Mandanten duplizieren und Workflow-Antworten in Admin-Teilnehmer-Ansicht anzeigen
+
+**Anforderungen:**
+1. Wenn neuer Mandant angelegt wird → automatisch "KOMPASS Standard" Template duplizieren
+2. In Admin-Teilnehmer-Detailansicht (`/teilnehmer/:id`) → Workflow-Antworten anzeigen
+
+**Lösung:**
+- [x] Finde Mandanten-Erstellungs-Code (superadmin.createTenant Mutation)
+- [x] Füge Auto-Duplizierung nach Mandanten-Erstellung hinzu
+- [x] Erstelle Helper-Funktion: duplicateSystemTemplateForTenant(db, tenantId)
+- [x] Prüfe ParticipantDetail.tsx Struktur (Cards-basiertes Layout)
+- [x] Füge neue Card "Begründungs-Antworten" hinzu (vor VorhabenantragExport)
+- [x] Query workflow.getParticipantAnswers verwenden
+- [x] Zeige Fragen + Antworten (userInput, aiGeneratedText, finalText)
+- [x] Badge für Input-Methode (Sprache/Text)
+- [x] Farbcodierung: muted (userInput), blue (aiGenerated), green (final)
+- [x] Metadata: Erstellt/Aktualisiert Timestamps
+- [ ] User-Test: Teilnehmer-Detailansicht mit Antworten prüfen
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)
