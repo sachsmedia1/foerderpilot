@@ -1419,3 +1419,27 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] User-Test: /anmeldung-neu mit neuen UX-Verbesserungen
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.11.3 DESIGN FIX: Professional Design Update
+
+**Problem:** User-Feedback: "Alles zu groß, muss professioneller aussehen"
+
+**Ziel:** Kompakteres, business-like Design statt spielerisch/kindisch
+
+**Lösung:**
+- [x] Icon in Headline ENTFERNEN (✅ Keine Icons mehr in Headlines)
+- [x] Card-Padding reduzieren (p-12 → p-8, shadow-2xl → shadow-lg)
+- [x] Dropdown kompakter (h-20 → h-14, text-xl → text-base)
+- [x] Radio-Buttons kompakter (p-8 → p-5, Icons text-4xl → text-2xl)
+- [x] Input-Felder kompakter (h-20 → h-14, text-xl → text-base)
+- [x] Button kompakter (h-16 → h-12, Text kürzer "Weiter →")
+- [x] Hilfe-Text kompakter (p-4 → p-3, text-base → text-sm)
+- [x] Progress Bar anpassen (h-3 → h-2, Text text-xs)
+- [x] Trust-Signale kompakter (mt-8 → mt-6, text-xs)
+- [x] Back-Button kompakter ("Zurück zur vorherigen Frage" → "← Zurück")
+- [ ] User-Test: /anmeldung-neu mit Professional Design
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)

@@ -3,6 +3,8 @@
  * 
  * Zeigt EINE Frage pro Screen mit Animation
  * Unterstützt: RadioGroup, Select, Input (Text/Date/Number)
+ * 
+ * DESIGN: Professional, kompakt, business-like
  */
 
 import { motion } from 'framer-motion';
@@ -20,7 +22,7 @@ export interface Question {
   label: string;
   description?: string;
   icon?: string;
-  helpText?: string; // ← NEU: Für Tooltips/Hilfe-Texte
+  helpText?: string;
   options?: { value: string; label: string; icon?: string }[];
   placeholder?: string;
   inputType?: string;
@@ -76,46 +78,41 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
       className="w-full max-w-3xl mx-auto px-4"
     >
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          PROGRESS BAR (Prominent & Animiert)
+          PROGRESS BAR (Kompakt & Professional)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <div className="mb-6">
+      <div className="mb-5">
         <Progress 
           value={((currentIndex + 1) / totalQuestions) * 100} 
-          className="h-3 mb-2" 
+          className="h-2 mb-2" 
         />
-        <div className="flex justify-between text-sm">
-          <span className="font-semibold text-indigo-700">
+        <div className="flex justify-between text-xs">
+          <span className="font-medium text-indigo-600">
             Frage {currentIndex + 1} von {totalQuestions}
           </span>
-          <span className="text-gray-600">⏱️ ~2 Min</span>
+          <span className="text-gray-500">~2 Min</span>
         </div>
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          FOKUS-CARD (Shadow + Border für Prominence)
+          FOKUS-CARD (Kompakt, Professional)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <Card className="shadow-2xl border-2 border-indigo-100">
-        <CardContent className="p-8 md:p-12 space-y-8">
+      <Card className="shadow-lg border border-gray-200">
+        <CardContent className="p-6 md:p-8 space-y-6">
           
-          {/* Icon + Frage-Label */}
-          <div className="text-center">
-            {question.icon && (
-              <div className="mb-4">
-                <span className="text-5xl md:text-6xl">{question.icon}</span>
-              </div>
-            )}
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-2">
+          {/* Frage-Label (OHNE Icon) */}
+          <div className="space-y-3">
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-900">
               {question.label}
             </h2>
             {question.description && (
-              <p className="text-base md:text-lg text-gray-600">
+              <p className="text-sm md:text-base text-gray-600">
                 {question.description}
               </p>
             )}
           </div>
 
           {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              ANSWER OPTIONS (Größer & Klarer)
+              ANSWER OPTIONS (Kompakt & Professional)
               ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
           <div className="space-y-4">
             
@@ -127,19 +124,19 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
                     key={option.value}
                     onClick={() => handleAnswer(option.value)}
                     className={`
-                      w-full p-6 md:p-8 rounded-xl border-2 text-left transition-all
+                      w-full p-4 md:p-5 rounded-lg border text-left transition-all
                       ${question.value === option.value
                         ? 'border-indigo-500 bg-indigo-50'
-                        : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
+                        : 'border-gray-300 hover:border-indigo-400 hover:bg-gray-50'
                       }
                     `}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        {option.icon && <span className="text-3xl md:text-4xl">{option.icon}</span>}
-                        <span className="text-lg md:text-xl font-medium">{option.label}</span>
+                      <div className="flex items-center gap-3">
+                        {option.icon && <span className="text-xl md:text-2xl">{option.icon}</span>}
+                        <span className="text-base md:text-lg font-medium">{option.label}</span>
                       </div>
                       {question.value === option.value && showCheckmark && (
                         <motion.div
@@ -147,7 +144,7 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
                           animate={{ scale: 1 }}
                           className="text-green-600"
                         >
-                          <Check className="w-6 h-6 md:w-8 md:h-8" />
+                          <Check className="w-5 h-5" />
                         </motion.div>
                       )}
                     </div>
@@ -163,7 +160,7 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
                   value={question.value?.toString() || ''} 
                   onValueChange={question.onChange}
                 >
-                  <SelectTrigger className="h-16 md:h-20 text-lg md:text-xl border-2 hover:border-indigo-500">
+                  <SelectTrigger className="h-12 md:h-14 text-base border hover:border-indigo-400">
                     <SelectValue placeholder={question.placeholder || 'Bitte wählen...'} />
                   </SelectTrigger>
                   <SelectContent>
@@ -171,20 +168,20 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
                       <SelectItem
                         key={option.value}
                         value={option.value}
-                        className="text-lg md:text-xl py-4"
+                        className="text-base py-2"
                       >
-                        {option.icon && <span className="mr-2 text-2xl">{option.icon}</span>}
+                        {option.icon && <span className="mr-2 text-lg">{option.icon}</span>}
                         {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
-                {/* HILFE-TEXT (NEU!) */}
+                {/* HILFE-TEXT (Kompakt) */}
                 {question.helpText && (
-                  <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                    <p className="text-sm md:text-base text-blue-900">
-                      <span className="text-xl mr-2">💡</span>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <p className="text-xs md:text-sm text-blue-900">
+                      <span className="text-base mr-1">💡</span>
                       <strong>Tipp:</strong> {question.helpText}
                     </p>
                   </div>
@@ -194,10 +191,9 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
                 <Button
                   onClick={handleManualNext}
                   disabled={(question.required && !question.value) || isSubmitting}
-                  size="lg"
-                  className="w-full h-14 md:h-16 text-lg md:text-xl bg-indigo-600 hover:bg-indigo-700"
+                  className="w-full h-11 md:h-12 text-base font-medium bg-indigo-600 hover:bg-indigo-700"
                 >
-                  {isLastQuestion ? (isSubmitting ? "Prüfe Förderfähigkeit..." : "Förderfähigkeit prüfen") : "Weiter zur nächsten Frage →"}
+                  {isLastQuestion ? (isSubmitting ? "Prüfe..." : "Förderfähigkeit prüfen") : "Weiter →"}
                 </Button>
               </div>
             )}
@@ -210,14 +206,14 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
                   value={question.value || ''}
                   onChange={(e) => question.onChange(e.target.value)}
                   placeholder={question.placeholder}
-                  className="h-16 md:h-20 text-lg md:text-xl border-2"
+                  className="h-12 md:h-14 text-base border"
                 />
                 
                 {/* HILFE-TEXT für Input */}
                 {question.helpText && (
-                  <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                    <p className="text-sm md:text-base text-blue-900">
-                      <span className="text-xl mr-2">💡</span>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <p className="text-xs md:text-sm text-blue-900">
+                      <span className="text-base mr-1">💡</span>
                       <strong>Tipp:</strong> {question.helpText}
                     </p>
                   </div>
@@ -226,10 +222,9 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
                 <Button
                   onClick={handleManualNext}
                   disabled={(question.required && !question.value) || isSubmitting}
-                  size="lg"
-                  className="w-full h-14 md:h-16 text-lg md:text-xl bg-indigo-600 hover:bg-indigo-700"
+                  className="w-full h-11 md:h-12 text-base font-medium bg-indigo-600 hover:bg-indigo-700"
                 >
-                  {isLastQuestion ? (isSubmitting ? "Prüfe Förderfähigkeit..." : "Förderfähigkeit prüfen") : "Weiter zur nächsten Frage →"}
+                  {isLastQuestion ? (isSubmitting ? "Prüfe..." : "Förderfähigkeit prüfen") : "Weiter →"}
                 </Button>
               </div>
             )}
@@ -239,9 +234,9 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
           {onBack && (
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-900 text-sm md:text-base flex items-center gap-2 mx-auto"
+              className="text-gray-600 hover:text-gray-900 text-sm flex items-center gap-2 mx-auto"
             >
-              ← Zurück zur vorherigen Frage
+              ← Zurück
             </button>
           )}
 
@@ -249,15 +244,15 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
       </Card>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          TRUST-SIGNALE (Unten, aber sichtbarer)
+          TRUST-SIGNALE (Kompakt)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <div className="mt-8 flex items-center justify-center gap-6 text-sm md:text-base text-gray-600">
-        <div className="flex items-center gap-2">
-          <span className="text-xl md:text-2xl">🔒</span>
+      <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-500">
+        <div className="flex items-center gap-1.5">
+          <span className="text-base">🔒</span>
           <span>SSL-verschlüsselt</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xl md:text-2xl">🛡️</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-base">🛡️</span>
           <span>DSGVO-konform</span>
         </div>
       </div>
