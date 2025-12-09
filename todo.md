@@ -1397,3 +1397,25 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] User-Test: Alle 7 Fragen durchgehen ohne Hänger
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.11.2 UX FIX: Klareres Layout für Conversational Funnel
+
+**Problem:** Beta-User-Feedback: "Layout zu unübersichtlich, Elemente zu klein, keine Hilfe-Texte"
+
+**Ziel:** 5 konkrete UX-Verbesserungen für bessere User-Führung
+
+**Lösung:**
+- [x] Question Interface erweitern (helpText Property)
+- [x] FunnelQuestion.tsx: Fokus-Card mit Shadow + Border (shadow-2xl, border-2)
+- [x] FunnelQuestion.tsx: Progress Bar prominent (h-3, animiert)
+- [x] FunnelQuestion.tsx: Größere Elemente (Dropdown h-20, Button h-16, Text text-xl)
+- [x] FunnelQuestion.tsx: Trust-Signale größer (text-2xl Icons)
+- [x] FunnelQuestion.tsx: Hilfe-Text-Boxen (blauer Hintergrund, 💡 Icon)
+- [x] FunnelQuestion.tsx: Zentriertes Layout
+- [x] RegisterFunnelConversational.tsx: Hilfe-Texte zu allen 7 Fragen
+- [ ] User-Test: /anmeldung-neu mit neuen UX-Verbesserungen
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)

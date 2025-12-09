@@ -123,6 +123,7 @@ export default function RegisterFunnelConversational() {
       type: 'radio',
       icon: '🏠',
       label: 'Haben Sie Ihren Wohnsitz in Deutschland?',
+      description: 'Für KOMPASS-Förderung ist ein deutscher Wohnsitz Voraussetzung',
       value: state.foerdercheck.wohnsitzDeutschland ? 'ja' : 'nein',
       onChange: (v) => updateFoerdercheck({ wohnsitzDeutschland: v === 'ja' }),
       options: [
@@ -135,6 +136,8 @@ export default function RegisterFunnelConversational() {
       type: 'radio',
       icon: '💼',
       label: 'Sind Sie hauptberuflich selbstständig?',
+      description: 'Sie müssen hauptberuflich selbstständig sein',
+      helpText: 'Hauptberuflich bedeutet: Mehr als 50% Ihrer Arbeitszeit ist selbstständige Tätigkeit',
       value: state.foerdercheck.hauptberuflichSelbststaendig ? 'ja' : 'nein',
       onChange: (v) => updateFoerdercheck({ hauptberuflichSelbststaendig: v === 'ja' }),
       options: [
@@ -147,6 +150,7 @@ export default function RegisterFunnelConversational() {
       type: 'radio',
       icon: '💰',
       label: 'Erzielen Sie mindestens 51% Ihrer Einkünfte aus Ihrer selbstständigen Tätigkeit?',
+      helpText: 'Berechnung: (Einkünfte aus Selbstständigkeit / Gesamteinkünfte) × 100 ≥ 51%',
       value: state.foerdercheck.mindestens51ProzentEinkuenfte ? 'ja' : 'nein',
       onChange: (v) => updateFoerdercheck({ mindestens51ProzentEinkuenfte: v === 'ja' }),
       options: [
@@ -159,6 +163,7 @@ export default function RegisterFunnelConversational() {
       type: 'select',
       icon: '👥',
       label: 'Wie viele Mitarbeiter beschäftigen Sie (Vollzeitäquivalente)?',
+      helpText: 'VZÄ = Vollzeitäquivalent. Beispiel: 2 Teilzeitkräfte à 20h/Woche = 1 VZÄ',
       value: state.foerdercheck.mitarbeiterVzae.toString(),
       onChange: (v) => updateFoerdercheck({ mitarbeiterVzae: parseFloat(v) }),
       options: [
@@ -175,6 +180,7 @@ export default function RegisterFunnelConversational() {
       icon: '📅',
       label: 'Seit wann sind Sie selbstständig?',
       description: 'Geben Sie das Datum Ihrer Gewerbeanmeldung an',
+      helpText: 'Sie müssen mindestens 6 Monate selbstständig sein, um förderfähig zu sein',
       value: state.foerdercheck.selbststaendigkeitSeit,
       onChange: (v) => updateFoerdercheck({ selbststaendigkeitSeit: v }),
       placeholder: 'TT.MM.JJJJ',
@@ -186,6 +192,7 @@ export default function RegisterFunnelConversational() {
       icon: '💶',
       label: 'Haben Sie in den letzten 3 Jahren De-minimis-Beihilfen erhalten?',
       description: 'Summe aller erhaltenen Förderungen (z.B. KOMPASS, BAFA, etc.)',
+      helpText: 'De-minimis-Grenze: Max. 300.000€ in 3 Jahren. Wenn Sie unsicher sind, geben Sie 0 ein.',
       value: state.foerdercheck.deminimisBeihilfen.toString(),
       onChange: (v) => updateFoerdercheck({ deminimisBeihilfen: parseFloat(v) || 0 }),
       placeholder: '0',
@@ -195,6 +202,7 @@ export default function RegisterFunnelConversational() {
       type: 'select',
       icon: '🎫',
       label: 'Wie viele KOMPASS-Gutscheine haben Sie bereits genutzt?',
+      helpText: 'Sie können maximal 2 KOMPASS-Gutscheine nutzen. Bei Erstantrag wählen Sie "0".',
       value: state.foerdercheck.kompassSchecksAnzahl.toString(),
       onChange: (v) => updateFoerdercheck({ kompassSchecksAnzahl: parseInt(v) }),
       options: [
