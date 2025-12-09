@@ -1443,3 +1443,27 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] User-Test: /anmeldung-neu mit Professional Design
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.11.4: Consistent Conversational Flow
+
+**Problem:** User-Feedback: "Bruch zwischen Step 1 und Step 2, Step-Ansicht gefällt nicht"
+
+**Ziel:** Einheitliches Card-Layout für ALLE 4 Funnel-Steps
+
+**Lösung:**
+- [x] Header vereinfachen (text-3xl → text-2xl, kompakter)
+- [x] Globale Progress Bar entfernt
+- [x] Progress Bar IN jeden Step integriert (h-2, kompakt)
+- [x] Step 2 (Kursauswahl) mit Card-Layout ersetzt (shadow-lg, p-6 md:p-8)
+- [x] Step 3 (Persönliche Daten) mit Card-Layout ersetzt
+- [x] Step 4 (Bestätigung) mit Card-Layout ersetzt
+- [x] Einheitliche Navigation-Buttons (← Zurück / Weiter →, h-11 md:h-12)
+- [x] Trust-Signale in jedem Step (unten, dezent, 🔒 + 🛡️)
+- [x] Einheitliches max-w-3xl Layout für alle Steps
+- [x] Konsistente Spacing (p-6 md:p-8, space-y-6)
+- [ ] User-Test: /anmeldung-neu mit Consistent Flow
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)
