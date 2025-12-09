@@ -32,9 +32,12 @@ interface FunnelQuestionProps {
   onBack?: () => void;
   currentIndex: number;
   totalQuestions: number;
+  isLastQuestion?: boolean;
+  onSubmit?: () => void;
+  isSubmitting?: boolean;
 }
 
-export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQuestions }: FunnelQuestionProps) {
+export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQuestions, isLastQuestion, onSubmit, isSubmitting }: FunnelQuestionProps) {
   const [showCheckmark, setShowCheckmark] = useState(false);
 
   const handleAnswer = (value: any) => {
@@ -54,7 +57,11 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
     if (question.required && !question.value) {
       return; // Validation fehlt
     }
-    onNext();
+    if (isLastQuestion && onSubmit) {
+      onSubmit();
+    } else {
+      onNext();
+    }
   };
 
   return (
@@ -70,14 +77,18 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
           <span className="text-sm text-gray-500">
             Frage {currentIndex + 1} von {totalQuestions}
           </span>
-          <span className="text-sm text-gray-500">⏱️ ~2 Min</span>
+          {/* Trust Signals oben rechts */}
+          <div className="flex items-center gap-4 text-xs text-gray-500">
+            <span className="flex items-center gap-1">🔒 SSL-verschlüsselt</span>
+            <span className="flex items-center gap-1">🛡️ DSGVO-konform</span>
+          </div>
         </div>
 
         {/* Question Label */}
-        <div className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-            {question.icon && <span className="text-4xl">{question.icon}</span>}
-            <span>{question.label}</span>
+        <div className="mb-8 text-center">
+          {question.icon && <div className="text-6xl mb-4">{question.icon}</div>}
+          <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-2">
+            {question.label}
           </h2>
           {question.description && (
             <p className="text-gray-600 text-sm md:text-base">{question.description}</p>
@@ -125,19 +136,29 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
 
           {/* SELECT DROPDOWN */}
           {question.type === 'select' && question.options && (
-            <Select value={question.value?.toString() || ''} onValueChange={handleAnswer}>
-              <SelectTrigger className="w-full h-16 text-lg">
-                <SelectValue placeholder={question.placeholder || 'Bitte wählen'} />
-              </SelectTrigger>
-              <SelectContent>
-                {question.options.map((option) => (
-                  <SelectItem key={option.value} value={option.value} className="text-lg py-3">
-                    {option.icon && <span className="mr-2">{option.icon}</span>}
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="space-y-4">
+              <Select value={question.value?.toString() || ''} onValueChange={question.onChange}>
+                <SelectTrigger className="w-full h-16 text-lg">
+                  <SelectValue placeholder={question.placeholder || 'Bitte wählen'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {question.options.map((option) => (
+                    <SelectItem key={option.value} value={option.value} className="text-lg py-3">
+                      {option.icon && <span className="mr-2">{option.icon}</span>}
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {/* Zeige Weiter-Button bei Select (kein Auto-Advance) */}
+              <Button
+                onClick={handleManualNext}
+                disabled={(question.required && !question.value) || isSubmitting}
+                className="w-full h-14 text-lg"
+              >
+                {isLastQuestion ? (isSubmitting ? "Prüfe Förderfähigkeit..." : "Förderfähigkeit prüfen") : "Weiter →"}
+              </Button>
+            </div>
           )}
 
           {/* TEXT/NUMBER/DATE INPUT */}
@@ -152,10 +173,10 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
               />
               <Button
                 onClick={handleManualNext}
-                disabled={question.required && !question.value}
+                disabled={(question.required && !question.value) || isSubmitting}
                 className="w-full h-14 text-lg"
               >
-                Weiter →
+                {isLastQuestion ? (isSubmitting ? "Prüfe Förderfähigkeit..." : "Förderfähigkeit prüfen") : "Weiter →"}
               </Button>
             </div>
           )}
@@ -172,11 +193,7 @@ export function FunnelQuestion({ question, onNext, onBack, currentIndex, totalQu
         </button>
       )}
 
-      {/* Trust Signals */}
-      <div className="mt-12 flex items-center justify-center gap-6 text-sm text-gray-500">
-        <span className="flex items-center gap-2">🔒 SSL-verschlüsselt</span>
-        <span className="flex items-center gap-2">🛡️ DSGVO-konform</span>
-      </div>
+
     </motion.div>
   );
 }

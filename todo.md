@@ -1377,3 +1377,23 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] Wenn erfolgreich: Ersetze /anmeldung Route mit Conversational Version
 
 **Status:** ✅ CODE DONE (User-Testing ausstehend)
+
+---
+
+## Sprint 1.11.1 BUGFIX: Conversational Funnel UX-Verbesserungen
+
+**Probleme:**
+1. **Layout:** Frage zu klein, Icon fehlt, Trust-Signale falsch positioniert
+2. **Bug:** Bei vorausgewählten Antworten (Select) fehlt "Weiter"-Button
+3. **UX:** Überflüssige Submit-Seite nach Frage 7 (sollte direkt "Förderfähigkeit prüfen")
+
+**Lösung:**
+- [x] FunnelQuestion.tsx: Größeres Icon (text-6xl), zentriertes Layout
+- [x] FunnelQuestion.tsx: Trust-Signale oben rechts (nicht unten)
+- [x] FunnelQuestion.tsx: Zeige "Weiter"-Button auch bei vorausgewählten Select-Werten
+- [x] FunnelQuestion.tsx: isLastQuestion + onSubmit Props hinzugefügt
+- [x] RegisterFunnelConversational.tsx: Submit-Button-Seite entfernt, in Frage 7 integriert
+- [x] Button-Text bei letzter Frage: "Förderfähigkeit prüfen" statt "Weiter"
+- [ ] User-Test: Alle 7 Fragen durchgehen ohne Hänger
+
+**Status:** ✅ CODE DONE (User-Test ausstehend)

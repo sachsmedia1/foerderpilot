@@ -364,39 +364,19 @@ export default function RegisterFunnelConversational() {
         </div>
 
         {/* STEP 1: FÖRDERCHECK (Conversational) */}
-        {state.currentStep === 1 && (
+        {state.currentStep === 1 && state.currentQuestion < foerdercheckQuestions.length && (
           <AnimatePresence mode="wait">
-            {state.currentQuestion < foerdercheckQuestions.length ? (
-              <FunnelQuestion
-                key={`question-${state.currentQuestion}`}
-                question={foerdercheckQuestions[state.currentQuestion]}
-                onNext={nextQuestion}
-                onBack={state.currentQuestion > 0 ? prevQuestion : undefined}
-                currentIndex={state.currentQuestion}
-                totalQuestions={foerdercheckQuestions.length}
-              />
-            ) : (
-              <motion.div
-                key="submit-button"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="w-full max-w-2xl mx-auto"
-              >
-                <Button
-                  onClick={handleFoerdercheckSubmit}
-                  disabled={foerdercheckMutation.isPending}
-                  className="w-full h-16 text-lg"
-                >
-                  {foerdercheckMutation.isPending ? "Prüfe Förderfähigkeit..." : "Förderfähigkeit prüfen"}
-                </Button>
-                <button
-                  onClick={prevQuestion}
-                  className="mt-4 text-gray-600 hover:text-gray-900 text-sm flex items-center gap-2 mx-auto"
-                >
-                  ← Zurück zur letzten Frage
-                </button>
-              </motion.div>
-            )}
+            <FunnelQuestion
+              key={`question-${state.currentQuestion}`}
+              question={foerdercheckQuestions[state.currentQuestion]}
+              onNext={nextQuestion}
+              onBack={state.currentQuestion > 0 ? prevQuestion : undefined}
+              currentIndex={state.currentQuestion}
+              totalQuestions={foerdercheckQuestions.length}
+              isLastQuestion={state.currentQuestion === foerdercheckQuestions.length - 1}
+              onSubmit={handleFoerdercheckSubmit}
+              isSubmitting={foerdercheckMutation.isPending}
+            />
           </AnimatePresence>
         )}
 
