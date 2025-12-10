@@ -1484,3 +1484,28 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] User-Test: /anmeldung Route mit Conversational Flow
 
 **Status:** ✅ CODE DONE (User-Test ausstehend)
+
+
+---
+
+## Sprint 1.11.6: E-Mail Bestätigungs-Fix
+
+**Ziel:** Willkommens-E-Mail nach Registrierung korrigieren
+
+**Probleme:**
+- ❌ Absender: noreply@app.foerderpilot.io statt Bildungsträger-E-Mail
+- ❌ Förderberechnung: 95% statt korrekte 90% KOMPASS
+- ❌ Vorvertrag: Leer statt vollständige Anmeldebestätigung
+- ❌ Zahlungshinweis: Fehlt (Vorauszahlung + Rückerstattung)
+
+**Tasks:**
+- [x] Analysiere aktuelle generateWelcomeEmail() Implementierung
+- [x] FIX 1: Absender dynamisch vom Tenant laden (tenant.email, tenant.name)
+- [x] FIX 2: Förderberechnung korrigieren (foerderquote * coursePrice)
+- [x] FIX 3: Anmeldebestätigung mit allen Formulardaten erstellen
+- [x] FIX 4: Zahlungshinweis-Box hinzufügen (Vorauszahlung-Erklärung)
+- [x] emailService.ts: Dynamischen Absender unterstützen (from-Parameter)
+- [x] register.ts: senderEmail + senderName übergeben
+- [ ] Test-E-Mail versenden und verifizieren
+
+**Status:** ✅ CODE DONE (Test ausstehend)

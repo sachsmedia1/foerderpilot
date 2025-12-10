@@ -553,25 +553,32 @@ export const registerRouter = router({
 
       const tenant = tenantData[0];
 
-      // Welcome-E-Mail mit Vorvertrag
+      // Welcome-E-Mail mit vollständiger Anmeldebestätigung
       const welcomeEmail = generateWelcomeEmail({
         vorname: session.firstName,
         nachname: session.lastName,
         email: session.email,
+        telefon: session.phone,
+        strasse: session.street,
+        plz: session.postalCode,
+        ort: session.city,
+        geburtsdatum: session.dateOfBirth,
         kurstitel: course.name,
         starttermin: "Wird noch bekannt gegeben",
         kurspreis: course.priceNet / 100,
-        foerderbetrag: (course.priceNet * course.subsidyPercentage) / 10000,
-        vorvertragText,
+        foerderquote: session.foerdercheck.quote, // z.B. 0.90 für 90%
         passwordResetLink: `https://app.foerderpilot.io/set-password?token=${resetToken}`,
         tenantName: tenant.companyName || tenant.name,
+        senderEmail: tenant.email || 'kurse@entscheiderakademie.de',
+        senderName: tenant.companyName || tenant.name,
       });
 
       await sendEmail({
         to: session.email,
-        subject: "Willkommen bei FörderPilot - Ihre Anmeldung",
+        subject: welcomeEmail.subject,
         html: welcomeEmail.html,
         text: welcomeEmail.text,
+        from: `${welcomeEmail.senderName} <${welcomeEmail.senderEmail}>`,
       });
 
       // Admin-Benachrichtigung
