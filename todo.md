@@ -1596,3 +1596,19 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [x] Subdomain durch Custom Domain ersetzt
 
 **Status:** ✅ DONE
+
+
+---
+
+## Cleanup: Test-Tenants und Typo (Sprint 2.0.4)
+
+**Tasks:**
+- [x] Test-Tenants 450001 und 450002 gelöscht (inkl. abhängige Daten)
+- [x] Typo korrigiert: "Entscheiderakadmie" → "Entscheiderakademie"
+- [x] Registrierungs-Link: /anmeldung?tenant=2
+
+**Verbleibende Tenants:**
+- ID 1: FörderPilot App
+- ID 2: Entscheiderakademie GmbH
+
+**Status:** ✅ DONE
