@@ -1612,3 +1612,25 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - ID 2: Entscheiderakademie GmbH
 
 **Status:** ✅ DONE
+
+
+---
+
+## KOMPASS-Dokumenttypen Fix (Sprint 2.1)
+
+**Problem:** Falsche Dokumenttypen im Teilnehmer-Dashboard
+- ❌ Kündigungsbestätigung (wird bei KOMPASS NICHT benötigt)
+- ❌ Fehlend: Nachweis Selbständigkeit, Geschäftsadresse, De-minimis, Eigenerklärung
+
+**Tasks:**
+- [x] Config-Datei erstellen: server/config/kompassDocumentTypes.ts
+- [x] Backend API: getDocumentTypes Procedure mit required/conditional/optional
+- [x] Frontend: DocumentsDashboard.tsx komplett neu mit KOMPASS-Dokumenttypen
+- [x] Testen: 19 Tests passed (KOMPASS Document Types Config)
+
+**Neue Dokumenttypen:**
+- Pflicht: Personalausweis, Lebenslauf, Nachweis Selbständigkeit, Geschäftsadresse, De-minimis, Eigenerklärung
+- Bedingt (Mitarbeiter > 0): Arbeitsvertrag, Sozialversicherungsnachweis
+- Optional: Zeugnisse, Sonstiges
+
+**Status:** ✅ DONE

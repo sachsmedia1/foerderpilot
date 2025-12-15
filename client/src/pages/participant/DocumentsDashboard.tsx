@@ -3,34 +3,37 @@ import { ParticipantLayout } from "@/components/ParticipantLayout";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, Clock, XCircle, AlertCircle, Upload, FileText, Lock, Info } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, Clock, XCircle, AlertCircle, Upload, FileText, Info, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useDropzone } from "react-dropzone";
+
 type DocumentStatus = "missing" | "pending" | "validating" | "valid" | "invalid" | "manual_review";
 
-interface DocumentType {
-  type: string;
+interface DocumentTypeConfig {
+  id: string;
   label: string;
-  help: string;
-  phase: 1 | 2;
+  description: string;
+  category: 'required' | 'conditional' | 'optional';
+  generated?: boolean;
+  validationRules: {
+    maxSize: number;
+    allowedFormats: string[];
+  };
+  helpText?: string;
 }
 
 function DocumentsDashboardContent() {
   const { data: participantData, isLoading: participantLoading, error: participantError } = trpc.participants.getMyData.useQuery();
-  const { data: documentTypes } = trpc.documents.getDocumentTypes.useQuery();
+  const { data: documentTypes, isLoading: typesLoading } = trpc.documents.getDocumentTypes.useQuery();
   const { data: documents } = trpc.documents.list.useQuery(
-    { participantId: participantData?.id || 0 },
-    { enabled: !!participantData?.id }
-  );
-  const { data: phaseStatus } = trpc.documents.getPhaseStatus.useQuery(
     { participantId: participantData?.id || 0 },
     { enabled: !!participantData?.id }
   );
 
   // Loading state
-  if (participantLoading || !documentTypes) {
+  if (participantLoading || typesLoading) {
     return (
       <div className="p-6 max-w-5xl mx-auto">
         <div className="flex items-center justify-center h-64">
@@ -68,46 +71,38 @@ function DocumentsDashboardContent() {
                 <li>Nach der Registrierung können Sie hier Ihre Dokumente hochladen</li>
               </ol>
             </div>
-            <p className="text-xs text-muted-foreground">
-              <strong>Technische Info:</strong> Ihr Account ({participantError?.message || "Keine Teilnehmerdaten"}) ist noch keinem Teilnehmer-Datensatz zugeordnet.
-            </p>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  // Wait for all data
-  if (!documents || !phaseStatus) {
+  // Wait for document types
+  if (!documentTypes) {
     return (
       <div className="p-6 max-w-5xl mx-auto">
         <div className="flex items-center justify-center h-64">
-          <div className="text-muted-foreground">Lade Dokumente...</div>
+          <div className="text-muted-foreground">Lade Dokumenttypen...</div>
         </div>
       </div>
     );
   }
 
-  // Build document type list with status
-  const phase1Docs: DocumentType[] = documentTypes.phases.FOERDERBERECHTIGUNG.map((type: string) => ({
-    type,
-    label: documentTypes.labels[type as keyof typeof documentTypes.labels],
-    help: documentTypes.help[type as keyof typeof documentTypes.help],
-    phase: 1 as const
-  }));
-
-  const phase2Docs: DocumentType[] = documentTypes.phases.RUECKERSTATTUNG.map((type: string) => ({
-    type,
-    label: documentTypes.labels[type as keyof typeof documentTypes.labels],
-    help: documentTypes.help[type as keyof typeof documentTypes.help],
-    phase: 2 as const
-  }));
-
-  const getDocumentStatus = (type: string): DocumentStatus => {
-    const doc = documents.find(d => d.documentType === type);
+  const getDocumentStatus = (typeId: string): DocumentStatus => {
+    const doc = documents?.find(d => d.documentType === typeId);
     if (!doc) return "missing";
     return doc.validationStatus as DocumentStatus;
   };
+
+  const getDocument = (typeId: string) => {
+    return documents?.find(d => d.documentType === typeId);
+  };
+
+  // Calculate progress
+  const allRequired = [...documentTypes.required, ...documentTypes.conditional];
+  const uploadedRequired = allRequired.filter(t => getDocumentStatus(t.id) !== "missing").length;
+  const validRequired = allRequired.filter(t => getDocumentStatus(t.id) === "valid").length;
+  const progressPercentage = allRequired.length > 0 ? Math.round((uploadedRequired / allRequired.length) * 100) : 0;
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
@@ -119,113 +114,114 @@ function DocumentsDashboardContent() {
         </p>
       </div>
 
-      {/* Phase 1: Förderberechtigung */}
+      {/* Progress Overview */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <CardTitle className="flex items-center gap-2">
-                <span>Phase 1: Förderberechtigung</span>
-                {phaseStatus.foerderberechtigung.complete && (
-                  <Badge variant="default" className="bg-green-600">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Komplett
-                  </Badge>
-                )}
-              </CardTitle>
-              <CardDescription className="mt-1">
-                Dokumente zur Prüfung Ihrer Förderberechtigung (vor Kursbeginn)
-              </CardDescription>
+              <p className="text-sm font-medium">Fortschritt Pflichtdokumente</p>
+              <p className="text-2xl font-bold">{uploadedRequired} / {allRequired.length}</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-primary">
-                {phaseStatus.foerderberechtigung.progress}/{phaseStatus.foerderberechtigung.total}
-              </div>
-              <div className="text-sm text-muted-foreground">Dokumente</div>
+              <p className="text-sm text-muted-foreground">{validRequired} validiert</p>
+              <p className="text-3xl font-bold text-primary">{progressPercentage}%</p>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Progress value={phaseStatus.foerderberechtigung.percentage} className="h-2" />
-          
-          <div className="grid gap-3">
-            {phase1Docs.map((docType) => (
-              <DocumentCard
-                key={docType.type}
-                documentType={docType}
-                status={getDocumentStatus(docType.type)}
-                participantId={participantData.id}
-                document={documents.find(d => d.documentType === docType.type)}
-              />
-            ))}
-          </div>
+          <Progress value={progressPercentage} className="h-3" />
         </CardContent>
       </Card>
 
-      {/* Phase 2: Rückerstattung */}
-      <Card className={!phaseStatus.rueckerstattung.available ? "opacity-60" : ""}>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <span>Phase 2: Rückerstattung</span>
-                {!phaseStatus.rueckerstattung.available && (
-                  <Badge variant="secondary">
-                    <Lock className="w-3 h-3 mr-1" />
-                    Gesperrt
-                  </Badge>
-                )}
-                {phaseStatus.rueckerstattung.available && phaseStatus.rueckerstattung.complete && (
-                  <Badge variant="default" className="bg-green-600">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Komplett
-                  </Badge>
-                )}
-              </CardTitle>
-              <CardDescription className="mt-1">
-                {phaseStatus.rueckerstattung.available
-                  ? "Dokumente für die Rückerstattung (nach Kursabschluss)"
-                  : "Wird freigeschaltet nach Abschluss von Phase 1"}
-              </CardDescription>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-primary">
-                {phaseStatus.rueckerstattung.progress}/{phaseStatus.rueckerstattung.total}
-              </div>
-              <div className="text-sm text-muted-foreground">Dokumente</div>
-            </div>
+      {/* Info Banner */}
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          Nach dem Upload werden alle Dokumente automatisch durch unsere KI geprüft. 
+          Sie erhalten eine Benachrichtigung, sobald die Validierung abgeschlossen ist.
+        </AlertDescription>
+      </Alert>
+
+      {/* PFLICHTDOKUMENTE */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-2xl font-semibold">Erforderliche Dokumente</h2>
+          <Badge variant="destructive">Pflicht</Badge>
+        </div>
+        
+        <div className="grid gap-4">
+          {documentTypes.required.map((type: DocumentTypeConfig) => (
+            <DocumentCard
+              key={type.id}
+              documentType={type}
+              status={getDocumentStatus(type.id)}
+              participantId={participantData.id}
+              document={getDocument(type.id)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* BEDINGTE DOKUMENTE (nur wenn vorhanden) */}
+      {documentTypes.conditional && documentTypes.conditional.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-2xl font-semibold">Zusätzlich erforderlich</h2>
+            <Badge variant="destructive">Pflicht (für Ihre Situation)</Badge>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Progress value={phaseStatus.rueckerstattung.percentage} className="h-2" />
           
-          <div className="grid gap-3">
-            {phase2Docs.map((docType) => (
+          <Alert className="mb-4">
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              Diese Dokumente sind erforderlich, da Sie Mitarbeiter beschäftigen.
+            </AlertDescription>
+          </Alert>
+          
+          <div className="grid gap-4">
+            {documentTypes.conditional.map((type: DocumentTypeConfig) => (
               <DocumentCard
-                key={docType.type}
-                documentType={docType}
-                status={getDocumentStatus(docType.type)}
+                key={type.id}
+                documentType={type}
+                status={getDocumentStatus(type.id)}
                 participantId={participantData.id}
-                document={documents.find(d => d.documentType === docType.type)}
-                disabled={!phaseStatus.rueckerstattung.available}
+                document={getDocument(type.id)}
               />
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      )}
+
+      {/* OPTIONALE DOKUMENTE */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-2xl font-semibold">Optionale Dokumente</h2>
+          <Badge variant="secondary">Optional</Badge>
+        </div>
+        
+        <div className="grid gap-4">
+          {documentTypes.optional.map((type: DocumentTypeConfig) => (
+            <DocumentCard
+              key={type.id}
+              documentType={type}
+              status={getDocumentStatus(type.id)}
+              participantId={participantData.id}
+              document={getDocument(type.id)}
+              isOptional
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
 interface DocumentCardProps {
-  documentType: DocumentType;
+  documentType: DocumentTypeConfig;
   status: DocumentStatus;
   participantId: number;
   document?: any;
-  disabled?: boolean;
+  isOptional?: boolean;
 }
 
-function DocumentCard({ documentType, status, participantId, document, disabled = false }: DocumentCardProps) {
+function DocumentCard({ documentType, status, participantId, document, isOptional = false }: DocumentCardProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const utils = trpc.useUtils();
@@ -234,7 +230,7 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
     onSuccess: () => {
       toast.success(`${documentType.label} erfolgreich hochgeladen`);
       utils.documents.list.invalidate();
-      utils.documents.getPhaseStatus.invalidate();
+      utils.documents.getDocumentTypes.invalidate();
       setUploading(false);
       setUploadProgress(0);
     },
@@ -246,20 +242,21 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
   });
 
   const onDrop = async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0 || disabled) return;
+    if (acceptedFiles.length === 0) return;
 
     const file = acceptedFiles[0];
     
-    // Validate file size (10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Datei zu groß (max. 10MB)");
+    // Validate file size
+    if (file.size > documentType.validationRules.maxSize) {
+      const maxMB = documentType.validationRules.maxSize / 1024 / 1024;
+      toast.error(`Datei zu groß (max. ${maxMB}MB)`);
       return;
     }
 
     // Validate file type
-    const allowedTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png", "image/heic", "image/heif"];
-    if (!allowedTypes.includes(file.type)) {
-      toast.error("Nur PDF, JPG, PNG und HEIC/HEIF erlaubt");
+    const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
+    if (!documentType.validationRules.allowedFormats.includes(fileExtension)) {
+      toast.error(`Nur ${documentType.validationRules.allowedFormats.join(', ').toUpperCase()} erlaubt`);
       return;
     }
 
@@ -280,7 +277,7 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
 
       uploadMutation.mutate({
         participantId,
-        documentType: documentType.type,
+        documentType: documentType.id as any,
         filename: file.name,
         fileData: base64,
         mimeType: file.type,
@@ -292,17 +289,27 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
     reader.readAsDataURL(file);
   };
 
+  // Build accept object for dropzone
+  const acceptTypes: Record<string, string[]> = {};
+  if (documentType.validationRules.allowedFormats.includes('pdf')) {
+    acceptTypes["application/pdf"] = [".pdf"];
+  }
+  if (documentType.validationRules.allowedFormats.includes('jpg') || documentType.validationRules.allowedFormats.includes('jpeg')) {
+    acceptTypes["image/jpeg"] = [".jpg", ".jpeg"];
+  }
+  if (documentType.validationRules.allowedFormats.includes('png')) {
+    acceptTypes["image/png"] = [".png"];
+  }
+  if (documentType.validationRules.allowedFormats.includes('heic')) {
+    acceptTypes["image/heic"] = [".heic"];
+    acceptTypes["image/heif"] = [".heif"];
+  }
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      "application/pdf": [".pdf"],
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "image/heic": [".heic"],
-      "image/heif": [".heif"],
-    },
+    accept: acceptTypes,
     maxFiles: 1,
-    disabled: disabled || uploading,
+    disabled: uploading,
   });
 
   const getStatusIcon = () => {
@@ -338,24 +345,47 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
     }
   };
 
+  const cardClassName = status === "valid" 
+    ? "border-green-500 bg-green-50/50" 
+    : isOptional 
+      ? "border-dashed" 
+      : "";
+
   return (
-    <Card className={disabled ? "opacity-50" : ""}>
+    <Card className={cardClassName}>
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0 mt-1">{getStatusIcon()}</div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-1">
-              <h3 className="font-medium">{documentType.label}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-medium">{documentType.label}</h3>
+                {!isOptional && <Badge variant="destructive" className="text-xs">Pflicht</Badge>}
+                {documentType.generated && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    Auto-generiert
+                  </Badge>
+                )}
+              </div>
               {getStatusBadge()}
             </div>
             
-            <div className="flex items-start gap-2 text-sm text-muted-foreground mb-3">
-              <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-              <p>{documentType.help}</p>
-            </div>
+            <p className="text-sm text-muted-foreground mb-2">{documentType.description}</p>
 
-            {status === "missing" && !disabled && (
+            {/* Hilfetext */}
+            {documentType.helpText && (
+              <Alert className="mb-3">
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-sm">
+                  {documentType.helpText}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {/* Upload-Bereich für nicht-generierte Dokumente */}
+            {!documentType.generated && status === "missing" && (
               <div
                 {...getRootProps()}
                 className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
@@ -369,8 +399,22 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
                 <p className="text-sm text-muted-foreground">
                   {isDragActive ? "Datei hier ablegen..." : "Klicken oder Datei hierher ziehen"}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG, HEIC/HEIF (max. 10MB)</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {documentType.validationRules.allowedFormats.join(', ').toUpperCase()} 
+                  (max. {(documentType.validationRules.maxSize / 1024 / 1024).toFixed(0)}MB)
+                </p>
               </div>
+            )}
+
+            {/* Hinweis für auto-generierte Dokumente */}
+            {documentType.generated && status === "missing" && (
+              <Alert>
+                <Sparkles className="h-4 w-4" />
+                <AlertDescription>
+                  Dieses Dokument wird automatisch nach der Vorvertrag-Bestätigung generiert. 
+                  Sie müssen es nur noch unterschreiben und hier hochladen.
+                </AlertDescription>
+              </Alert>
             )}
 
             {uploading && (
@@ -390,17 +434,16 @@ function DocumentCard({ documentType, status, participantId, document, disabled 
                   <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-800">
                     <p className="font-medium">Ablehnungsgrund:</p>
                     <p className="text-xs mt-1">
-                      {JSON.parse(document.validationResult).issues?.join(", ") || "Dokument entspricht nicht den Anforderungen"}
+                      {(() => {
+                        try {
+                          return JSON.parse(document.validationResult).issues?.join(", ") || "Dokument entspricht nicht den Anforderungen";
+                        } catch {
+                          return "Dokument entspricht nicht den Anforderungen";
+                        }
+                      })()}
                     </p>
                   </div>
                 )}
-              </div>
-            )}
-
-            {disabled && status === "missing" && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Lock className="w-4 h-4" />
-                <span>Erst verfügbar nach Abschluss von Phase 1</span>
               </div>
             )}
           </div>

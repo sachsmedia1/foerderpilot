@@ -9,15 +9,23 @@
  */
 
 import { z } from 'zod';
-import { router, adminProcedure, protectedProcedure } from '../_core/trpc';
+import { router, adminProcedure, protectedProcedure, publicProcedure } from '../_core/trpc';
 import { getDb } from '../db';
-import { documents, participants } from '../../drizzle/schema';
+import { documents, participants, registrationSessions } from '../../drizzle/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { storagePut } from '../storage';
 import { invokeLLM } from '../_core/llm';
 import { validateTenantAccess, validateResourceOwnership } from '../_core/security';
 import { sendDocumentUploadNotification, sendDocumentValidationNotification } from '../utils/emailNotifications';
+import { 
+  KOMPASS_DOCUMENT_TYPES, 
+  getRequiredDocumentTypes, 
+  getConditionalDocumentTypes, 
+  getOptionalDocumentTypes,
+  getDocumentTypeById,
+  validateFile 
+} from '../config/kompassDocumentTypes';
 
 // Validation Schemas
 // KOMPASS-konforme Dokumenttypen
@@ -98,6 +106,70 @@ const validateDocumentSchema = z.object({
 });
 
 export const documentsRouter = router({
+  /**
+   * KOMPASS-Dokumenttypen für aktuellen Teilnehmer abrufen
+   * Berücksichtigt Pflicht-, bedingte und optionale Dokumente
+   */
+  getDocumentTypes: protectedProcedure
+    .query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+      if (!ctx.user) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Not authenticated' });
+
+      // Finde Participant des eingeloggten Users
+      const [participant] = await db
+        .select()
+        .from(participants)
+        .where(eq(participants.userId, ctx.user.id))
+        .limit(1);
+
+      // Default: 0 Mitarbeiter wenn kein Participant gefunden
+      let mitarbeiterAnzahl = 0;
+
+      if (participant) {
+        // Hole Fördercheck-Daten für mitarbeiterAnzahl
+        const sessionId = `participant_${participant.id}`;
+        const [session] = await db
+          .select()
+          .from(registrationSessions)
+          .where(eq(registrationSessions.sessionId, sessionId))
+          .limit(1);
+
+        if (session?.foerdercheck) {
+          const foerdercheckData = session.foerdercheck as { mitarbeiterAnzahl?: number };
+          mitarbeiterAnzahl = foerdercheckData?.mitarbeiterAnzahl || 0;
+        }
+      }
+
+      // Participant-Objekt für Condition-Check
+      const participantData = { mitarbeiterAnzahl };
+
+      return {
+        required: getRequiredDocumentTypes(),
+        conditional: getConditionalDocumentTypes(participantData),
+        optional: getOptionalDocumentTypes(),
+      };
+    }),
+
+  /**
+   * Datei vor Upload validieren
+   */
+  validateFileUpload: publicProcedure
+    .input(z.object({
+      documentType: z.string(),
+      fileSize: z.number(),
+      fileName: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      const result = validateFile(input.documentType, input.fileSize, input.fileName);
+      
+      if (!result.valid) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: result.error });
+      }
+      
+      return { valid: true };
+    }),
+
   /**
    * Liste aller Dokumente (mit Filterung)
    * Admins sehen alle Dokumente, Teilnehmer nur ihre eigenen
@@ -513,18 +585,6 @@ export const documentsRouter = router({
       };
     }),
 
-  /**
-   * Dokumenttypen und Labels abrufen
-   */
-  getDocumentTypes: protectedProcedure
-    .query(async () => {
-      return {
-        types: documentTypes,
-        labels: documentLabels,
-        help: documentHelp,
-        phases: documentPhases
-      };
-    }),
 });
 
 /**
