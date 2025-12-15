@@ -80,9 +80,24 @@ export default function RegisterFunnelConversational() {
   const [sessionId] = useState(() => generateUUID());
   const [foerdercheckErgebnis, setFoerdercheckErgebnis] = useState<any>(null);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  
   // Tenant-Branding via useTenant Hook (Query-Parameter oder Context)
+  // WICHTIG: tenantIdFromUrl direkt übergeben für sofortiges Laden
   const tenant = useTenant(tenantIdFromUrl || undefined);
-  const [tenantId, setTenantId] = useState<number>(tenantIdFromUrl || tenant.tenantId || 1); // Default: FörderPilot App
+  
+  // tenantId State - initialisiert mit URL-Parameter oder Fallback
+  // useMemo statt useState für sofortige Reaktion auf URL-Änderung
+  const effectiveTenantId = tenantIdFromUrl || tenant.tenantId || 1;
+  const [tenantId, setTenantId] = useState<number>(effectiveTenantId);
+  
+  // Sync tenantId wenn sich URL oder tenant ändert
+  useEffect(() => {
+    const newTenantId = tenantIdFromUrl || tenant.tenantId || 1;
+    if (newTenantId !== tenantId) {
+      console.log('[RegisterFunnel] TenantId geändert:', tenantId, '->', newTenantId);
+      setTenantId(newTenantId);
+    }
+  }, [tenantIdFromUrl, tenant.tenantId]);
   
   // Dynamisches Favicon laden
   useEffect(() => {
@@ -94,12 +109,16 @@ export default function RegisterFunnelConversational() {
     }
   }, [tenant.faviconUrl]);
   
-  // Sync tenantId mit Hook
+  // Debug: Logge Tenant-Daten
   useEffect(() => {
-    if (tenant.tenantId && tenant.tenantId !== tenantId) {
-      setTenantId(tenant.tenantId);
-    }
-  }, [tenant.tenantId]);
+    console.log('[RegisterFunnel] Tenant geladen:', {
+      tenantIdFromUrl,
+      tenantId,
+      tenant: tenant.tenant,
+      companyName: tenant.companyName,
+      logoUrl: tenant.logoUrl,
+    });
+  }, [tenant.tenant, tenantId]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // TRPC MUTATIONS

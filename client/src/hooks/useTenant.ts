@@ -13,19 +13,28 @@ import { trpc } from '@/lib/trpc';
 import { useEffect, useState } from 'react';
 
 export function useTenant(initialTenantId?: number) {
-  const [tenantIdOverride, setTenantIdOverride] = useState<number | null>(initialTenantId || null);
-  
-  // Prüfe Query-Parameter beim Mount
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tenantParam = params.get('tenant');
-    if (tenantParam) {
-      const parsedId = parseInt(tenantParam);
-      if (!isNaN(parsedId)) {
-        setTenantIdOverride(parsedId);
+  // Lese Query-Parameter synchron beim ersten Render
+  const getInitialTenantId = () => {
+    if (initialTenantId) return initialTenantId;
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tenantParam = params.get('tenant');
+      if (tenantParam) {
+        const parsedId = parseInt(tenantParam);
+        if (!isNaN(parsedId)) return parsedId;
       }
     }
-  }, []);
+    return null;
+  };
+  
+  const [tenantIdOverride, setTenantIdOverride] = useState<number | null>(getInitialTenantId);
+  
+  // Update wenn sich initialTenantId ändert
+  useEffect(() => {
+    if (initialTenantId && initialTenantId !== tenantIdOverride) {
+      setTenantIdOverride(initialTenantId);
+    }
+  }, [initialTenantId]);
   
   // Lade Tenant (entweder via Override oder via Context)
   const { data: tenant, isLoading, error } = trpc.tenant.getCurrent.useQuery(
@@ -36,6 +45,11 @@ export function useTenant(initialTenantId?: number) {
       retry: 1,
     }
   );
+  
+  // Debug logging
+  useEffect(() => {
+    console.log('[useTenant] State:', { initialTenantId, tenantIdOverride, tenant });
+  }, [initialTenantId, tenantIdOverride, tenant]);
   
   return {
     tenant,

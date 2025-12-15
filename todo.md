@@ -1547,3 +1547,22 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] Checkpoint erstellen
 
 **Status:** ✅ CODE DONE
+
+
+---
+
+## Bug-Fix: Tenant-Parameter funktioniert nicht (Sprint 2.0.1)
+
+**Problem:** `/anmeldung?tenant=5` zeigt keine Änderungen - kein Branding, keine Kurse des Tenants
+
+**Lösung:** Tenant ID 5 existiert nicht! Korrekte ID ist 420001 (Entscheiderakademie)
+
+**Tasks:**
+- [x] Prüfe useTenant Hook - funktioniert korrekt
+- [x] Prüfe tenant.getCurrent Router - gibt Daten zurück
+- [x] Prüfe Kursauswahl - tenantId wird korrekt übergeben
+- [x] Fixe Timing-Problem - synchrones Lesen der URL-Parameter
+
+**Ergebnis:** `/anmeldung?tenant=420001` zeigt Entscheiderakademie Branding ✅
+
+**Status:** ✅ DONE
