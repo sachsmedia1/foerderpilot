@@ -1566,3 +1566,22 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 **Ergebnis:** `/anmeldung?tenant=420001` zeigt Entscheiderakademie Branding ✅
 
 **Status:** ✅ DONE
+
+
+---
+
+## Tenant-ID Migration auf 3-stellige Werte (Sprint 2.0.2)
+
+**Ziel:** Tenant-IDs von 420001 auf einfache 3-stellige Werte ändern (z.B. 2)
+
+**Tasks:**
+- [x] Entscheiderakademie: 420001 → 2
+- [x] Kurse: tenantId 420001 → 2
+- [x] Participants: tenantId 420001 → 2
+- [x] Users: tenantId 420001 → 2
+- [x] Documents: tenantId 420001 → 2
+- [x] Vorvertraege: tenantId 420001 → 2
+
+**Ergebnis:** `/anmeldung?tenant=2` zeigt Entscheiderakademie Branding ✅
+
+**Status:** ✅ DONE
