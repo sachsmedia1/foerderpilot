@@ -15,6 +15,13 @@
       "when": 1764449849286,
       "tag": "0001_polite_toxin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1765821654903,
+      "tag": "0002_nifty_tag",
+      "breakpoints": true
     }
   ]
 }

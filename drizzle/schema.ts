@@ -22,7 +22,7 @@ export const tenants = mysqlTable("tenants", {
   
   // Basis-Informationen
   name: varchar("name", { length: 255 }).notNull(),
-  subdomain: varchar("subdomain", { length: 100 }).unique().notNull(),
+  subdomain: varchar("subdomain", { length: 100 }).unique(), // Nullable - wird auto-generiert
   customDomain: varchar("customDomain", { length: 255 }),
   
   // Branding (Dynamic White-Label)

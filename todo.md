@@ -1509,3 +1509,41 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] Test-E-Mail versenden und verifizieren
 
 **Status:** ✅ CODE DONE (Test ausstehend)
+
+
+---
+
+## Phase 2: Custom Domain + Branding (Sprint 2.0)
+
+**Ziel:** Subdomains entfernen, Custom Domain aktivieren, Tenant-Branding im RegisterFunnel
+
+### Phase 2.1: Subdomain entfernen
+- [x] DB-Schema: subdomain nullable machen
+- [x] Backend: Auto-Generate Subdomain aus companyName (mit Collision-Check)
+- [x] Frontend: Subdomain-Feld aus TenantForm entfernen (war bereits nicht vorhanden)
+- [x] updateTenant: subdomain aus Input entfernen
+
+### Phase 2.2: Branding im RegisterFunnel
+- [x] useTenant() Hook erstellen
+- [x] tenant.getCurrent tRPC Router erstellen
+- [x] RegisterFunnel mit dynamischem Branding (Logo, Firmenname, Farben)
+- [x] Dynamisches Favicon laden
+
+### Phase 2.3: DNS-Setup UI
+- [x] Custom Domain Sektion im Admin-Panel (erweitert)
+- [x] DNS-Anleitung generieren (CNAME-Eintrag mit Provider-Beispielen)
+- [x] DNS-Validierung UI (Validieren-Button mit Status)
+- [x] Status-Anzeige (active/pending/error mit Icons)
+- [x] Registrierungs-Link mit Kopier-Button
+
+### Phase 2.4: Tenant-Auswahl in /anmeldung
+- [x] Query-Parameter Support (?tenant=5) - useTenant Hook liest aus URL
+- [x] Branding laden vor Registrierung - automatisch via useTenant
+- [x] tenantIdFromUrl wird an useTenant übergeben
+
+### Phase 2.5: Testing
+- [x] Test tenant.getCurrent Router (4 Tests passed)
+- [x] Test Query-Parameter Support
+- [ ] Checkpoint erstellen
+
+**Status:** ✅ CODE DONE

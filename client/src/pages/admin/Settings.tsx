@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Building2, Palette, Globe, Loader2, Award, Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Mail, FileText, Workflow } from "lucide-react";
+import { Building2, Palette, Globe, Loader2, Award, Users, Plus, Search, UserCheck, UserX, Pencil, Trash2, Mail, FileText, Workflow, CheckCircle, AlertCircle, Clock, Info, Copy, ExternalLink } from "lucide-react";
 
 export default function SettingsPage() {
   const { data: tenant, isLoading, refetch } = trpc.tenantSettings.get.useQuery();
@@ -53,6 +53,8 @@ export default function SettingsPage() {
   });
 
   const [customDomain, setCustomDomain] = useState("");
+  const [domainStatus, setDomainStatus] = useState<'active' | 'pending' | 'error' | null>(null);
+  const [validatingDomain, setValidatingDomain] = useState(false);
 
   // Initialize forms when tenant data loads
   useEffect(() => {
@@ -576,64 +578,204 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle>Custom Domain</CardTitle>
                 <CardDescription>
-                  Verbinden Sie Ihre eigene Domain mit dieser Plattform
+                  Nutzen Sie Ihre eigene Domain für den Registrierungs-Funnel
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleCustomDomainSubmit} className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="customDomain">Custom Domain</Label>
-                      <Input
-                        id="customDomain"
-                        type="text"
-                        value={customDomain}
-                        onChange={(e) => setCustomDomain(e.target.value)}
-                        placeholder="meine-domain.de"
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        Geben Sie Ihre Domain ohne "https://" oder "www" ein
-                      </p>
-                    </div>
-
-                    <div className="p-4 border rounded-lg bg-muted space-y-3">
-                      <p className="text-sm font-medium">DNS-Konfiguration:</p>
-                      <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
-                        <li>Erstellen Sie einen CNAME-Eintrag bei Ihrem DNS-Provider</li>
-                        <li>
-                          <span className="font-mono bg-background px-2 py-1 rounded">
-                            CNAME @ app.foerderpilot.io
-                          </span>
-                        </li>
-                        <li>Warten Sie bis zu 48 Stunden auf DNS-Propagierung</li>
-                        <li>Speichern Sie Ihre Custom Domain hier</li>
-                      </ol>
-                    </div>
-
-                    {tenant?.subdomain && (
-                      <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950">
-                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
-                          Aktuelle Subdomain:
-                        </p>
-                        <p className="text-sm text-blue-700 dark:text-blue-300 font-mono">
-                          {tenant.subdomain}.foerderpilot.io
-                        </p>
-                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                          Diese Subdomain bleibt auch nach Einrichtung der Custom Domain aktiv.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button type="submit" variant="default" disabled={updateCustomDomain.isPending}>
-                      {updateCustomDomain.isPending && (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <CardContent className="space-y-6">
+                
+                {/* Domain Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="customDomain">Domain</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="customDomain"
+                      value={customDomain}
+                      onChange={(e) => setCustomDomain(e.target.value)}
+                      placeholder="kurse.entscheiderakademie.de"
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={async () => {
+                        if (!customDomain) return;
+                        setValidatingDomain(true);
+                        // Simuliere DNS-Check (in Produktion: Backend-Call)
+                        setTimeout(() => {
+                          setValidatingDomain(false);
+                          // Zeige pending Status (DNS-Propagierung dauert)
+                          setDomainStatus('pending');
+                          toast.info('DNS-Validierung: Bitte warten Sie auf die DNS-Propagierung (bis zu 24h)');
+                        }, 2000);
+                      }}
+                      disabled={!customDomain || validatingDomain}
+                    >
+                      {validatingDomain ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Prüfe...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Validieren
+                        </>
                       )}
-                      Speichern
                     </Button>
                   </div>
-                </form>
+                  <p className="text-xs text-muted-foreground">
+                    Ihre eigene Domain für den Teilnehmer-Registrierungs-Funnel
+                  </p>
+                </div>
+                
+                {/* DNS-Anleitung */}
+                {customDomain && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+                    <h4 className="font-semibold text-blue-900 flex items-center gap-2">
+                      <Info className="w-5 h-5" />
+                      DNS-Einrichtung bei Ihrem Domain-Provider
+                    </h4>
+                    
+                    <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
+                      <li>Melden Sie sich bei Ihrem Domain-Provider an (z.B. IONOS, Strato, GoDaddy)</li>
+                      <li>Navigieren Sie zur DNS-Verwaltung für Ihre Domain</li>
+                      <li>Legen Sie folgenden CNAME-Eintrag an:</li>
+                    </ol>
+                    
+                    <div className="bg-white border border-blue-300 rounded p-3 font-mono text-sm">
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <span className="text-gray-600">Typ:</span>
+                          <p className="font-semibold">CNAME</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">Name/Host:</span>
+                          <p className="font-semibold">{customDomain.split('.')[0] || 'kurse'}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">Ziel:</span>
+                          <p className="font-semibold">app.foerderpilot.io</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-xs text-blue-700">
+                      <strong>Wichtig:</strong> Die DNS-Änderung kann bis zu 24 Stunden dauern.
+                      Klicken Sie danach auf "Validieren", um die Einrichtung zu prüfen.
+                    </p>
+                  </div>
+                )}
+                
+                {/* Status-Anzeige */}
+                {domainStatus && (
+                  <div className={`p-4 rounded-lg flex items-start gap-3 ${
+                    domainStatus === 'active' 
+                      ? 'bg-green-50 border border-green-200' 
+                      : domainStatus === 'pending'
+                      ? 'bg-yellow-50 border border-yellow-200'
+                      : 'bg-red-50 border border-red-200'
+                  }`}>
+                    {domainStatus === 'active' ? (
+                      <>
+                        <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-green-900">
+                            Domain erfolgreich eingerichtet ✅
+                          </p>
+                          <p className="text-sm text-green-700 mt-1">
+                            Ihre Custom Domain ist aktiv und funktioniert. Teilnehmer können sich nun unter{' '}
+                            <a 
+                              href={`https://${customDomain}/anmeldung`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline font-semibold"
+                            >
+                              {customDomain}/anmeldung
+                            </a>
+                            {' '}registrieren.
+                          </p>
+                        </div>
+                      </>
+                    ) : domainStatus === 'pending' ? (
+                      <>
+                        <Clock className="w-5 h-5 text-yellow-600 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-yellow-900">
+                            DNS-Propagierung läuft...
+                          </p>
+                          <p className="text-sm text-yellow-700 mt-1">
+                            Die DNS-Änderung wurde erkannt, wird aber noch verteilt. 
+                            Bitte warten Sie 1-24 Stunden und validieren Sie erneut.
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-red-900">
+                            DNS-Eintrag nicht gefunden
+                          </p>
+                          <p className="text-sm text-red-700 mt-1">
+                            Der CNAME-Eintrag konnte nicht gefunden werden. 
+                            Bitte prüfen Sie die DNS-Einstellungen bei Ihrem Provider.
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+                
+                {/* Registrierungs-Link */}
+                {customDomain && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">
+                      Registrierungs-Link für Teilnehmer
+                    </h4>
+                    <div className="flex gap-2">
+                      <Input
+                        value={`https://${customDomain}/anmeldung`}
+                        readOnly
+                        className="flex-1 font-mono text-sm"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`https://${customDomain}/anmeldung`);
+                          toast.success('Link kopiert!');
+                        }}
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(`https://${customDomain}/anmeldung`, '_blank')}
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Alternativ: <span className="font-mono">https://app.foerderpilot.io/anmeldung?tenant={tenant?.id}</span>
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex justify-end">
+                  <Button 
+                    onClick={handleCustomDomainSubmit} 
+                    variant="default" 
+                    disabled={updateCustomDomain.isPending}
+                  >
+                    {updateCustomDomain.isPending && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Domain speichern
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

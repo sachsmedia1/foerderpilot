@@ -31,6 +31,7 @@ import { useLocation, useSearch } from "wouter";
 import { useFunnelState } from "@/hooks/useFunnelState";
 import { FunnelQuestion, type Question } from "@/components/funnel/FunnelQuestion";
 import { FunnelResult } from "@/components/funnel/FunnelResult";
+import { useTenant } from "@/hooks/useTenant";
 
 // UUID Generator
 function generateUUID() {
@@ -49,6 +50,13 @@ export default function RegisterFunnelConversational() {
   const courseIdFromUrl = useMemo(() => {
     const params = new URLSearchParams(searchParams);
     const id = params.get('courseId');
+    return id ? parseInt(id) : null;
+  }, [searchParams]);
+  
+  // tenantId aus URL-Parameter lesen (z.B. /anmeldung?tenant=5)
+  const tenantIdFromUrl = useMemo(() => {
+    const params = new URLSearchParams(searchParams);
+    const id = params.get('tenant');
     return id ? parseInt(id) : null;
   }, [searchParams]);
 
@@ -72,7 +80,26 @@ export default function RegisterFunnelConversational() {
   const [sessionId] = useState(() => generateUUID());
   const [foerdercheckErgebnis, setFoerdercheckErgebnis] = useState<any>(null);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
-  const [tenantId, setTenantId] = useState<number>(1); // Default: FörderPilot App
+  // Tenant-Branding via useTenant Hook (Query-Parameter oder Context)
+  const tenant = useTenant(tenantIdFromUrl || undefined);
+  const [tenantId, setTenantId] = useState<number>(tenantIdFromUrl || tenant.tenantId || 1); // Default: FörderPilot App
+  
+  // Dynamisches Favicon laden
+  useEffect(() => {
+    if (tenant.faviconUrl) {
+      const link = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+      if (link) {
+        link.href = tenant.faviconUrl;
+      }
+    }
+  }, [tenant.faviconUrl]);
+  
+  // Sync tenantId mit Hook
+  useEffect(() => {
+    if (tenant.tenantId && tenant.tenantId !== tenantId) {
+      setTenantId(tenant.tenantId);
+    }
+  }, [tenant.tenantId]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // TRPC MUTATIONS
@@ -348,12 +375,27 @@ export default function RegisterFunnelConversational() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header (Kompakt) */}
+        {/* Header mit Tenant-Branding */}
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           className="text-center mb-8"
         >
+          {/* Logo oder Firmenname */}
+          {tenant.logoUrl ? (
+            <img 
+              src={tenant.logoUrl} 
+              alt={tenant.companyName} 
+              className="h-12 mx-auto mb-3 object-contain"
+            />
+          ) : (
+            <h2 
+              className="text-lg font-semibold mb-2"
+              style={{ color: tenant.primaryColor }}
+            >
+              {tenant.companyName}
+            </h2>
+          )}
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
             KOMPASS-Förderung beantragen
           </h1>

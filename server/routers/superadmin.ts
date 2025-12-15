@@ -104,7 +104,7 @@ export const superadminRouter = router({
     .input(
       z.object({
         name: z.string().min(1).optional(),
-        subdomain: z.string().min(1).regex(/^[a-z0-9-]+$/).optional(),
+        // subdomain ENTFERNT - wird auto-generiert
         companyName: z.string().min(1),
         directorName: z.string().optional(),
         email: z.string().email(),
@@ -123,14 +123,28 @@ export const superadminRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      // Auto-generate name and subdomain from companyName if not provided
+      // Auto-generate name from companyName
       const name = input.name || input.companyName;
-      const subdomain = input.subdomain || input.companyName
+      
+      // Auto-generate subdomain from companyName (Fallback, nicht angezeigt)
+      const baseSubdomain = input.companyName
         .toLowerCase()
         .replace(/[^a-z0-9-]/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '')
         .substring(0, 50);
+      
+      // Prüfe ob Subdomain bereits existiert (Collision)
+      const existingTenant = await db
+        .select()
+        .from(tenants)
+        .where(eq(tenants.subdomain, baseSubdomain))
+        .limit(1);
+      
+      // Wenn Collision: Füge Zufalls-Suffix hinzu
+      const subdomain = existingTenant.length > 0
+        ? `${baseSubdomain}-${Math.random().toString(36).substring(2, 7)}`
+        : baseSubdomain;
 
       const [tenant] = await db
         .insert(tenants)
@@ -172,7 +186,7 @@ export const superadminRouter = router({
       z.object({
         id: z.number(),
         name: z.string().min(1).optional(),
-        subdomain: z.string().min(1).regex(/^[a-z0-9-]+$/).optional(),
+        // subdomain ENTFERNT - nicht mehr änderbar
         companyName: z.string().min(1).optional(),
         directorName: z.string().optional(),
         email: z.string().email().optional(),
