@@ -1585,3 +1585,14 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 **Ergebnis:** `/anmeldung?tenant=2` zeigt Entscheiderakademie Branding ✅
 
 **Status:** ✅ DONE
+
+
+---
+
+## Tenant-ID Spalte im Superadmin (Sprint 2.0.3)
+
+**Tasks:**
+- [x] ID-Spalte zur Bildungsträger-Tabelle hinzugefügt
+- [x] Subdomain durch Custom Domain ersetzt
+
+**Status:** ✅ DONE

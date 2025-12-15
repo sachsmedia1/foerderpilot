@@ -160,8 +160,9 @@ export default function SuperAdmin() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-16">ID</TableHead>
                         <TableHead>Name</TableHead>
-                        <TableHead>Subdomain</TableHead>
+                        <TableHead>Custom Domain</TableHead>
                         <TableHead>E-Mail</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Erstellt</TableHead>
@@ -171,11 +172,20 @@ export default function SuperAdmin() {
                     <TableBody>
                       {tenants.map((tenant) => (
                         <TableRow key={tenant.id}>
+                          <TableCell>
+                            <code className="text-xs bg-primary/10 text-primary px-2 py-1 rounded font-mono">
+                              {tenant.id}
+                            </code>
+                          </TableCell>
                           <TableCell className="font-medium">{tenant.name}</TableCell>
                           <TableCell>
-                            <code className="text-xs bg-muted px-2 py-1 rounded">
-                              {tenant.subdomain}.foerderpilot.io
-                            </code>
+                            {tenant.customDomain ? (
+                              <code className="text-xs bg-muted px-2 py-1 rounded">
+                                {tenant.customDomain}
+                              </code>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">-</span>
+                            )}
                           </TableCell>
                           <TableCell>{tenant.email}</TableCell>
                           <TableCell>
