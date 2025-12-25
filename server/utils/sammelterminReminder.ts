@@ -52,7 +52,7 @@ export async function sendSammelterminReminders(): Promise<number> {
       const [course] = await db
         .select()
         .from(courses)
-        .where(eq(courses.id, sammeltermin.courseId))
+        .where(eq(courses.id, sammeltermin.courseId as any))
         .limit(1);
 
       if (!course) {

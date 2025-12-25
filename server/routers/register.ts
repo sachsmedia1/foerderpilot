@@ -12,7 +12,7 @@ import { router, publicProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { getDb } from "../db";
 import { TRPCError } from "@trpc/server";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { sendEmail } from "../utils/emailNotifications";
 import { generateWelcomeEmail, generateAdminNotificationEmail } from "../utils/emailTemplates";
@@ -613,7 +613,6 @@ export const registerRouter = router({
         ort: session.city ?? '',
         geburtsdatum: session.dateOfBirth ? new Date(session.dateOfBirth).toLocaleDateString('de-DE') : '',
         courseName: course.name,
-        starttermin: "Wird noch bekannt gegeben",
         kurspreis: course.priceNet / 100,
         foerderquote: typeof session.foerdercheck === 'object' && session.foerdercheck !== null && 'foerderprozent' in session.foerdercheck
           ? ((session.foerdercheck as any).foerderprozent / 100)

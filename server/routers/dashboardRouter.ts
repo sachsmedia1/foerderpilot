@@ -17,7 +17,7 @@ export const dashboardRouter = router({
     const allParticipants = await db
       .select()
       .from(participants)
-      .where(eq(participants.tenantId, tenantId));
+      .where(eq(participants.tenantId, tenantId as any));
     
     const participantCount = allParticipants.length;
 
@@ -26,7 +26,7 @@ export const dashboardRouter = router({
     const allCourses = await db
       .select()
       .from(courses)
-      .where(eq(courses.tenantId, tenantId));
+      .where(eq(courses.tenantId, tenantId as any));
     
     const courseCount = allCourses.length;
 
@@ -35,7 +35,7 @@ export const dashboardRouter = router({
     const allSammeltermins = await db
       .select()
       .from(sammeltermins)
-      .where(eq(sammeltermins.tenantId, tenantId));
+      .where(eq(sammeltermins.tenantId, tenantId as any));
     
     const sammelterminCount = allSammeltermins.length;
 
@@ -44,7 +44,7 @@ export const dashboardRouter = router({
     const allDocs = await db
       .select()
       .from(documents)
-      .where(eq(documents.tenantId, tenantId));
+      .where(eq(documents.tenantId, tenantId as any));
     
     const totalDocs = allDocs.length;
     const validDocs = allDocs.filter(doc => doc.validationStatus === "valid").length;
@@ -92,7 +92,7 @@ export const dashboardRouter = router({
         courseId: participants.courseId,
       })
       .from(participants)
-      .where(eq(participants.tenantId, tenantId))
+      .where(eq(participants.tenantId, tenantId as any))
       .orderBy(desc(participants.createdAt))
       .limit(10);
 
@@ -131,7 +131,7 @@ export const dashboardRouter = router({
     const allDocs = await db
       .select()
       .from(documents)
-      .where(eq(documents.tenantId, tenantId));
+      .where(eq(documents.tenantId, tenantId as any));
 
     const pending = allDocs.filter(doc => doc.validationStatus === "pending").length;
     const manualReview = allDocs.filter(doc => doc.validationStatus === "manual_review").length;
@@ -156,7 +156,7 @@ export const dashboardRouter = router({
     const allParticipants = await db
       .select()
       .from(participants)
-      .where(eq(participants.tenantId, tenantId));
+      .where(eq(participants.tenantId, tenantId as any));
 
     const now = new Date();
     const weeklySignups = [];
@@ -183,7 +183,7 @@ export const dashboardRouter = router({
     const allDocs = await db
       .select()
       .from(documents)
-      .where(eq(documents.tenantId, tenantId));
+      .where(eq(documents.tenantId, tenantId as any));
 
     const validationStatusMap = new Map<string, number>();
     allDocs.forEach(doc => {
@@ -202,7 +202,7 @@ export const dashboardRouter = router({
     const allCourses = await db
       .select()
       .from(courses)
-      .where(eq(courses.tenantId, tenantId));
+      .where(eq(courses.tenantId, tenantId as any));
 
     const coursesWithParticipants = allCourses.map(course => {
       const participantCount = allParticipants.filter(p => p.courseId === course.id).length;

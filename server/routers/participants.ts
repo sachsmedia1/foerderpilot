@@ -634,7 +634,7 @@ export const participantsRouter = router({
     const participantByOpenId = await db
       .select()
       .from(participants)
-      .where(eq(participants.email, ctx.user.openId))
+      .where(eq(participants.email, ctx.user.openId as any))
       .limit(1);
     
     return {

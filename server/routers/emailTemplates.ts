@@ -14,7 +14,7 @@ export const emailTemplatesRouter = router({
     const templates = await db
       .select()
       .from(emailTemplates)
-      .where(eq(emailTemplates.tenantId, ctx.user.tenantId));
+      .where(eq(emailTemplates.tenantId, ctx.user.tenantId as any));
 
     return { success: true, templates };
   }),
@@ -31,8 +31,8 @@ export const emailTemplatesRouter = router({
         .from(emailTemplates)
         .where(
           and(
-            eq(emailTemplates.id, input.id),
-            eq(emailTemplates.tenantId, ctx.user.tenantId)
+            eq(emailTemplates.id, input.id as any),
+            eq(emailTemplates.tenantId, ctx.user.tenantId as any)
           )
         );
 
@@ -66,8 +66,8 @@ export const emailTemplatesRouter = router({
         .from(emailTemplates)
         .where(
           and(
-            eq(emailTemplates.id, input.id),
-            eq(emailTemplates.tenantId, ctx.user.tenantId)
+            eq(emailTemplates.id, input.id as any),
+            eq(emailTemplates.tenantId, ctx.user.tenantId as any)
           )
         );
 
@@ -87,7 +87,7 @@ export const emailTemplatesRouter = router({
           bodyText: input.bodyText,
           updatedAt: new Date(),
         })
-        .where(eq(emailTemplates.id, input.id));
+        .where(eq(emailTemplates.id, input.id as any));
 
       return { success: true, message: "Template updated successfully" };
     }),
