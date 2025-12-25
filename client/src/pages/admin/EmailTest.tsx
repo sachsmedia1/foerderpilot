@@ -19,16 +19,13 @@ export default function EmailTest() {
 
   const sendTestEmail = trpc.emailTest.sendTestEmail.useMutation({
     onSuccess: () => {
-      toast({
-        title: 'E-Mail versendet',
+      toast.success('E-Mail versendet', {
         description: 'Test-E-Mail wurde erfolgreich versendet',
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });
@@ -41,10 +38,8 @@ export default function EmailTest() {
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });
@@ -57,10 +52,8 @@ export default function EmailTest() {
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });
@@ -73,10 +66,8 @@ export default function EmailTest() {
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });
@@ -89,10 +80,8 @@ export default function EmailTest() {
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });
@@ -105,10 +94,8 @@ export default function EmailTest() {
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });

@@ -376,7 +376,6 @@ interface WelcomeEmailData {
   ort: string;
   geburtsdatum: string;
   courseName: string;
-  starttermin: string;
   kurspreis: number;
   foerderquote: number; // z.B. 0.90 für 90%
   passwordResetLink: string;
@@ -435,10 +434,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData) {
                       <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; width: 45%;"><strong>Kurs:</strong></td>
                       <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;">${data.courseName}</td>
                     </tr>
-                    <tr>
-                      <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;"><strong>Startdatum:</strong></td>
-                      <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;">${data.starttermin}</td>
-                    </tr>
+
                     <tr>
                       <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;"><strong>Kurspreis:</strong></td>
                       <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;">€${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
@@ -508,10 +504,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData) {
                       <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; width: 40%;">Kursname:</td>
                       <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">${data.courseName}</td>
                     </tr>
-                    <tr>
-                      <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">Startdatum:</td>
-                      <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">${data.starttermin}</td>
-                    </tr>
+
                     <tr>
                       <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">Kurspreis (brutto):</td>
                       <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">€${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
@@ -594,7 +587,6 @@ vielen Dank für Ihre Anmeldung! Ihr Account wurde erfolgreich erstellt und Sie 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Kurs:                ${data.courseName}
-Startdatum:          ${data.starttermin}
 Kurspreis:           €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 KOMPASS-Förderung:   -€${foerderungBetrag.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${(data.foerderquote * 100).toFixed(0)}%)
 Ihr Eigenanteil:     €${eigenanteil.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -619,7 +611,6 @@ Geburtsdatum:  ${new Date(data.geburtsdatum).toLocaleDateString('de-DE', { day: 
 
 🎓 GEBUCHTER KURS
 Kursname:                   ${data.courseName}
-Startdatum:                 ${data.starttermin}
 Kurspreis (brutto):         €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 Eigenanteil (nach Förderung): €${eigenanteil.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 
@@ -680,7 +671,6 @@ export function generateAdminNotificationEmail(data: AdminNotificationEmailData)
         <p><strong>Name:</strong> ${data.vorname} ${data.nachname}</p>
         <p><strong>E-Mail:</strong> ${data.email}</p>
         <p><strong>Kurs:</strong> ${data.courseName}</p>
-        <p><strong>Starttermin:</strong> ${data.starttermin}</p>
         <p><strong>Kurspreis:</strong> €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         <p><strong>Förderung:</strong> €${data.foerderbetrag.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         <p><strong>Eigenanteil:</strong> €${eigenanteil.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
@@ -703,7 +693,6 @@ Teilnehmer-Details:
 - Name: ${data.vorname} ${data.nachname}
 - E-Mail: ${data.email}
 - Kurs: ${data.courseName}
-- Starttermin: ${data.starttermin}
 - Kurspreis: €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 - Förderung: €${data.foerderbetrag.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 - Eigenanteil: €${eigenanteil.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

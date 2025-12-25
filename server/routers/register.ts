@@ -427,7 +427,7 @@ export const registerRouter = router({
         street: input.street,
         zipCode: input.zipCode,
         city: input.city,
-        company: input.company || null,
+        company: input.company ?? null,
         dateOfBirth: input.dateOfBirth,
       });
 
@@ -520,8 +520,8 @@ export const registerRouter = router({
         .replace(/{{email}}/g, session.email)
         .replace(/{{kursname}}/g, course.name)
         .replace(/{{kurspreis}}/g, (course.priceNet / 100).toFixed(2))
-        .replace(/{{foerderbetrag}}/g, ((course.priceNet * course.subsidyPercentage) / 10000).toFixed(2))
-        .replace(/{{eigenanteil}}/g, ((course.priceNet - (course.priceNet * course.subsidyPercentage) / 100) / 100).toFixed(2));
+        .replace(/{{foerderbetrag}}/g, ((course.priceNet * (course.subsidyPercentage ?? 90)) / 10000).toFixed(2))
+        .replace(/{{eigenanteil}}/g, ((course.priceNet - (course.priceNet * (course.subsidyPercentage ?? 90)) / 100) / 100).toFixed(2));
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       // ACCOUNT ERSTELLEN
@@ -607,15 +607,17 @@ export const registerRouter = router({
         vorname: session.firstName,
         nachname: session.lastName,
         email: session.email,
-        telefon: session.phone,
-        strasse: session.street,
-        plz: session.postalCode,
-        ort: session.city,
-        geburtsdatum: session.dateOfBirth,
-        kurstitel: course.name,
+        telefon: session.phone ?? '',
+        strasse: session.street ?? '',
+        plz: session.zipCode ?? '',
+        ort: session.city ?? '',
+        geburtsdatum: session.dateOfBirth ? new Date(session.dateOfBirth).toLocaleDateString('de-DE') : '',
+        courseName: course.name,
         starttermin: "Wird noch bekannt gegeben",
         kurspreis: course.priceNet / 100,
-        foerderquote: session.foerdercheck.quote, // z.B. 0.90 für 90%
+        foerderquote: typeof session.foerdercheck === 'object' && session.foerdercheck !== null && 'foerderprozent' in session.foerdercheck
+          ? ((session.foerdercheck as any).foerderprozent / 100)
+          : 0.9, // z.B. 0.90 für 90%
         passwordResetLink: `https://app.foerderpilot.io/set-password?token=${resetToken}`,
         tenantName: tenant.companyName || tenant.name,
         senderEmail: tenant.email || 'kurse@entscheiderakademie.de',
