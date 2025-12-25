@@ -558,12 +558,12 @@ export const registerRouter = router({
           courseId: session.courseId,
           firstName: session.firstName,
           lastName: session.lastName,
-          email: session.email,
-          phone: session.phone || null,
+          email: session.email ?? '',
+          phone: session.phone ?? null,
           dateOfBirth: session.dateOfBirth ? new Date(session.dateOfBirth) : null,
-          street: session.street || null,
-          zipCode: session.zipCode || null,
-          city: session.city || null,
+          street: session.street ?? null,
+          zipCode: session.zipCode ?? null,
+          city: session.city ?? null,
           status: "anmeldung_eingegangen",
         });
 
@@ -647,9 +647,9 @@ export const registerRouter = router({
           vorname: session.firstName,
           nachname: session.lastName,
           email: session.email,
-          kursname: course.name,
+          courseName: course.name,
           kurspreis: course.priceNet / 100,
-          foerderbetrag: (course.priceNet * course.subsidyPercentage) / 10000,
+          foerderbetrag: (course.priceNet * (course.subsidyPercentage ?? 90)) / 10000,
           tenantName: tenant.companyName || tenant.name,
         });
 

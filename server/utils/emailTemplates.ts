@@ -375,7 +375,7 @@ interface WelcomeEmailData {
   plz: string;
   ort: string;
   geburtsdatum: string;
-  kurstitel: string;
+  courseName: string;
   starttermin: string;
   kurspreis: number;
   foerderquote: number; // z.B. 0.90 für 90%
@@ -433,7 +433,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData) {
                   <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-bottom: 20px;">
                     <tr>
                       <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; width: 45%;"><strong>Kurs:</strong></td>
-                      <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;">${data.kurstitel}</td>
+                      <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;">${data.courseName}</td>
                     </tr>
                     <tr>
                       <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;"><strong>Startdatum:</strong></td>
@@ -472,7 +472,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData) {
                   <h2 style="color: #1f2937; margin-top: 40px; margin-bottom: 16px; font-size: 20px;">✅ Ihre verbindliche Anmeldebestätigung</h2>
                   
                   <p style="margin-bottom: 20px; line-height: 1.6;">
-                    Hiermit bestätigen wir Ihre Anmeldung zum Kurs <strong>"${data.kurstitel}"</strong>. 
+                    Hiermit bestätigen wir Ihre Anmeldung zum Kurs <strong>"${data.courseName}"</strong>. 
                     Ihre Anmeldung ist rechtlich verbindlich und basiert auf folgenden Angaben:
                   </p>
                   
@@ -506,7 +506,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData) {
                   <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-bottom: 24px; background-color: #f9fafb; border-radius: 4px;">
                     <tr>
                       <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; width: 40%;">Kursname:</td>
-                      <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">${data.kurstitel}</td>
+                      <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">${data.courseName}</td>
                     </tr>
                     <tr>
                       <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">Startdatum:</td>
@@ -593,7 +593,7 @@ vielen Dank für Ihre Anmeldung! Ihr Account wurde erfolgreich erstellt und Sie 
 📚 IHRE KURSDETAILS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Kurs:                ${data.kurstitel}
+Kurs:                ${data.courseName}
 Startdatum:          ${data.starttermin}
 Kurspreis:           €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 KOMPASS-Förderung:   -€${foerderungBetrag.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${(data.foerderquote * 100).toFixed(0)}%)
@@ -608,7 +608,7 @@ Ihr finaler Eigenanteil nach Auszahlung der Förderung beträgt somit nur €${e
 ✅ IHRE VERBINDLICHE ANMELDEBESTÄTIGUNG
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Hiermit bestätigen wir Ihre Anmeldung zum Kurs "${data.kurstitel}". Ihre Anmeldung ist rechtlich verbindlich und basiert auf folgenden Angaben:
+Hiermit bestätigen wir Ihre Anmeldung zum Kurs "${data.courseName}". Ihre Anmeldung ist rechtlich verbindlich und basiert auf folgenden Angaben:
 
 👤 PERSÖNLICHE DATEN
 Name:          ${data.vorname} ${data.nachname}
@@ -618,7 +618,7 @@ Adresse:       ${data.strasse}, ${data.plz} ${data.ort}
 Geburtsdatum:  ${new Date(data.geburtsdatum).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}
 
 🎓 GEBUCHTER KURS
-Kursname:                   ${data.kurstitel}
+Kursname:                   ${data.courseName}
 Startdatum:                 ${data.starttermin}
 Kurspreis (brutto):         €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 Eigenanteil (nach Förderung): €${eigenanteil.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -644,7 +644,7 @@ Ihr ${data.senderName} Team
   `;
 
   return {
-    subject: `Willkommen bei ${data.senderName} - Ihre Anmeldung für ${data.kurstitel}`,
+    subject: `Willkommen bei ${data.senderName} - Ihre Anmeldung für ${data.courseName}`,
     html,
     text,
     senderEmail: data.senderEmail,
@@ -660,8 +660,7 @@ interface AdminNotificationEmailData {
   vorname: string;
   nachname: string;
   email: string;
-  kurstitel: string;
-  starttermin: string;
+  courseName: string;
   kurspreis: number;
   foerderbetrag: number;
   tenantName: string;
@@ -680,7 +679,7 @@ export function generateAdminNotificationEmail(data: AdminNotificationEmailData)
         <h3 style="margin-top: 0;">Teilnehmer-Details:</h3>
         <p><strong>Name:</strong> ${data.vorname} ${data.nachname}</p>
         <p><strong>E-Mail:</strong> ${data.email}</p>
-        <p><strong>Kurs:</strong> ${data.kurstitel}</p>
+        <p><strong>Kurs:</strong> ${data.courseName}</p>
         <p><strong>Starttermin:</strong> ${data.starttermin}</p>
         <p><strong>Kurspreis:</strong> €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         <p><strong>Förderung:</strong> €${data.foerderbetrag.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
@@ -703,7 +702,7 @@ Ein neuer Teilnehmer hat sich über den Funnel angemeldet:
 Teilnehmer-Details:
 - Name: ${data.vorname} ${data.nachname}
 - E-Mail: ${data.email}
-- Kurs: ${data.kurstitel}
+- Kurs: ${data.courseName}
 - Starttermin: ${data.starttermin}
 - Kurspreis: €${data.kurspreis.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 - Förderung: €${data.foerderbetrag.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -715,7 +714,7 @@ ${data.tenantName} Admin-System
   `;
 
   return {
-    subject: `Neue Anmeldung: ${data.vorname} ${data.nachname} - ${data.kurstitel}`,
+    subject: `Neue Anmeldung: ${data.vorname} ${data.nachname} - ${data.courseName}`,
     html,
     text,
   };

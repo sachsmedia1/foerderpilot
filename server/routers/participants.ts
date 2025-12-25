@@ -50,7 +50,7 @@ export const participantsRouter = router({
 
       const conditions = [eq(participants.tenantId, ctx.tenant.id)];
 
-      if (input?.courseId) {
+      if (input?.courseId !== undefined && input.courseId !== null) {
         conditions.push(eq(participants.courseId, input.courseId));
       }
 
