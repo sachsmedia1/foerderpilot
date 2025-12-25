@@ -23,8 +23,7 @@ export default function WorkflowTemplates() {
 
     try {
       await deleteTemplate.mutateAsync({ templateId });
-      toast({
-        title: 'Template gelöscht',
+      toast.success('Template gelöscht', {
         description: 'Das Template wurde erfolgreich gelöscht.',
       });
       refetch();
@@ -32,10 +31,8 @@ export default function WorkflowTemplates() {
         setSelectedTemplateId(null);
       }
     } catch (error) {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: 'Template konnte nicht gelöscht werden.',
-        variant: 'destructive',
       });
     }
   };
@@ -43,8 +40,7 @@ export default function WorkflowTemplates() {
   const handleSaveSuccess = () => {
     refetch();
     setSelectedTemplateId(null);
-    toast({
-      title: 'Template gespeichert',
+    toast.success('Template gespeichert', {
       description: 'Das Template wurde erfolgreich gespeichert.',
     });
   };
@@ -52,17 +48,14 @@ export default function WorkflowTemplates() {
   const handleDuplicate = async (templateId: number, templateName: string) => {
     try {
       const result = await duplicateTemplate.mutateAsync({ templateId });
-      toast({
-        title: 'Template dupliziert',
+      toast.success('Template dupliziert', {
         description: `"${result.name}" wurde erstellt.`,
       });
       refetch();
       setSelectedTemplateId(result.id);
     } catch (error) {
-      toast({
-        title: 'Fehler',
+      toast.error('Fehler', {
         description: 'Template konnte nicht dupliziert werden.',
-        variant: 'destructive',
       });
     }
   };

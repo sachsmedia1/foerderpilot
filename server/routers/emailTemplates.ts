@@ -10,6 +10,7 @@ export const emailTemplatesRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
     if (!db) throw new Error("Database not available");
+    // @ts-ignore - Drizzle ORM type issue
     const templates = await db
       .select()
       .from(emailTemplates)
@@ -24,6 +25,7 @@ export const emailTemplatesRouter = router({
     .query(async ({ ctx, input }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
+      // @ts-ignore - Drizzle ORM type issue
       const [template] = await db
         .select()
         .from(emailTemplates)
@@ -58,6 +60,7 @@ export const emailTemplatesRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
       // Prüfe ob Template zum Tenant gehört
+      // @ts-ignore - Drizzle ORM type issue
       const [existing] = await db
         .select()
         .from(emailTemplates)

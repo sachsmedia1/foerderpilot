@@ -32,8 +32,7 @@ export default function EmailTest() {
 
   const testStatusChange = trpc.emailTest.testStatusChangeEmail.useMutation({
     onSuccess: () => {
-      toast({
-        title: 'E-Mail versendet',
+      toast.success('E-Mail versendet', {
         description: 'Status-Change E-Mail wurde erfolgreich versendet',
       });
     },
@@ -46,8 +45,7 @@ export default function EmailTest() {
 
   const testDocumentUpload = trpc.emailTest.testDocumentUploadEmail.useMutation({
     onSuccess: () => {
-      toast({
-        title: 'E-Mail versendet',
+      toast.success('E-Mail versendet', {
         description: 'Document-Upload E-Mail wurde erfolgreich versendet',
       });
     },
@@ -60,8 +58,7 @@ export default function EmailTest() {
 
   const testValidationValid = trpc.emailTest.testDocumentValidationEmailValid.useMutation({
     onSuccess: () => {
-      toast({
-        title: 'E-Mail versendet',
+      toast.success('E-Mail versendet', {
         description: 'Document-Validation E-Mail (Valid) wurde erfolgreich versendet',
       });
     },
@@ -74,8 +71,7 @@ export default function EmailTest() {
 
   const testValidationInvalid = trpc.emailTest.testDocumentValidationEmailInvalid.useMutation({
     onSuccess: () => {
-      toast({
-        title: 'E-Mail versendet',
+      toast.success('E-Mail versendet', {
         description: 'Document-Validation E-Mail (Invalid) wurde erfolgreich versendet',
       });
     },
@@ -88,8 +84,7 @@ export default function EmailTest() {
 
   const testSammelterminReminder = trpc.emailTest.testSammelterminReminderEmail.useMutation({
     onSuccess: () => {
-      toast({
-        title: 'E-Mail versendet',
+      toast.success('E-Mail versendet', {
         description: 'Sammeltermin-Reminder E-Mail wurde erfolgreich versendet',
       });
     },
