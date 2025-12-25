@@ -86,6 +86,7 @@ export const registerRouter = router({
         selbststaendigkeitSeit: z.string(), // ISO Date
         deminimisBeihilfen: z.number().min(0),
         kompassSchecksAnzahl: z.number().min(0).max(2),
+        hadKompassCheck: z.boolean(), // NEU: Ob bereits KOMPASS-Check erhalten
         letzterKompassScheckDatum: z.string().optional(), // ISO Date
       })
     )
@@ -122,13 +123,61 @@ export const registerRouter = router({
         };
       }
 
-      // 2. Selbstständigkeit <2 Jahre? → BAFA 50% (nicht KOMPASS-fähig)
+        // 2. Selbständigkeit <6 Monate? → K.O.
+      const selfEmployedDate = new Date(input.selbststaendigkeitSeit);
+      const monthsSinceSelfEmployed = (Date.now() - selfEmployedDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+      
+      if (monthsSinceSelfEmployed < 6) {
+        const ergebnis = "nicht_foerderfaehig";
+        
+        await upsertSession(db, {
+          sessionId: input.sessionId,
+          tenantId: input.tenantId,
+          foerdercheck: input,
+          foerdercheckErgebnis: ergebnis,
+        });
+
+        return {
+          success: true,
+          ergebnis,
+          message: `Sie müssen mindestens 6 Monate selbständig sein. Aktuell: ${Math.floor(monthsSinceSelfEmployed)} Monate.`,
+          foerderprozent: 0,
+          foerderbetrag: 0,
+        };
+      }
+
+      // 3. Selbständigkeit <2 Jahre? → BAFA 50% (nicht KOMPASS-fähig)
       const selbststaendigkeitDauer =
         new Date().getFullYear() -
         new Date(input.selbststaendigkeitSeit).getFullYear();
       const istKompassFaehig = selbststaendigkeitDauer >= 2;
 
-      // 3. Mehr als 1 VZÄ? → K.O.
+      // 4. KOMPASS-Check <12 Monate? → K.O.
+      if (input.hadKompassCheck && input.letzterKompassScheckDatum) {
+        const lastCheckDate = new Date(input.letzterKompassScheckDatum);
+        const monthsSinceLastCheck = (Date.now() - lastCheckDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+        
+        if (monthsSinceLastCheck < 12) {
+          const ergebnis = "nicht_foerderfaehig";
+          
+          await upsertSession(db, {
+            sessionId: input.sessionId,
+            tenantId: input.tenantId,
+            foerdercheck: input,
+            foerdercheckErgebnis: ergebnis,
+          });
+
+          return {
+            success: true,
+            ergebnis,
+            message: `Sie können erst wieder einen KOMPASS-Check beantragen, wenn mindestens 12 Monate vergangen sind. Aktuell: ${Math.floor(monthsSinceLastCheck)} Monate.`,
+            foerderprozent: 0,
+            foerderbetrag: 0,
+          };
+        }
+      }
+
+      // 5. Mehr als 1 VZÄ? → K.O.
       if (input.mitarbeiterVzae > 1) {
         const ergebnis = "nicht_foerderfaehig";
         

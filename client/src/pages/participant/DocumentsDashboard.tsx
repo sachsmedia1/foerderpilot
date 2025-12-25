@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, Clock, XCircle, AlertCircle, Upload, FileText, Info, Sparkles } from "lucide-react";
+import { CheckCircle, Clock, XCircle, AlertCircle, Upload, FileText, Info, Sparkles, Download, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { useDropzone } from "react-dropzone";
 
@@ -137,6 +137,30 @@ function DocumentsDashboardContent() {
         <AlertDescription>
           Nach dem Upload werden alle Dokumente automatisch durch unsere KI geprüft. 
           Sie erhalten eine Benachrichtigung, sobald die Validierung abgeschlossen ist.
+        </AlertDescription>
+      </Alert>
+
+      {/* Zeus-Integration Info-Box */}
+      <Alert className="border-blue-500 bg-blue-50">
+        <Info className="h-4 w-4 text-blue-600" />
+        <AlertDescription>
+          <div className="space-y-2">
+            <p className="font-medium text-blue-900">
+              🎯 Nächster Schritt: KOMPASS-Antrag im Förderportal Zeus einreichen
+            </p>
+            <p className="text-sm text-blue-800">
+              Sobald alle Pflichtdokumente validiert sind, können Sie Ihren KOMPASS-Antrag im offiziellen Förderportal Zeus einreichen.
+            </p>
+            <a
+              href="https://foerderportal-zeus.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium mt-2"
+            >
+              Zum Förderportal Zeus
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
         </AlertDescription>
       </Alert>
 
@@ -382,6 +406,23 @@ function DocumentCard({ documentType, status, participantId, document, isOptiona
                   {documentType.helpText}
                 </AlertDescription>
               </Alert>
+            )}
+
+            {/* Download-Button für Vorlagen (VZÄ-Rechner, De-minimis) */}
+            {(documentType.id === 'vzae_rechner' || documentType.id === 'de_minimis_erklaerung') && status === "missing" && (
+              <div className="mb-3">
+                <a
+                  href={documentType.id === 'vzae_rechner' ? '/templates/VZAE-Rechner.xlsx' : '/templates/De-minimis-Erklaerung.pdf'}
+                  download
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  <Download className="w-4 h-4" />
+                  Vorlage herunterladen
+                </a>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Laden Sie die Vorlage herunter, füllen Sie sie aus, unterschreiben Sie und laden Sie sie dann hier hoch.
+                </p>
+              </div>
             )}
 
             {/* Upload-Bereich für nicht-generierte Dokumente */}

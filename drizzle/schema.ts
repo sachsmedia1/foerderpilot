@@ -237,6 +237,10 @@ export const participants = mysqlTable("participants", {
   city: varchar("city", { length: 100 }),
   country: varchar("country", { length: 100 }).default("Deutschland"),
   
+  // Fördercheck-Daten (KOMPASS)
+  selfEmployedSince: date("selfEmployedSince"), // Datum Beginn Selbständigkeit
+  lastKompassCheckDate: date("lastKompassCheckDate"), // Letzter KOMPASS-Check
+  
   // Notizen & Meta
   notes: text("notes"),
   

@@ -161,9 +161,10 @@ export default function RegisterFunnelConversational() {
   }, [state.selectedCourseId, courses]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // FÖRDERCHECK QUESTIONS (7 Fragen als Array)
+  // FÖRDERCHECK QUESTIONS (7-8 Fragen, dynamisch mit conditional Frage 8b)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const foerdercheckQuestions: Question[] = [
+  const foerdercheckQuestions: Question[] = useMemo(() => {
+    const baseQuestions: Question[] = [
     {
       id: 'wohnsitz',
       type: 'radio',
@@ -244,34 +245,76 @@ export default function RegisterFunnelConversational() {
       placeholder: '0',
     },
     {
-      id: 'kompassSchecks',
-      type: 'select',
+      id: 'kompassCheck',
+      type: 'radio',
       icon: '🎫',
-      label: 'Wie viele KOMPASS-Gutscheine haben Sie bereits genutzt?',
-      helpText: 'Sie können maximal 2 KOMPASS-Gutscheine nutzen. Bei Erstantrag wählen Sie "0".',
-      value: state.foerdercheck.kompassSchecksAnzahl.toString(),
-      onChange: (v) => updateFoerdercheck({ kompassSchecksAnzahl: parseInt(v) }),
+      label: 'Haben Sie innerhalb der letzten 12 Monate bereits einen KOMPASS Qualifizierungscheck erhalten?',
+      description: 'KOMPASS-Checks können nur alle 12 Monate beantragt werden',
+      helpText: 'Wenn Sie bereits einen KOMPASS-Check erhalten haben, müssen mindestens 12 Monate vergangen sein.',
+      value: state.foerdercheck.hadKompassCheck ? 'ja' : 'nein',
+      onChange: (v) => updateFoerdercheck({ hadKompassCheck: v === 'ja' }),
       options: [
-        { value: '0', label: '0 (Erstantrag)' },
-        { value: '1', label: '1 (Zweitantrag)' },
-        { value: '2', label: '2 (Kontingent ausgeschöpft)' },
+        { value: 'nein', label: 'Nein, ich habe noch nie einen KOMPASS-Check erhalten', icon: '✅' },
+        { value: 'ja', label: 'Ja, ich habe bereits einen KOMPASS-Check erhalten', icon: '📅' },
       ],
     },
   ];
+
+  // Conditional Frage 8b: Datum des letzten KOMPASS-Checks (nur wenn hadKompassCheck === true)
+  if (state.foerdercheck.hadKompassCheck) {
+    baseQuestions.push({
+      id: 'kompassCheckDatum',
+      type: 'date',
+      icon: '📅',
+      label: 'Wann haben Sie den letzten KOMPASS-Check erhalten?',
+      description: 'Es müssen mindestens 12 Monate vergangen sein',
+      helpText: 'Bitte geben Sie das Datum des letzten KOMPASS Qualifizierungschecks an.',
+      value: state.foerdercheck.letzterKompassScheckDatum,
+      onChange: (v) => updateFoerdercheck({ letzterKompassScheckDatum: v }),
+      placeholder: 'TT.MM.JJJJ',
+      required: true,
+    });
+  }
+
+  return baseQuestions;
+}, [state.foerdercheck]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // STEP 1: FÖRDERCHECK SUBMIT
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const handleFoerdercheckSubmit = async () => {
-    // Validierung
+    // Validierung 1: Selbständigkeit seit Datum vorhanden
     if (!state.foerdercheck.selbststaendigkeitSeit) {
-      toast.error("Bitte geben Sie das Datum Ihrer Selbstständigkeit an.");
+      toast.error("Bitte geben Sie das Datum Ihrer Selbständigkeit an.");
       return;
     }
 
-    if (state.foerdercheck.kompassSchecksAnzahl > 0 && !state.foerdercheck.letzterKompassScheckDatum) {
+    // Validierung 2: Mindestens 6 Monate selbständig
+    const selfEmployedDate = new Date(state.foerdercheck.selbststaendigkeitSeit);
+    const monthsSinceSelfEmployed = (Date.now() - selfEmployedDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+    if (monthsSinceSelfEmployed < 6) {
+      toast.error(
+        `Sie müssen mindestens 6 Monate selbständig sein. Aktuell: ${Math.floor(monthsSinceSelfEmployed)} Monate.`
+      );
+      return;
+    }
+
+    // Validierung 3: KOMPASS-Check Datum vorhanden (wenn hadKompassCheck === true)
+    if (state.foerdercheck.hadKompassCheck && !state.foerdercheck.letzterKompassScheckDatum) {
       toast.error("Bitte geben Sie das Datum des letzten KOMPASS-Schecks an.");
       return;
+    }
+
+    // Validierung 4: Mindestens 12 Monate seit letztem KOMPASS-Check
+    if (state.foerdercheck.hadKompassCheck && state.foerdercheck.letzterKompassScheckDatum) {
+      const lastCheckDate = new Date(state.foerdercheck.letzterKompassScheckDatum);
+      const monthsSinceLastCheck = (Date.now() - lastCheckDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+      if (monthsSinceLastCheck < 12) {
+        toast.error(
+          `Sie können erst wieder einen KOMPASS-Check beantragen, wenn mindestens 12 Monate vergangen sind. Aktuell: ${Math.floor(monthsSinceLastCheck)} Monate.`
+        );
+        return;
+      }
     }
 
     try {

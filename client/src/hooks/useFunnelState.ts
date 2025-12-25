@@ -23,6 +23,7 @@ export interface FunnelState {
     selbststaendigkeitSeit: string;
     deminimisBeihilfen: number;
     kompassSchecksAnzahl: number;
+    hadKompassCheck: boolean; // NEU: Ob bereits KOMPASS-Check erhalten
     letzterKompassScheckDatum: string;
   };
   selectedCourseId: number | null;
@@ -57,6 +58,7 @@ const defaultState: FunnelState = {
     selbststaendigkeitSeit: '',
     deminimisBeihilfen: 0,
     kompassSchecksAnzahl: 0,
+    hadKompassCheck: false, // Default: Nein
     letzterKompassScheckDatum: '',
   },
   selectedCourseId: null,

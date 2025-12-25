@@ -1634,3 +1634,42 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - Optional: Zeugnisse, Sonstiges
 
 **Status:** ✅ DONE
+
+
+---
+
+## 🚀 GO-LIVE SPRINT (Option B: Vollständig)
+
+**Ziel:** Alle verbleibenden Issues fixen für Production-Ready Status
+
+### Issue #2: Fördercheck-Logik (2h)
+- [x] DB-Schema: `selfEmployedSince` und `lastKompassCheckDate` Felder hinzugefügt
+- [x] RegisterFunnel: Frage 8 KOMPASS-Check mit Datumsabfrage implementiert (conditional Frage 8b)
+- [x] Validierung: Selbständigkeit seit ≥6 Monate (Frontend + Backend)
+- [x] Validierung: KOMPASS-Check ≥12 Monate (Frontend + Backend)
+- [x] Backend: register.ts Validierungslogik erweitert
+
+### Issue #4: Dokumentvorlagen (2,5h)
+- [x] VZÄ-Rechner Excel-Vorlage kopiert (/templates/VZAE-Rechner.xlsx)
+- [x] De-minimis PDF-Vorlage kopiert (/templates/De-minimis-Erklaerung.pdf)
+- [x] Download-Links: Statische Dateien in /client/public/templates/
+- [x] Frontend: Download-Buttons in DocumentsDashboard hinzugefügt
+
+### Issue #5: Zeus-Integration (1h)
+- [x] Info-Box in DocumentsDashboard hinzugefügt
+- [x] Link zu foerderportal-zeus.de (external)
+- [ ] Status-Tracking (Phase 2: Pre-Fill-API für Q2 2025 - nicht für Go-Live)
+
+### Testing & QA (2h)
+- [ ] Dokumenttypen-Test (nur 6 Pflichtdokumente)
+- [ ] Fördercheck-Test (Frage 8 mit Datumsvalidierung)
+- [ ] Vorlagen-Test (VZÄ-Rechner + De-minimis)
+- [ ] End-to-End-Test (kompletter Onboarding-Prozess)
+
+### Deployment (1h)
+- [ ] Database Migration ausführen
+- [ ] Git Commit & Push
+- [ ] Manus Platform Deploy
+- [ ] Production-URL testen
+
+**Status:** 🔴 IN PROGRESS
