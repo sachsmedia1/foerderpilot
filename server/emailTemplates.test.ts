@@ -112,8 +112,8 @@ describe('E-Mail Templates', () => {
         mockBranding
       );
 
-      expect(email.html).toContain('Personalausweis');
-      expect(email.text).toContain('Personalausweis');
+      expect(email.html).toContain('Nachweis Haupterwerb');
+      expect(email.text).toContain('Nachweis Haupterwerb');
     });
   });
 
@@ -122,7 +122,7 @@ describe('E-Mail Templates', () => {
       const email = getDocumentValidationEmail(
         {
           participantName: 'Max Mustermann',
-          documentType: 'Personalausweis',
+          documentType: 'Nachweis Haupterwerb',
           status: 'valid',
           tenantName: 'Test Bildungsträger',
           loginUrl: 'https://app.foerderpilot.io/login',
@@ -138,7 +138,7 @@ describe('E-Mail Templates', () => {
       const email = getDocumentValidationEmail(
         {
           participantName: 'Max Mustermann',
-          documentType: 'Personalausweis',
+          documentType: 'Nachweis Haupterwerb',
           status: 'invalid',
           issues: ['Dokument ist nicht lesbar', 'Ablaufdatum überschritten'],
           recommendations: ['Bitte scannen Sie das Dokument mit höherer Auflösung'],

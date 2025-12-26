@@ -300,7 +300,7 @@ ${data.tenantName}
   `;
 
   return {
-    subject: `Dokument ${isValid ? 'gültig' : 'ungültig'}: ${data.documentType}`,
+    subject: `Dokument ${isValid ? 'genehmigt' : 'abgelehnt'}: ${data.documentType}`,
     html,
     text,
   };

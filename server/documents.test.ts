@@ -96,7 +96,7 @@ describe("documents.upload", () => {
     await expect(
       caller.documents.upload({
         participantId: 1,
-        documentType: "personalausweis",
+        documentType: "nachweis_haupterwerb",
         filename: "test.pdf",
         fileData: "base64data",
         mimeType: "application/pdf",
@@ -136,7 +136,7 @@ describe("documents.upload", () => {
     await expect(
       caller.documents.upload({
         participantId: 1,
-        documentType: "personalausweis",
+        documentType: "nachweis_haupterwerb",
         filename: "test.pdf",
         fileData: "base64data",
         mimeType: "application/pdf",

@@ -1673,3 +1673,15 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [ ] Production-URL testen
 
 **Status:** 🔴 IN PROGRESS
+
+
+## KOMPASS-Dokumenttypen Fix (Issue #1)
+- [x] Dokumenttypen auf 7 KOMPASS-konforme Typen reduziert
+  - Phase 1 (vor Kurs): nachweis_haupterwerb, vzae_rechner, nachweis_beginn_selbststaendigkeit, de_minimis_erklaerung
+  - Phase 2 (nach Kurs): teilnahmebescheinigung, kursrechnung, zahlungsnachweis
+- [x] Frontend DocumentsDashboard auf Phase 1/Phase 2 Struktur umgestellt
+- [x] Phase 2 Dokumente erst nach Phase 1 Abschluss freigeschaltet
+- [x] Alte Dokumenttypen entfernt (personalausweis, lebenslauf, geschaeftsadresse, etc.)
+- [x] 38 neue Tests für KOMPASS-Dokumenttypen geschrieben (alle bestanden)
+- [x] Alte Tests aktualisiert (personalausweis → nachweis_haupterwerb)
+- [ ] Checkpoint erstellen

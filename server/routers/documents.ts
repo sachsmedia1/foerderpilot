@@ -20,9 +20,9 @@ import { validateTenantAccess, validateResourceOwnership } from '../_core/securi
 import { sendDocumentUploadNotification, sendDocumentValidationNotification } from '../utils/emailNotifications';
 import { 
   KOMPASS_DOCUMENT_TYPES, 
-  getRequiredDocumentTypes, 
-  getConditionalDocumentTypes, 
-  getOptionalDocumentTypes,
+  getPhase1DocumentTypes, 
+  getPhase2DocumentTypes,
+  getAllDocumentTypes,
   getDocumentTypeById,
   validateFile 
 } from '../config/kompassDocumentTypes';
@@ -108,46 +108,14 @@ const validateDocumentSchema = z.object({
 export const documentsRouter = router({
   /**
    * KOMPASS-Dokumenttypen für aktuellen Teilnehmer abrufen
-   * Berücksichtigt Pflicht-, bedingte und optionale Dokumente
+   * Phase 1: Förderberechtigung (vor Kurs) - 4 Dokumente
+   * Phase 2: Rückerstattung (nach Kurs) - 3 Dokumente
    */
   getDocumentTypes: protectedProcedure
-    .query(async ({ ctx }) => {
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
-      if (!ctx.user) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Not authenticated' });
-
-      // Finde Participant des eingeloggten Users
-      const [participant] = await db
-        .select()
-        .from(participants)
-        .where(eq(participants.userId, ctx.user.id))
-        .limit(1);
-
-      // Default: 0 Mitarbeiter wenn kein Participant gefunden
-      let mitarbeiterAnzahl = 0;
-
-      if (participant) {
-        // Hole Fördercheck-Daten für mitarbeiterAnzahl
-        const sessionId = `participant_${participant.id}`;
-        const [session] = await db
-          .select()
-          .from(registrationSessions)
-          .where(eq(registrationSessions.sessionId, sessionId))
-          .limit(1);
-
-        if (session?.foerdercheck) {
-          const foerdercheckData = session.foerdercheck as { mitarbeiterAnzahl?: number };
-          mitarbeiterAnzahl = foerdercheckData?.mitarbeiterAnzahl || 0;
-        }
-      }
-
-      // Participant-Objekt für Condition-Check
-      const participantData = { mitarbeiterAnzahl };
-
+    .query(async () => {
       return {
-        required: getRequiredDocumentTypes(),
-        conditional: getConditionalDocumentTypes(participantData),
-        optional: getOptionalDocumentTypes(),
+        phase1: getPhase1DocumentTypes(),
+        phase2: getPhase2DocumentTypes(),
       };
     }),
 

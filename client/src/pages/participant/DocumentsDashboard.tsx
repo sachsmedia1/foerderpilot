@@ -98,11 +98,12 @@ function DocumentsDashboardContent() {
     return documents?.find(d => d.documentType === typeId);
   };
 
-  // Calculate progress
-  const allRequired = [...documentTypes.required, ...documentTypes.conditional];
-  const uploadedRequired = allRequired.filter(t => getDocumentStatus(t.id) !== "missing").length;
-  const validRequired = allRequired.filter(t => getDocumentStatus(t.id) === "valid").length;
-  const progressPercentage = allRequired.length > 0 ? Math.round((uploadedRequired / allRequired.length) * 100) : 0;
+  // Calculate progress (nur Phase 1 für Fortschrittsanzeige)
+  const phase1Docs = documentTypes.phase1 || [];
+  const uploadedPhase1 = phase1Docs.filter(t => getDocumentStatus(t.id) !== "missing").length;
+  const validPhase1 = phase1Docs.filter(t => getDocumentStatus(t.id) === "valid").length;
+  const progressPercentage = phase1Docs.length > 0 ? Math.round((uploadedPhase1 / phase1Docs.length) * 100) : 0;
+  const phase1Complete = validPhase1 === phase1Docs.length;
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
@@ -119,11 +120,11 @@ function DocumentsDashboardContent() {
         <CardContent className="pt-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm font-medium">Fortschritt Pflichtdokumente</p>
-              <p className="text-2xl font-bold">{uploadedRequired} / {allRequired.length}</p>
+              <p className="text-sm font-medium">Fortschritt Phase 1 (vor Kurs)</p>
+              <p className="text-2xl font-bold">{uploadedPhase1} / {phase1Docs.length}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">{validRequired} validiert</p>
+              <p className="text-sm text-muted-foreground">{validPhase1} validiert</p>
               <p className="text-3xl font-bold text-primary">{progressPercentage}%</p>
             </div>
           </div>
@@ -164,15 +165,22 @@ function DocumentsDashboardContent() {
         </AlertDescription>
       </Alert>
 
-      {/* PFLICHTDOKUMENTE */}
+      {/* PHASE 1: FÖRDERBERECHTIGUNG (vor Kurs) */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-2xl font-semibold">Erforderliche Dokumente</h2>
+          <h2 className="text-2xl font-semibold">Phase 1: Förderberechtigung (vor Kurs)</h2>
           <Badge variant="destructive">Pflicht</Badge>
         </div>
         
+        <Alert className="mb-4">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            Diese Dokumente müssen VOR Kursbeginn eingereicht werden, um Ihre Förderberechtigung zu prüfen.
+          </AlertDescription>
+        </Alert>
+        
         <div className="grid gap-4">
-          {documentTypes.required.map((type: DocumentTypeConfig) => (
+          {documentTypes.phase1?.map((type: DocumentTypeConfig) => (
             <DocumentCard
               key={type.id}
               documentType={type}
@@ -184,51 +192,42 @@ function DocumentsDashboardContent() {
         </div>
       </div>
 
-      {/* BEDINGTE DOKUMENTE (nur wenn vorhanden) */}
-      {documentTypes.conditional && documentTypes.conditional.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-2xl font-semibold">Zusätzlich erforderlich</h2>
-            <Badge variant="destructive">Pflicht (für Ihre Situation)</Badge>
-          </div>
-          
+      {/* PHASE 2: RÜCKERSTATTUNG (nach Kurs) */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-2xl font-semibold">Phase 2: Rückerstattung (nach Kurs)</h2>
+          <Badge variant={phase1Complete ? "destructive" : "secondary"}>
+            {phase1Complete ? "Pflicht" : "Noch nicht verfügbar"}
+          </Badge>
+        </div>
+        
+        {!phase1Complete && (
+          <Alert className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Diese Dokumente werden erst nach Abschluss von Phase 1 freigeschaltet.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {phase1Complete && (
           <Alert className="mb-4">
             <Info className="h-4 w-4" />
             <AlertDescription>
-              Diese Dokumente sind erforderlich, da Sie Mitarbeiter beschäftigen.
+              Diese Dokumente müssen NACH Kursabschluss eingereicht werden, um die Förderung zurückzuerhalten.
             </AlertDescription>
           </Alert>
-          
-          <div className="grid gap-4">
-            {documentTypes.conditional.map((type: DocumentTypeConfig) => (
-              <DocumentCard
-                key={type.id}
-                documentType={type}
-                status={getDocumentStatus(type.id)}
-                participantId={participantData.id}
-                document={getDocument(type.id)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* OPTIONALE DOKUMENTE */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-2xl font-semibold">Optionale Dokumente</h2>
-          <Badge variant="secondary">Optional</Badge>
-        </div>
+        )}
         
         <div className="grid gap-4">
-          {documentTypes.optional.map((type: DocumentTypeConfig) => (
+          {documentTypes.phase2?.map((type: DocumentTypeConfig) => (
             <DocumentCard
               key={type.id}
               documentType={type}
               status={getDocumentStatus(type.id)}
               participantId={participantData.id}
               document={getDocument(type.id)}
-              isOptional
+              disabled={!phase1Complete}
             />
           ))}
         </div>
@@ -243,9 +242,10 @@ interface DocumentCardProps {
   participantId: number;
   document?: any;
   isOptional?: boolean;
+  disabled?: boolean;
 }
 
-function DocumentCard({ documentType, status, participantId, document, isOptional = false }: DocumentCardProps) {
+function DocumentCard({ documentType, status, participantId, document, isOptional = false, disabled = false }: DocumentCardProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const utils = trpc.useUtils();
@@ -333,7 +333,7 @@ function DocumentCard({ documentType, status, participantId, document, isOptiona
     onDrop,
     accept: acceptTypes,
     maxFiles: 1,
-    disabled: uploading,
+    disabled: uploading || disabled,
   });
 
   const getStatusIcon = () => {
@@ -371,9 +371,11 @@ function DocumentCard({ documentType, status, participantId, document, isOptiona
 
   const cardClassName = status === "valid" 
     ? "border-green-500 bg-green-50/50" 
-    : isOptional 
-      ? "border-dashed" 
-      : "";
+    : disabled
+      ? "opacity-50 cursor-not-allowed"
+      : isOptional 
+        ? "border-dashed" 
+        : "";
 
   return (
     <Card className={cardClassName}>
