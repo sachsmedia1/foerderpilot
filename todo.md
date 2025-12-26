@@ -1685,3 +1685,5 @@ params: 420001,450001,2026-01-12 11:00:00.000,,,0002-01-11 21:45:32.000,schedule
 - [x] 38 neue Tests für KOMPASS-Dokumenttypen geschrieben (alle bestanden)
 - [x] Alte Tests aktualisiert (personalausweis → nachweis_haupterwerb)
 - [ ] Checkpoint erstellen
+
+- [x] Admin-Dokumenten-Upload Dropdown auf neue KOMPASS-Dokumenttypen aktualisieren

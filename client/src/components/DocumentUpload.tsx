@@ -22,12 +22,15 @@ interface DocumentUploadProps {
 }
 
 const DOCUMENT_TYPES = [
-  { value: 'personalausweis', label: 'Personalausweis' },
-  { value: 'lebenslauf', label: 'Lebenslauf' },
-  { value: 'zeugnisse', label: 'Zeugnisse' },
-  { value: 'arbeitsvertrag', label: 'Arbeitsvertrag' },
-  { value: 'kuendigungsbestaetigung', label: 'Kündigungsbestätigung' },
-  { value: 'other', label: 'Sonstiges' },
+  // Phase 1: Vor Kurs (Förderberechtigung)
+  { value: 'nachweis_haupterwerb', label: 'Nachweis Haupterwerb' },
+  { value: 'vzae_rechner', label: 'VZÄ-Rechner' },
+  { value: 'nachweis_beginn_selbststaendigkeit', label: 'Nachweis Beginn Selbstständigkeit' },
+  { value: 'de_minimis_erklaerung', label: 'De-minimis-Erklärung' },
+  // Phase 2: Nach Kurs (Rückerstattung)
+  { value: 'teilnahmebescheinigung', label: 'Teilnahmebescheinigung' },
+  { value: 'kursrechnung', label: 'Kursrechnung' },
+  { value: 'zahlungsnachweis', label: 'Zahlungsnachweis' },
 ];
 
 const ALLOWED_MIME_TYPES = [
@@ -43,7 +46,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export function DocumentUpload({ participantId, onUploadComplete }: DocumentUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [documentType, setDocumentType] = useState<'personalausweis' | 'lebenslauf' | 'zeugnisse' | 'arbeitsvertrag' | 'kuendigungsbestaetigung' | 'other' | ''>('');
+  const [documentType, setDocumentType] = useState<'nachweis_haupterwerb' | 'vzae_rechner' | 'nachweis_beginn_selbststaendigkeit' | 'de_minimis_erklaerung' | 'teilnahmebescheinigung' | 'kursrechnung' | 'zahlungsnachweis' | ''>('');
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);

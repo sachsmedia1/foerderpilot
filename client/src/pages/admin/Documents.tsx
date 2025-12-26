@@ -20,12 +20,15 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 
 const DOCUMENT_TYPE_LABELS: Record<string, string> = {
-  personalausweis: 'Personalausweis',
-  lebenslauf: 'Lebenslauf',
-  zeugnisse: 'Zeugnisse',
-  arbeitsvertrag: 'Arbeitsvertrag',
-  kuendigungsbestaetigung: 'Kündigungsbestätigung',
-  other: 'Sonstiges',
+  // Phase 1: Vor Kurs (Förderberechtigung)
+  nachweis_haupterwerb: 'Nachweis Haupterwerb',
+  vzae_rechner: 'VZÄ-Rechner',
+  nachweis_beginn_selbststaendigkeit: 'Nachweis Beginn Selbstständigkeit',
+  de_minimis_erklaerung: 'De-minimis-Erklärung',
+  // Phase 2: Nach Kurs (Rückerstattung)
+  teilnahmebescheinigung: 'Teilnahmebescheinigung',
+  kursrechnung: 'Kursrechnung',
+  zahlungsnachweis: 'Zahlungsnachweis',
 };
 
 const STATUS_CONFIG = {
